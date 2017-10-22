@@ -1,4 +1,4 @@
-## Simple-Windows-Event-Log-Forwarder
+## Simple-Windows-Event-Log-Forwarder (SWELF)
 Pre-Alpha release of a simple for almost anyone windows event log forwarding agent. 
 
 # NOTES:
