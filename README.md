@@ -6,9 +6,15 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 # TODO:
 -Plugin to Powershell to extend product
+
 -Make service
+
 -Create installer
+
 -Multi Thread
+
 -Detect missing eventlogs
+
 -Search Sysmon hash on Virustotal 
+
 -Advanced searching features for app
