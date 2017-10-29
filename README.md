@@ -13,8 +13,5 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 -Multi Thread
 
--Detect missing eventlogs
-
 -Search Sysmon hash on Virustotal 
 
--Advanced searching features for app
