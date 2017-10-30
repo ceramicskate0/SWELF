@@ -60,9 +60,9 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
      Term or statement to search for ',' EventLogName ',' EventID
      
 --------------------------------------------------------------------------------
-     example: powershell.exe,microsoft-windows-sysmon/operational,1 (This will be used to search microsoft-windows-sysmon/operational                 logs for cmd.exe with event id 1)
+     example: powershell.exe,microsoft-windows-sysmon/operational,1 (This will be used to search microsoft-windows-sysmon/operational logs for cmd.exe with event id 1)
      
-     example: cmd.exe,microsoft-windows-sysmon/operational (This will be used to search microsoft-windows-sysmon/operational logs for                 cmd.exe)
+     example: cmd.exe,microsoft-windows-sysmon/operational (This will be used to search microsoft-windows-sysmon/operational logs for cmd.exe)
      
      example: cmd.exe,microsoft-windows-powershell/operational (This will be used to search microsoft-windows-sysmon/operational logs)
      
