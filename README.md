@@ -13,7 +13,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
     Place path to a directory to monitor (it will monitor all files of type .txt and .log only).
     
 --------------------------------------------------------------------------------
-example: C:\FolderName\
+     example: C:\FolderName\
 --------------------------------------------------------------------------------
 
 ##  FilesToMonitor.conf
@@ -21,8 +21,8 @@ example: C:\FolderName\
     Place full file path to file to monitor every time app is run
     
 --------------------------------------------------------------------------------
-example: C:\FolderName\File.txt 
-example: C:\FolderName\File.log
+     example: C:\FolderName\File.txt 
+     example: C:\FolderName\File.log
 --------------------------------------------------------------------------------
 
 ##  Eventlog_with_PlaceKeeper.txt
@@ -32,7 +32,7 @@ example: C:\FolderName\File.log
     Only change to number if you wish to have app rescan logs from begining
     
 --------------------------------------------------------------------------------
-example: microsoft-windows-sysmon/operational=1
+     example: microsoft-windows-sysmon/operational=1
 --------------------------------------------------------------------------------
 
 ##  ConsoleAppConfig.conf
@@ -40,7 +40,7 @@ example: microsoft-windows-sysmon/operational=1
     Log_Collector={IPv4 of place to send xml of eventlog over port 514}
     
 --------------------------------------------------------------------------------
-example: Log_Collector=127.0.0.1   
+     example: Log_Collector=127.0.0.1   
 --------------------------------------------------------------------------------
 
 ## ..\Searchs\Search.txt
