@@ -33,7 +33,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
     
 --------------------------------------------------------------------------------
      example: microsoft-windows-sysmon/operational=1
-     example: microsoft-windows-sysmon/operational=28395756
+     example: microsoft-windows-powershell/operational==28395756
 --------------------------------------------------------------------------------
 
 ##  ConsoleAppConfig.conf
