@@ -1,11 +1,11 @@
-## Simple-Windows-Event-Log-Forwarder (SWELF)
+# Simple-Windows-Event-Log-Forwarder (SWELF)
 Pre-Alpha release of a simple for almost anyone windows event log forwarding agent. 
 
 # NOTES:
 Currenlty its in "testing" and Dev on my local machine. BUT whats being made public some time soon..maybe... will be something that almost anyone can impliment without TODO's built in. If all goes well and as expected if you can schedule a task your good. Actually I may give a how to.....maybe.
 
 # Usage:
-## ..\Config\*
+## ..\Config\
 
   DirectoriesToMonitor.conf
   
@@ -28,7 +28,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
  
 ## ..\Searchs\Search.txt
 
-  How to:
+  ## How to:
   
      length':'{Minumum log length beofre its an event}
      count':'{Term or statement to count}':'{Number of times in log before its a counted event}    
