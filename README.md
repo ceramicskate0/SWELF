@@ -9,22 +9,24 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 # Usage:
 ## ..\Config\
   ## How to:
-  DirectoriesToMonitor.conf
+##  DirectoriesToMonitor.conf
   
     Place path to a directory to monitor (it will monitor all files of type .txt and .log only)
     
 --------------------------------------------------------------------------------
 example: C:\FolderName\
+--------------------------------------------------------------------------------
 
-  FilesToMonitor.conf
+##  FilesToMonitor.conf
   
     Place full file path to file to monitor every time app is run
     
 --------------------------------------------------------------------------------
 example: C:\FolderName\File.txt 
 example: C:\FolderName\File.log
-    
-  Eventlog_with_PlaceKeeper.txt
+--------------------------------------------------------------------------------
+
+##  Eventlog_with_PlaceKeeper.txt
   
     Logname '=' EventID Number (if 1st run '1' can be used)
     
@@ -32,15 +34,16 @@ example: C:\FolderName\File.log
     
 --------------------------------------------------------------------------------
 example: microsoft-windows-sysmon/operational=1
+--------------------------------------------------------------------------------
 
-    
-  ConsoleAppConfig.conf
+##  ConsoleAppConfig.conf
   
     Log_Collector={IPv4 of place to send xml of eventlog over port 514}
     
 --------------------------------------------------------------------------------
 example: Log_Collector=127.0.0.1   
- 
+--------------------------------------------------------------------------------
+
 ## ..\Searchs\Search.txt
 
   ## How to:
@@ -51,7 +54,7 @@ example: Log_Collector=127.0.0.1
 --------------------------------------------------------------------------------
      example: length:200    
      example: count:;:8
-     
+--------------------------------------------------------------------------------  
      
    Any combination of the following as long as they are in order. 
    
@@ -69,7 +72,7 @@ example: Log_Collector=127.0.0.1
      example: csc.exe
      
      example: log file was cleared
-     
+-------------------------------------------------------------------------------- 
   
 ## ..\Logs\ErrorLog.log
 
