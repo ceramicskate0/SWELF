@@ -8,14 +8,21 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 # Usage:
 ## ..\Config\
-
+  ## How to:
   DirectoriesToMonitor.conf
   
     Place path to a directory to monitor (it will monitor all files of type .txt and .log only)
     
+--------------------------------------------------------------------------------
+example: C:\FolderName\
+
   FilesToMonitor.conf
   
     Place full file path to file to monitor every time app is run
+    
+--------------------------------------------------------------------------------
+example: C:\FolderName\File.txt 
+example: C:\FolderName\File.log
     
   Eventlog_with_PlaceKeeper.txt
   
@@ -23,10 +30,16 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
     
     Only change to number if you wish to have app rescan logs from begining
     
+--------------------------------------------------------------------------------
+example: microsoft-windows-sysmon/operational=1
+
+    
   ConsoleAppConfig.conf
   
     Log_Collector={IPv4 of place to send xml of eventlog over port 514}
     
+--------------------------------------------------------------------------------
+example: Log_Collector=127.0.0.1   
  
 ## ..\Searchs\Search.txt
 
@@ -59,11 +72,13 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
      
   
 ## ..\Logs\ErrorLog.log
+
      Location of applications local error log.
      
 --------------------------------------------------------------------------------
 
 # TODO:
+
 -Plugin to Powershell
 
 -Make service
