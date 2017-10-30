@@ -57,20 +57,20 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
      
    Any combination of the following as long as they are in order. 
    
-     Term or statement to seatch for ','EventLogName','EventID
+     Term or statement to search for ',' EventLogName ',' EventID
      
 --------------------------------------------------------------------------------
-     example: powershell.exe,microsoft-windows-sysmon/operational,1
+     example: powershell.exe,microsoft-windows-sysmon/operational,1 (This will be used to search microsoft-windows-sysmon/operational                 logs for cmd.exe with event id 1)
      
-     example: cmd.exe,microsoft-windows-powershell/operational
+     example: cmd.exe,microsoft-windows-sysmon/operational (This will be used to search microsoft-windows-sysmon/operational logs for                 cmd.exe)
      
-     example: cmd.exe,microsoft-windows-sysmon/operational
+     example: cmd.exe,microsoft-windows-powershell/operational (This will be used to search microsoft-windows-sysmon/operational logs)
      
-     example: has been restricted by your Administrator by location with policy rule 
+     example: has been restricted by your Administrator by location with policy rule (This will be used to search ALL logs)
      
-     example: csc.exe
+     example: csc.exe (This will be used to search ALL logs)
      
-     example: log file was cleared
+     example: log file was cleared (This will be used to search ALL logs)
 -------------------------------------------------------------------------------- 
   
 ## C:\ ..\Logs\ErrorLog.log
