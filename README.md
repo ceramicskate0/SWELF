@@ -49,7 +49,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 ## C:\ ..\Searchs\Search.txt
   ### How to:
   
-     length':'{Minumum log length beofre its an event}
+     length':'{Minumum log length before its an event}
      count':'{Term or statement to count}':'{Number of times in log before its a counted event}    
      
 --------------------------------------------------------------------------------
