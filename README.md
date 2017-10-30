@@ -8,7 +8,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 # Usage:
 ## ..\Config\
-  ## How to:
+  ### How to:
 ##  DirectoriesToMonitor.conf
   
     Place path to a directory to monitor (it will monitor all files of type .txt and .log only)
@@ -46,7 +46,7 @@ example: Log_Collector=127.0.0.1
 
 ## ..\Searchs\Search.txt
 
-  ## How to:
+  ### How to:
   
      length':'{Minumum log length beofre its an event}
      count':'{Term or statement to count}':'{Number of times in log before its a counted event}    
