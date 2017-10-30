@@ -10,7 +10,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
   ### How to:
 ##  DirectoriesToMonitor.conf
   
-    Place path to a directory to monitor (it will monitor all files of type .txt and .log only).
+      Place path to a directory to monitor (it will monitor all files of type .txt and .log only).
     
 --------------------------------------------------------------------------------
      example: C:\FolderName\
@@ -18,7 +18,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 ##  FilesToMonitor.conf
   
-    Place full file path to file to monitor every time app is run
+      Place full file path to file to monitor every time app is run
     
 --------------------------------------------------------------------------------
      example: C:\FolderName\File.txt 
@@ -27,9 +27,9 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 ##  Eventlog_with_PlaceKeeper.txt
   
-    Logname '=' EventID Number (if 1st run '1' can be used)
+      Logname '=' EventID Number (if 1st run '1' can be used)
     
-    Only change to number if you wish to have app rescan logs from begining
+      Only change to number if you wish to have app rescan logs from begining
     
 --------------------------------------------------------------------------------
      example: microsoft-windows-sysmon/operational=1
@@ -37,7 +37,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 ##  ConsoleAppConfig.conf
   
-    Log_Collector={IPv4 of place to send xml of eventlog over port 514}
+      Log_Collector={IPv4 of place to send xml of eventlog over port 514}
     
 --------------------------------------------------------------------------------
      example: Log_Collector=127.0.0.1   
