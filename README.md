@@ -29,10 +29,11 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
   
       Logname '=' EventID Number (if 1st run '1' can be used)
     
-      Only change to number if you wish to have app rescan logs from begining
+      WARNING: Only change to number if you wish to have app rescan logs from begining
     
 --------------------------------------------------------------------------------
      example: microsoft-windows-sysmon/operational=1
+     example: microsoft-windows-sysmon/operational=28395756
 --------------------------------------------------------------------------------
 
 ##  ConsoleAppConfig.conf
