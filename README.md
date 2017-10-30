@@ -90,17 +90,17 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 # TODO:
 - GUI for config of app so its easy to manage
 
--Plugin to Powershell
+- Plugin to Powershell
 
--Make service
+- Make service
 
--Create installer
+- Create installer
 
--Multi Thread application
+- Multi Thread application
 
--Search Sysmon hash and IP on Virustotal 
+- Search Sysmon hash and IP on Virustotal 
 
--Extract IP and File Hash's in app algo, deal with config issues to turn features on and off, what to do with log data, and pull from more than sysmon log type
+- Extract IP and File Hash's in app algo, deal with config issues to turn features on and off, what to do with log data, and pull from more than sysmon log type
 
--Expand API class
+- Expand API class
 
