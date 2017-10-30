@@ -59,7 +59,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
      
    Any combination of the following as long as they are in order. 
    
-     Term or statement to search for ',' EventLogName ',' EventID
+     {Term or statement to search for} ',' {EventLogName} ',' {EventID}
      
 --------------------------------------------------------------------------------
      example: powershell.exe,microsoft-windows-sysmon/operational,1 
