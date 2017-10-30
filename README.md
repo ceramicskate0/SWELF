@@ -7,10 +7,10 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 # Usage:
 ## ..\Config\
-  ### How to:
+  ## How to:
 ##  DirectoriesToMonitor.conf
   
-    Place path to a directory to monitor (it will monitor all files of type .txt and .log only)
+    Place path to a directory to monitor (it will monitor all files of type .txt and .log only).
     
 --------------------------------------------------------------------------------
 example: C:\FolderName\
