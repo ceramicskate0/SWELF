@@ -57,7 +57,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
      
   
 ## ..\Logs\ErrorLog.log
-     Location of App local error log.
+     Location of applications local error log.
 
 # TODO:
 -Plugin to Powershell
