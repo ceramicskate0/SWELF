@@ -4,6 +4,8 @@ Pre-Alpha release of a simple for almost anyone windows event log forwarding age
 # NOTES:
 Currenlty its in "testing" and Dev on my local machine. BUT whats being made public some time soon..maybe... will be something that almost anyone can impliment without TODO's built in. If all goes well and as expected if you can schedule a task your good. Actually I may give a how to.....maybe.
 
+--------------------------------------------------------------------------------
+
 # Usage:
 ## ..\Config\
 
@@ -58,6 +60,8 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
   
 ## ..\Logs\ErrorLog.log
      Location of applications local error log.
+     
+--------------------------------------------------------------------------------
 
 # TODO:
 -Plugin to Powershell
@@ -71,4 +75,6 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 -Search Sysmon hash and IP on Virustotal 
 
 -Extract IP and File Hash's in app algo, deal with config issues to turn features on and off, what to do with log data, and pull from more than sysmon log type
+
+-Expand API class
 
