@@ -32,11 +32,27 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
   
      length':'{Minumum log length beofre its an event}
      
+     length:200
+     
      count':'{Term or statement to count}':'{Number of times in log before its a counted event}
+     
+     example: count:;:8
      
    Any combination of the following as long as they are in order. 
    
      Term or statement to seatch for ','EventLogName','EventID
+     
+     powershell.exe,microsoft-windows-sysmon/operational
+     
+     cmd.exe,microsoft-windows-powershell/operational
+     
+     cmd.exe,microsoft-windows-sysmon/operational
+     
+     has been restricted by your Administrator by location with policy rule 
+     
+     csc.exe
+     
+     log file was cleared
      
    
 
