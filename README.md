@@ -32,11 +32,13 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
   
      length':'{Minumum log length beofre its an event}
      
-     length:200
+--------------------------------------------------------------------------------
+     example: length:200
      
+       
      count':'{Term or statement to count}':'{Number of times in log before its a counted event}
      
-     
+--------------------------------------------------------------------------------
      example: count:;:8
      
      
@@ -44,7 +46,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
    
      Term or statement to seatch for ','EventLogName','EventID
      
-     
+--------------------------------------------------------------------------------
      example: powershell.exe,microsoft-windows-sysmon/operational,1
      
      example: cmd.exe,microsoft-windows-powershell/operational
