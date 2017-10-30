@@ -6,7 +6,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 
 # Usage:
-## C:\..\Config\
+## C:\ ..\Config\
   ### How to:
 ##  DirectoriesToMonitor.conf
   
@@ -43,7 +43,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
      example: Log_Collector=127.0.0.1   
 --------------------------------------------------------------------------------
 
-## C:\..\Searchs\Search.txt
+## C:\ ..\Searchs\Search.txt
   ### How to:
   
      length':'{Minumum log length beofre its an event}
@@ -72,7 +72,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
      example: log file was cleared
 -------------------------------------------------------------------------------- 
   
-## C:\..\Logs\ErrorLog.log
+## C:\ ..\Logs\ErrorLog.log
 
      Location of applications local error log.
      
