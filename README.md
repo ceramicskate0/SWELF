@@ -6,7 +6,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 
 # Usage:
-## ..\Config\
+### ..\Config\
   ## How to:
 ##  DirectoriesToMonitor.conf
   
