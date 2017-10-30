@@ -6,22 +6,38 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 # Usage:
 ## ..\Config\*
+
   DirectoriesToMonitor.conf
+  
     Place path to a directory to monitor (it will monitor all files of type .txt and .log only)
+    
   FilesToMonitor.conf
+  
     Place full file path to file to monitor every time app is run
+    
   Eventlog_with_PlaceKeeper.txt
+  
     Logname '=' EventID Number (if 1st run '1' can be used)
+    
     Only change to number if you wish to have app rescan logs from begining
+    
   ConsoleAppConfig.conf
+  
     Log_Collector={IPv4 of place to send xml of eventlog over port 514}
+    
  
 ## ..\Searchs\Search.txt
+
   How to:
+  
      length':'{Minumum log length beofre its an event}
+     
      count':'{Term or statement to count}':'{Number of times in log before its a counted event}
+     
    Any combonation of the following as long as they are in order. 
+   
      Term or statement to seatch for ','EventLogName','EventID
+     
    
 
 # TODO:
