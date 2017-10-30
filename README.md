@@ -55,7 +55,9 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
      
      example: log file was cleared
      
-   
+  
+## ..\Logs\ErrorLog.log
+     Location of App local error log.
 
 # TODO:
 -Plugin to Powershell
