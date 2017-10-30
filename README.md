@@ -88,6 +88,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 --------------------------------------------------------------------------------
 
 # TODO:
+- GUI for config of app so its easy to manage
 
 -Plugin to Powershell
 
