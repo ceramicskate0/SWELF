@@ -3,6 +3,7 @@ Pre-Alpha release of a simple for almost anyone windows event log forwarding age
 
 # NOTES:
 Currenlty its in "testing" and Dev on my local machine. BUT whats being made public some time soon..maybe... will be something that almost anyone can impliment without TODO's built in. If all goes well and as expected if you can schedule a task your good. Actually I may give a how to.....maybe.
+For config files all single lines that contain '#' will be treated as comments
 
 
 # Usage:
@@ -29,7 +30,8 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
   
       Logname '=' EventID Number (if 1st run '1' can be used)
     
-      WARNING: Only change to number if you wish to have app rescan logs from begining
+      WARNING: Only change to number if you wish to have app rescan logs from begining.
+      NOTE: If you forget to add the log here and you want to search it never fear app will handle it for you :)
     
 --------------------------------------------------------------------------------
      example: microsoft-windows-sysmon/operational=1
@@ -43,7 +45,9 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
       Log_Collector={IPv4 of place to send xml of eventlog over port 514}
     
 --------------------------------------------------------------------------------
-     example: Log_Collector=127.0.0.1   
+     example(Send Data): Log_Collector=127.0.0.1
+     example(Dont Send Data): Log_Collector=
+     example(Dont Send Data): 
 --------------------------------------------------------------------------------
 
 ## C:\ ..\Searchs\Search.txt
@@ -90,7 +94,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 # TODO:
 - GUI for config of app so its easy to manage
 
-- Plugin to Powershell
+- Plugin to Powershell (Gonna be key word search for script output)
 
 - Make service
 
