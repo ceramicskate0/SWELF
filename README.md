@@ -97,6 +97,8 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 # TODO:
 - GUI for config of app so its easy to manage
 
+- Network output in more than raw eventlog xml (ie Syslog)
+
 - Plugin to Powershell (Gonna be key word search for script output)
 
 - Make service
