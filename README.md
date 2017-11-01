@@ -7,6 +7,15 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 # App Usage Info:
 - For config files all single lines that contain '#' will be treated as comments
 - Remember that the event log for the app will need enough space to store logs from all the sources your searching. This will be important if you want to forward logs and the device is often off the network that the destinaiton is on.
+- App will require rightsfor:
+    - read/write to windows eventlog. 
+    - Write to its CWD. 
+    - Execute. 
+    - Send Log data over 514/UDP
+    - Read from disk and any location you want it to.
+    - Launch processes (List Below)
+        - Powershell.exe
+        - Itself
 
 
 # Configuration and Usage Syntax:
