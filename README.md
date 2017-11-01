@@ -84,8 +84,9 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
      
      example: ,microsoft-windows-sysmon/operational,1
      (Return all event id 1 in sysmon log)
+     
      
-     example: cmd.exe,microsoft-windows-sysmon/operational 
+     example: cmd.exe,microsoft-windows-sysmon/operational 
      (This will be used to search microsoft-windows-sysmon/operational logs for cmd.exe)
      
      example: cmd.exe,microsoft-windows-powershell/operational 
