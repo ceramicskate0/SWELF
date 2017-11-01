@@ -5,6 +5,7 @@ Pre-Alpha release of a simple for almost anyone windows event log forwarding age
 Currenlty its in "testing" and Dev on my local machine. BUT whats being made public some time soon..maybe... will be something that almost anyone can impliment without TODO's built in. If all goes well and as expected if you can schedule a task your good. Actually I may give a how to.....maybe.
 
 # App Usage Info:
+- Reserved characters are , : =
 - For config files all single lines that contain '#' will be treated as comments
 - Remember that the event log for the app will need enough space to store logs from all the sources your searching. This will be important if you want to forward logs and the device is often off the network that the destinaiton is on.
 - App will require rights for (Admin on local machine is recommended):
@@ -81,7 +82,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
      example: powershell.exe,microsoft-windows-sysmon/operational,1 
      (This will be used to search microsoft-windows-sysmon/operational logs for cmd.exe with event id 1)
      
-     example: ,microsoft-windows-sysmon/operational,1
+     example: ,microsoft-windows-sysmon/operational,1
      (Return all event id 1 in sysmon log)
      
      example: cmd.exe,microsoft-windows-sysmon/operational 
