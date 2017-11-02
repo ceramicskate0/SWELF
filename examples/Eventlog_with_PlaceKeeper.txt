@@ -1,0 +1,6 @@
+#LOG NAME,START AT INDEX(1 if unknown) 
+Microsoft-Windows-PowerShell/Operational=1 
+Windows PowerShell=1 
+Microsoft-Windows-WMI-Activity/Operational=1 
+Microsoft-Windows-Sysmon/Operational=1 
+Security=1
