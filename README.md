@@ -108,7 +108,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 --------------------------------------------------------------------------------
 
 # TODO:
-- GUI for config of app so its easy to manage
+- GUI for config of app so its easy to manage settings , get notifications on desktop , and get alerts for findings in GUI
 
 - Network output in more than raw eventlog xml (ie Syslog)
 
