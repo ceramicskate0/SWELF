@@ -17,7 +17,7 @@ Pre-Alpha release of a simple for almost anyone windows event log forwarding age
         - Itself
         
 # Sidenote:
-    - If your using Sysmon and want a starting point for a config file there is a 1 size fits all config file at https://github.com/SwiftOnSecurity/sysmon-config. I also maintain a fork at https://github.com/ceramicskate0/sysmon-config. 
+- If your using Sysmon and want a starting point for a config file there is a 1 size fits all config file at https://github.com/SwiftOnSecurity/sysmon-config. I also maintain a fork at https://github.com/ceramicskate0/sysmon-config. 
 
 # Configuration and Usage Syntax:
 ## C:\ ..\Config\
