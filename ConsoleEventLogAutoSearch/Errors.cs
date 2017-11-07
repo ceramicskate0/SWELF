@@ -1,0 +1,72 @@
+﻿//Written by Ceramicskate0
+//Copyright 2017
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+
+namespace ConsoleEventLogAutoSearch
+{
+    class Errors
+    {
+        private static List<string> ErrorsLog = new List<string>();
+        private static string ErrorLogFile = Settings.GET_ErrorLog_Location;
+
+        /// <summary>
+        /// Writes errors to console and log to file in batch at end of program
+        /// </summary>
+        /// <param name="CodeInfo"></param>
+        /// <param name="msg"></param>
+        public static void Log_Error(string CodeInfo, string msg)
+        {
+            string err = DateTime.Now + " : " + CodeInfo + " : " + msg + "\n";
+            ConsoleError(err);
+            ErrorsLog.Add(err);
+            if (ErrorsLog.Count>100)
+            {
+                for ( int x = 0; x > ErrorsLog.Count; ++x)
+                {
+                    WriteErrorsToLog(ErrorsLog.ElementAt(x));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Writes errors to logs ASAP
+        /// </summary>
+        /// <param name="msg"></param>
+        public static void WriteErrorsToLog(string msg)
+        {
+            if (!File.Exists(ErrorLogFile))
+            {
+                using (StreamWriter file = new StreamWriter(ErrorLogFile))
+                {
+                   file.WriteLine(msg);
+                }
+            }
+            else
+            {
+                File.Create(ErrorLogFile).Close();
+                File.AppendAllText(ErrorLogFile, msg);
+            }
+        }
+
+        /// <summary>
+        /// Writes errors to  console only
+        /// </summary>
+        /// <param name="msg"></param>
+        public static void ConsoleError(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(msg);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        private static void DO_If_Log_File()
+        {
+            Settings.GET_ErrorLog_Ready();
+        }
+    }
+}

@@ -1,0 +1,9 @@
+C:\Users\User\documents\visual studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\bin\Debug\ConsoleEventLogAutoSearch.exe.config
+C:\Users\User\documents\visual studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\bin\Debug\ConsoleEventLogAutoSearch.exe
+C:\Users\User\documents\visual studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\bin\Debug\ConsoleEventLogAutoSearch.pdb
+C:\Users\User\documents\visual studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\obj\Debug\ConsoleEventLogAutoSearch.exe
+C:\Users\User\documents\visual studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\obj\Debug\ConsoleEventLogAutoSearch.pdb
+C:\Users\User\documents\visual studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\obj\Debug\ConsoleEventLogAutoSearch.csprojResolveAssemblyReference.cache
+C:\Users\User\Documents\Visual Studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\bin\Debug\System.Management.Automation.dll
+C:\Users\User\Documents\Visual Studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\bin\Debug\ConsoleEventLogAutoSearch.exe.CodeAnalysisLog.xml
+C:\Users\User\Documents\Visual Studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\bin\Debug\ConsoleEventLogAutoSearch.exe.lastcodeanalysissucceeded
