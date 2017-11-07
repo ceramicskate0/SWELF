@@ -1,6 +1,0 @@
-C:\Users\User\documents\visual studio 2017\Projects\EventLogAutoSearch\EventLogAutoSearch\bin\Debug\EventLogAutoSearch.exe.config
-C:\Users\User\documents\visual studio 2017\Projects\EventLogAutoSearch\EventLogAutoSearch\bin\Debug\EventLogAutoSearch.exe
-C:\Users\User\documents\visual studio 2017\Projects\EventLogAutoSearch\EventLogAutoSearch\bin\Debug\EventLogAutoSearch.pdb
-C:\Users\User\documents\visual studio 2017\Projects\EventLogAutoSearch\EventLogAutoSearch\obj\Debug\EventLogAutoSearch.csprojResolveAssemblyReference.cache
-C:\Users\User\documents\visual studio 2017\Projects\EventLogAutoSearch\EventLogAutoSearch\obj\Debug\EventLogAutoSearch.exe
-C:\Users\User\documents\visual studio 2017\Projects\EventLogAutoSearch\EventLogAutoSearch\obj\Debug\EventLogAutoSearch.pdb
