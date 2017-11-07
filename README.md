@@ -56,11 +56,13 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 ##  ConsoleAppConfig.conf
   
       Log_Collector={IPv4 of place to send xml of eventlog over port 514}
+      outputformat={either xml,raw,xml}
     
 --------------------------------------------------------------------------------
      example(Send Data): Log_Collector=127.0.0.1
      example(Dont Send Data): Log_Collector=
      example(Dont Send Data): 
+     example: outputformat=syslog
 --------------------------------------------------------------------------------
 
 ## C:\ ..\Searchs\Search.txt
