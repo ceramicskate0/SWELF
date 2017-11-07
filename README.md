@@ -56,7 +56,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 ##  ConsoleAppConfig.conf
   
       Log_Collector={IPv4 of place to send some form of eventlog over port 514}
-      outputformat={"xml" or "raw" or "xml"}
+      outputformat={"xml" or "raw" or "syslog"}
     
 --------------------------------------------------------------------------------
      example(Send Data): Log_Collector=127.0.0.1
