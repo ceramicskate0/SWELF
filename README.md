@@ -8,7 +8,7 @@ Pre-Alpha release of a simple for almost anyone windows event log forwarding age
 - Remember that the event log for the app will need enough space to store logs from all the sources your searching. This will be important if you want to forward logs and the device is often off the network that the destinaiton is on.
 - App will require rights for (Admin on local machine is recommended):
     - Read/Write/Create Windows Eventlog. 
-    - Write to its CWD. 
+    - Write to its needed files to the directory the app is loacted at when run. 
     - Execute. 
     - Send Log data over 514/UDP to IP in config file you specify.
     - Read from disk and any location on local machine you want it to.
