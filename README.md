@@ -55,7 +55,7 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 ##  ConsoleAppConfig.conf
   
-      Log_Collector={IPv4 of place to send xml of eventlog over port 514}
+      Log_Collector={IPv4 of place to send some form of eventlog over port 514}
       outputformat={either xml,raw,xml}
     
 --------------------------------------------------------------------------------
@@ -111,8 +111,6 @@ Currenlty its in "testing" and Dev on my local machine. BUT whats being made pub
 
 # TODO:
 - GUI for config of app so its easy to manage settings , get notifications on desktop , and get alerts for findings in GUI
-
-- Network output in more than raw eventlog xml (ie Syslog)
 
 - Plugin to Powershell (Gonna be key word search for script output)
 
