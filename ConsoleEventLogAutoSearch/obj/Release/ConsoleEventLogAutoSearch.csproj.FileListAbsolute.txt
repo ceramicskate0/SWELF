@@ -1,6 +1,0 @@
-C:\Users\User\Documents\Visual Studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\bin\Release\ConsoleEventLogAutoSearch.exe.config
-C:\Users\User\Documents\Visual Studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\bin\Release\ConsoleEventLogAutoSearch.exe
-C:\Users\User\Documents\Visual Studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\bin\Release\ConsoleEventLogAutoSearch.pdb
-C:\Users\User\Documents\Visual Studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\bin\Release\System.Management.Automation.dll
-C:\Users\User\Documents\Visual Studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\obj\Release\ConsoleEventLogAutoSearch.exe
-C:\Users\User\Documents\Visual Studio 2017\Projects\EventLogAutoSearch\ConsoleEventLogAutoSearch\obj\Release\ConsoleEventLogAutoSearch.pdb
