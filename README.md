@@ -21,7 +21,7 @@ Alpha release of a simple for almost anyone windows event log forwarding agent. 
 
 # Configuration and Usage Syntax:
 ## C:\ ..\Config\
-  ### How to:
+  
 ##  DirectoriesToMonitor.conf
   
       Place path to a directory to monitor (it will monitor all files of type .txt and .log only).
