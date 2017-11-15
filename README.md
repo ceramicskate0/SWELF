@@ -109,20 +109,4 @@ Alpha release of a simple for almost anyone windows event log forwarding agent. 
      
 --------------------------------------------------------------------------------
 
-# TODO:
-- GUI for config of app so its easy to manage settings , get notifications on desktop , and get alerts for findings in GUI
-
-- Plugin to Powershell (Gonna be key word search for script output)
-
-- Make service
-
-- Create installer
-
-- Multi Thread application
-
-- Search Sysmon hash and IP on Virustotal 
-
-- Extract IP and File Hash's in app algo, deal with config issues to turn features on and off, what to do with log data, and pull from more than sysmon log type
-
-- Expand API class
 
