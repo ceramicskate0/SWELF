@@ -22,7 +22,6 @@ namespace ConsoleEventLogAutoSearch
         public static void Log_Error(string CodeInfo, string msg)
         {
             string err = DateTime.Now + " : " + CodeInfo + " : " + msg + "\n";
-            ConsoleError(err);
             ErrorsLog.Add(err);
             if (ErrorsLog.Count>100)
             {
@@ -51,6 +50,8 @@ namespace ConsoleEventLogAutoSearch
                 File.Create(ErrorLogFile).Close();
                 File.AppendAllText(ErrorLogFile, msg);
             }
+            Settings.ADD_Eventlog_to_CriticalEvents(msg, "SWELF App Error");
+            HostEventLogAgent_Eventlog.WRITE_All_App_EventLog(Settings.CriticalEvents);
         }
 
         /// <summary>

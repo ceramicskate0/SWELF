@@ -278,19 +278,19 @@ namespace ConsoleEventLogAutoSearch
 
         private static string WRITE_Default_ConsoleAppConfig_File()
         {
-            string log = "#Must Be IPV4 \nLog_Collector=127.0.0.1\n#raw,syslog,xml\noutputformat=xml";
+            string log = "#Must Be IPV4 \nLog_Collector=127.0.0.1\n#syslogxml,syslog,xml,data\noutputformat=syslog";
             return log;
         }
 
         private static string WRITE_Default_Eventlog_with_PlaceKeeper_File()
         {
-            string log= "#LOG NAME,START AT INDEX(1 if unknown) \nMicrosoft-Windows-PowerShell/Operational=1 \nWindows PowerShell=1 \nMicrosoft-Windows-WMI-Activity/Operational=1 \nMicrosoft-Windows-Sysmon/Operational=1 \nSecurity=1";
+            string log= "#LOG NAME,START AT INDEX(1 if unknown)\nMicrosoft-Windows-PowerShell/Operational=1\nWindows PowerShell=1\nMicrosoft-Windows-WMI-Activity/Operational=1\nMicrosoft-Windows-Sysmon/Operational=1\nSecurity=1\n";
             return log;
         }
 
         private static string WRITE_Default_Search_File()
         {
-            string log = "#SearchTerm,EventLogName,EventID";
+            string log = "#SearchTerm,EventLogName,EventID\ncmd.exe\npowershell.exe\ncsc.exe\ncleared\niex\nwebclient\n";
             return log;
         }
 

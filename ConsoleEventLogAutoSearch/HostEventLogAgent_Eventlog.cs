@@ -38,9 +38,9 @@ namespace ConsoleEventLogAutoSearch
 
         public static void WRITE_All_App_EventLog(Queue<EventLogEntry> Logs)
         {
-            for (int x=0;x<Logs.Count;++x)
+            while (Logs.Count>0)
             {
-                WRITE_Critical_EventLog(Logs.ElementAt(x).EventData);
+                WRITE_Critical_EventLog(Logs.Dequeue().EventData);
             }
         }
     }

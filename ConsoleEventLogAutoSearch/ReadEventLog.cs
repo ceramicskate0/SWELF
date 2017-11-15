@@ -59,7 +59,7 @@ namespace ConsoleEventLogAutoSearch
                 {
                     EVTlog_PlaceHolder = First_EventID;
                     READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder, EventLogFileName);
-                    HostEventLogAgent_Eventlog.WRITE_Warning_EventLog("Missed all logs from "+ Eventlog_FullName+"possible first run or no search items to find.");
+                    HostEventLogAgent_Eventlog.WRITE_Warning_EventLog("Missed all logs from "+ Eventlog_FullName+" possible first run or no search items to find in search config.");
                     Settings.EventLog_w_PlaceKeeper[Eventlog_FullName.ToLower()] = Last_EventID;
                 }
                 else//unknown condition assume 1st run
@@ -86,11 +86,9 @@ namespace ConsoleEventLogAutoSearch
 
                 for (int z = 0; z < FilePaths.Count; ++z)
                 {
-                    if (File.Exists(FilePaths.ElementAt(z)))
-                    {
-                        string[] FileContent = File.ReadAllLines(FilePaths.ElementAt(z));
-                        FileContents_From_FileReads.AddRange(FileContent.ToList());
-                    }
+                    string FileContent = File.ReadAllText(FilePaths.ElementAt(z));
+                    File.Delete(FilePaths.ElementAt(z));
+                    FileContents_From_FileReads.Add(FileContent);
                 }
             }
             catch (Exception e)
@@ -104,24 +102,61 @@ namespace ConsoleEventLogAutoSearch
             try
             {
                 List<string> DirPaths = File.ReadAllLines(Settings.GET_DirToMonitor_Path()).ToList();
-
                 for (int z = 0; z < DirPaths.Count; ++z)
                 {
                     if (Directory.Exists(DirPaths.ElementAt(z)))
                     {
-                        string[] FilePaths = Directory.GetFiles(DirPaths.ElementAt(z));
-
-                        for (int x = 0; x < FilePaths.Length-1; ++x)
+                        if (DirPaths.ElementAt(z).ToLower().Contains("powershell") || DirPaths.ElementAt(z).ToLower().Contains("iis"))
                         {
-                            if (File.Exists(FilePaths.ElementAt(x)) && (FilePaths.ElementAt(x).Contains(".txt") || FilePaths.ElementAt(x).Contains(".log")))
+                            READ_Local_Log_Dirs_for_Powershell_or_IIS(DirPaths.ElementAt(z));
+                        }
+                        else
+                        {
+                            string[] FilePaths = Directory.GetFiles(DirPaths.ElementAt(z));
+
+                            for (int x = 0; x < FilePaths.Length - 1; ++x)
                             {
-                                string[] FileContent = File.ReadAllLines(FilePaths.ElementAt(x));
-                                FileContents_From_FileReads.AddRange(FileContent.ToList());
+                                if (File.Exists(FilePaths.ElementAt(x)) && (FilePaths.ElementAt(x).Contains(".txt") || FilePaths.ElementAt(x).Contains(".log")))
+                                {
+                                    string FileContent = File.ReadAllText(FilePaths.ElementAt(x));
+                                    File.Delete(FilePaths.ElementAt(x));
+                                    FileContents_From_FileReads.Add(FileContent);
+                                }
                             }
                         }
                     }
                 }
 
+            }
+            catch (Exception e)
+            {
+                Errors.Log_Error("READ_Local_Log_Dirs() ERROR: ", e.Message.ToString());
+            }
+        }
+
+        private void READ_Local_Log_Dirs_for_Powershell_or_IIS(string directory)
+        {
+            try
+            {
+                    if (Directory.Exists(directory))
+                    {
+                        string[] SubDirs = Directory.GetDirectories(directory);
+
+                        for (int x = 0; x < SubDirs.Length; ++x)
+                        {
+                            string[] FilePaths = Directory.GetFiles(SubDirs[x]);
+
+                            for (int c = 0; c < FilePaths.Length; ++c)
+                            {
+                                if (FilePaths[c].Contains(".txt") && (FilePaths[c].ToLower().Contains("powershell_transcript.")|| FilePaths[c].ToLower().Contains("iis")))
+                                {
+                                    string FileContent = File.ReadAllText(FilePaths.ElementAt(c));
+                                    File.Delete(FilePaths.ElementAt(c));
+                                    FileContents_From_FileReads.Add(FileContent);
+                                }
+                            }
+                        }
+                    }
             }
             catch (Exception e)
             {
@@ -135,7 +170,7 @@ namespace ConsoleEventLogAutoSearch
             EventLogReader EventLogtoReader = new EventLogReader(eventsQuery);
             while (GET_EventLogEntry_From_API(EventLogtoReader) != null)
             {
-                    INDEX_Record_FROM_API(EventLogFileName, Windows_EventLog_API, EventRecordID);
+               INDEX_Record_FROM_API(EventLogFileName, Windows_EventLog_API, EventRecordID);
             }
             MissingLogInFileDueToException = false;
         }
@@ -190,9 +225,9 @@ namespace ConsoleEventLogAutoSearch
             if (EVE.EventLog_Seq_num != ELF.ID_EVENTLOG + 1 && ELF.EventlogMissing == false && ELF.ID_EVENTLOG != 0)
             {
                 ELF.EventlogMissing = true;
-                string ALert = "Logs on " + EVE.ComputerName + " under Event Log name " + EVE.LogName + " near event id " + EVE.EventRecordID.ToString() + " found eventlogs missing.";
-                Errors.WriteErrorsToLog(ALert);
-                Settings.ADD_Eventlog_to_CriticalEvents(ALert, "Missing Event Log");
+                string Alert = "Logs on " + EVE.ComputerName + " under Event Log name " + EVE.LogName + " near event id " + EVE.EventRecordID.ToString() + " found eventlogs missing.";
+                Errors.WriteErrorsToLog(Alert);
+                Settings.ADD_Eventlog_to_CriticalEvents(Alert, "Missing Event Log");
                 return true;
             }
             else
