@@ -1,0 +1,2 @@
+﻿#LOG NAME,START AT
+Microsoft-Windows-PowerShell/Operational=1

@@ -48,21 +48,13 @@ namespace ConsoleEventLogAutoSearch
             else
             {
                 File.Create(ErrorLogFile).Close();
-                File.AppendAllText(ErrorLogFile, msg);
+                using (StreamWriter file = new StreamWriter(ErrorLogFile))
+                {
+                    file.WriteLine(msg);
+                }
             }
             Settings.ADD_Eventlog_to_CriticalEvents(msg, "SWELF App Error");
             HostEventLogAgent_Eventlog.WRITE_All_App_EventLog(Settings.CriticalEvents);
-        }
-
-        /// <summary>
-        /// Writes errors to  console only
-        /// </summary>
-        /// <param name="msg"></param>
-        public static void ConsoleError(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(msg);
-            Console.ForegroundColor = ConsoleColor.White;
         }
 
         private static void DO_If_Log_File()

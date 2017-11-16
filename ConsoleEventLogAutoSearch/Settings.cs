@@ -35,7 +35,7 @@ namespace ConsoleEventLogAutoSearch
 
         public static string Virus_Total_API_Key = "";
 
-        private static string WHELA_EventLog_Name = "WHELA_Events_of_Interest";
+        private static string WHELA_EventLog_Name = "SWELF_Events_of_Interest";
 
         public static EventLog EvtLog = new EventLog();
 
@@ -257,7 +257,7 @@ namespace ConsoleEventLogAutoSearch
         {
             if (!EventLog.SourceExists(WHELA_EventLog_Name))
             {
-                EventLog.CreateEventSource("WHELA", WHELA_EventLog_Name);
+                EventLog.CreateEventSource("SWELF", WHELA_EventLog_Name);
                 EvtLog.Source = WHELA_EventLog_Name;
             }
             else

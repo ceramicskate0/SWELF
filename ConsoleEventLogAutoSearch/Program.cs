@@ -58,7 +58,7 @@ namespace ConsoleEventLogAutoSearch
                     }
                     try
                     {
-                        if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == true||String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)//Does admin want to send off logs?
+                        if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == false && String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)//Does admin want to send off logs?
                         {
                             for (int x = 0; x < EvntLogSearch.EventLog_Log_File.EventLogs_From_WindowsAPI.Count; ++x)
                             {
@@ -68,7 +68,7 @@ namespace ConsoleEventLogAutoSearch
                     }
                     catch (Exception e)//network resource unavailable. Dont send data and try again next run. No logs will be queued by app only re read
                     {
-                        Errors.Log_Error("NETWORK ERROR: ", e.Message.ToString());
+                        Errors.Log_Error("SWELF NETWORK ERROR: ", e.Message.ToString());
                     }
                     Settings.UPDATE_EventLog_w_PlaceKeeper_File();
                 }
@@ -77,7 +77,7 @@ namespace ConsoleEventLogAutoSearch
                 EvntLogSearch.READ_Local_Log_Dirs();
                 try
                 {
-                    if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == true || String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)//Does admin want to send off logs?
+                    if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == false && String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)//Does admin want to send off logs?
                     {
                         for (int z = 0; z < EvntLogSearch.FileContents_From_FileReads.Count; ++z)//send data from local log files to network resource
                         {
@@ -93,7 +93,7 @@ namespace ConsoleEventLogAutoSearch
             }
             catch (Exception e)//WTF HAPPENED??!?!?!?!
             {
-                Errors.Log_Error("MAIN() ERROR: ", e.Message.ToString() + ", Also the app died");
+                Errors.Log_Error("SWELF MAIN() ERROR: ", e.Message.ToString() + ", Also the app died");
             }
             GC.Collect();
             Environment.Exit(0);
