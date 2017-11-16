@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="UTF-16"?>
+<?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
   <RegistrationInfo>
     <Date>2017-11-09T01:34:12.5938438</Date>
-    <Author>{UR MACHINE NAME}</Author>
+    <Author>{YOUR USER ACCOUNT}</Author>
     <URI>\Run SWELF</URI>
   </RegistrationInfo>
   <Triggers>
@@ -22,7 +22,8 @@
   </Triggers>
   <Principals>
     <Principal id="Author">
-      <UserId>{YOUR SID}</UserId>
+      <UserId>{YOUR MACHINE SSID}</UserId>
+      <LogonType>InteractiveToken</LogonType>
       <RunLevel>HighestAvailable</RunLevel>
     </Principal>
   </Principals>
@@ -50,6 +51,7 @@
   <Actions Context="Author">
     <Exec>
       <Command>"C:\Program Files (x86)\SWELF\ConsoleEventLogAutoSearch.exe"</Command>
+      <WorkingDirectory>C:\Program Files (x86)\SWELF</WorkingDirectory>
     </Exec>
   </Actions>
 </Task>
