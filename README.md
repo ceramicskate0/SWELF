@@ -1,5 +1,6 @@
 # Simple-Windows-Event-Log-Forwarder (SWELF)
 Alpha release of a simple for almost anyone windows event log forwarding agent. This mean bugs are likely and it could cause issues on a machine its run on. Currently testing on windows 10. App is designed to be run as a scheduled task.
+If your worried about this being malware ive taken the liberty of having it check for you on virustotal. https://www.virustotal.com/#/file/7170e94b1b1608167c56b3f9f19a8651141d8d4e51f02c7aae4f34a1b2b5d7b8/detection
 
 
 # App Usage Info:
