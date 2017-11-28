@@ -1,4 +1,4 @@
-﻿//Written by Ceramicskate0
+//Written by Ceramicskate0
 //Copyright 2017
 using System;
 using System.Collections.Generic;
@@ -13,40 +13,22 @@ namespace ConsoleEventLogAutoSearch
 {
     class Network_Forwarder
     {
-        private static UdpClient UDP_Packet_Sender_Method1 = new UdpClient(Settings.GET_LogCollector_Location().ToString() , Settings.LogForwardLocation_Port);
-        private static IPEndPoint UDP_Packet_Sender_Method2 = new IPEndPoint(Settings.GET_LogCollector_Location() , Settings.LogForwardLocation_Port);
-        private static Socket LogForward_Location_OBJ = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        private static UdpClient UDP_Packet_Sender_Method = new UdpClient(Settings.GET_LogCollector_Location().ToString() , Settings.LogForwardLocation_Port);
         private static string EncodedString = "";
-        private static Byte[] ByteData;
+
+        private static IPEndPoint UDPClient = new IPEndPoint(Settings.GET_LogCollector_Location(), Settings.LogForwardLocation_Port);
+        private static Socket SocClinet = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
         public static void SEND_Data_from_Eventlogs(EventLogEntry Data)
         {
-           ByteData = Encoding.UTF8.GetBytes(GET_Log_OutputFormat(Data));
-           UDP_Packet_Sender_Method1.Send(ByteData, ByteData.Length);
+            byte[] ByteData = Encoding.ASCII.GetBytes(GET_Log_OutputFormat(Data));
+            SocClinet.SendTo(ByteData, UDPClient);
         }
 
         public static void SEND_Data_from_File(string Data)
         {
-            ByteData = Encoding.UTF8.GetBytes(Data);
-            UDP_Packet_Sender_Method1.Send(ByteData, ByteData.Length);
-        }
-        public static void BUFFER_Data(EventLogEntry Data)
-        {
-            int MaxLength= 999999999;
-            string EncodedStringTMP = Convert.ToBase64String(Encoding.UTF8.GetBytes(GET_Log_OutputFormat(Data)));
-
-            if (EncodedString.Length <= MaxLength && MaxLength < EncodedStringTMP.Length + EncodedString.Length)
-            {
-                EncodedString += EncodedStringTMP;
-            }
-            else
-            {
-                EncodedString += EncodedStringTMP;
-                ByteData = Convert.FromBase64String(EncodedStringTMP).ToArray<Byte>();
-                string converted = Encoding.UTF8.GetString(ByteData);
-                SEND_Data_from_File(converted);
-                EncodedString = "";
-            }
+            byte[] ByteData = Encoding.ASCII.GetBytes(Data);
+            SocClinet.SendTo(ByteData, UDPClient);
         }
 
         private static string GET_Log_OutputFormat(EventLogEntry data)
