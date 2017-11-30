@@ -51,25 +51,6 @@ namespace ConsoleEventLogAutoSearch
             }
         }
 
-        public static void BUFFER_Data(EventLogEntry Data)
-        {
-            int MaxLength= 999999999;
-            string EncodedStringTMP = Convert.ToBase64String(Encoding.UTF8.GetBytes(GET_Log_OutputFormat(Data)));
-
-            if (BufferedString.Length <= MaxLength && MaxLength < EncodedStringTMP.Length + BufferedString.Length)
-            {
-                BufferedString += EncodedStringTMP;
-            }
-            else
-            {
-                BufferedString += EncodedStringTMP;
-                byte[] ByteData = Convert.FromBase64String(EncodedStringTMP).ToArray<Byte>();
-                string converted = Encoding.ASCII.GetString(ByteData);
-                SEND_Data_from_File(converted);
-                BufferedString = "";
-            }
-        }
-
         private static string GET_Log_OutputFormat(EventLogEntry data)
         {
             string format=Settings.Args["outputformat"];
