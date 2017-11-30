@@ -13,52 +13,98 @@ namespace ConsoleEventLogAutoSearch
 {
     class Network_Forwarder
     {
-        private static UdpClient UDP_Packet_Sender_Method = new UdpClient(Settings.GET_LogCollector_Location().ToString() , Settings.LogForwardLocation_Port);
-        private static string EncodedString = "";
+        private static string BufferedString = "";
+        private static IPAddress IPAddr = Settings.GET_LogCollector_Location().MapToIPv4();
+        private static int port = Settings.LogForwardLocation_Port;
 
-        private static IPEndPoint UDPClient = new IPEndPoint(Settings.GET_LogCollector_Location(), Settings.LogForwardLocation_Port);
-        private static Socket SocClinet = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-        public static void SEND_Data_from_Eventlogs(EventLogEntry Data)
+        public static void SEND_Eventlogs(EventLogEntry Data)
         {
-            byte[] ByteData = Encoding.ASCII.GetBytes(GET_Log_OutputFormat(Data));
-            SocClinet.SendTo(ByteData, UDPClient);
+            UdpClient udpClient = new UdpClient(11000);
+            try
+            {
+                udpClient.Connect(IPAddr.MapToIPv4().ToString(), port);
+                Byte[] sendBytes = Encoding.ASCII.GetBytes(GET_Log_OutputFormat(Data));
+                udpClient.Send(sendBytes, sendBytes.Length);
+                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                udpClient.Close();
+            }
+            catch (Exception e)
+            {
+                Errors.Log_Error("SWELF NETWORK ERROR: ", e.Message.ToString());
+            }
         }
 
         public static void SEND_Data_from_File(string Data)
         {
-            byte[] ByteData = Encoding.ASCII.GetBytes(Data);
-            SocClinet.SendTo(ByteData, UDPClient);
+            UdpClient udpClient = new UdpClient(11001);
+            try
+            {
+                udpClient.Connect(IPAddr.MapToIPv4().ToString(), port);
+                Byte[] sendBytes = Encoding.ASCII.GetBytes(Data);
+                udpClient.Send(sendBytes, sendBytes.Length);
+                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                udpClient.Close();
+            }
+            catch (Exception e)
+            {
+                Errors.Log_Error("SWELF NETWORK ERROR: ", e.Message.ToString());
+            }
+        }
+
+        public static void BUFFER_Data(EventLogEntry Data)
+        {
+            int MaxLength= 999999999;
+            string EncodedStringTMP = Convert.ToBase64String(Encoding.UTF8.GetBytes(GET_Log_OutputFormat(Data)));
+
+            if (BufferedString.Length <= MaxLength && MaxLength < EncodedStringTMP.Length + BufferedString.Length)
+            {
+                BufferedString += EncodedStringTMP;
+            }
+            else
+            {
+                BufferedString += EncodedStringTMP;
+                byte[] ByteData = Convert.FromBase64String(EncodedStringTMP).ToArray<Byte>();
+                string converted = Encoding.ASCII.GetString(ByteData);
+                SEND_Data_from_File(converted);
+                BufferedString = "";
+            }
         }
 
         private static string GET_Log_OutputFormat(EventLogEntry data)
         {
             string format=Settings.Args["outputformat"];
+            string thing;
             switch (format.ToLower())
             {
                 case  "data":
                     {
-                        return data.EventData;
+                        thing = data.EventData;
+                        break;
                     }
                 case "syslog":
                     {
-                        return DateTime.Now.ToString("MMM dd HH:mm:ss") + " Syslog " +  data.Severity + " " + data.ComputerName + " SWELF " + data.EventData;
+                        thing= DateTime.Now.ToString("MMM dd HH:mm:ss") + " Syslog " +  data.Severity + " " + data.ComputerName + " SWELF   " + data.EventData;
+                        break;
 
                     }
                 case "syslogxml":
                     {
-                        return DateTime.Now.ToString("MMM dd HH:mm:ss") + " Syslog " + data.Severity + " " + data.ComputerName + " SWELF " + data.GET_XML_of_Log;
+                        thing = DateTime.Now.ToString("MMM dd HH:mm:ss") + " Syslog " + data.Severity + " " + data.ComputerName + " SWELF   " + data.GET_XML_of_Log;
+                        break;
 
                     }
                 case "xml":
                     {
-                        return data.GET_XML_of_Log;
+                        thing = data.GET_XML_of_Log;
+                        break;
                     }
                 default:
                     {
-                        return data.EventData;
+                        thing = data.EventData;
+                        break;
                     }
             }
-        }
+            return thing;
+        }       
     }
 }
