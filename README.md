@@ -25,7 +25,6 @@ Log Collection Platforms or SIEMs:
     
     - Splunk (Needs more testing as of 11/30/17)
     
-    - AlienVault (Needs more testing as of 11/30/17)
     
 # Sidenote:
 - If your using Sysmon and want a starting point for a config file there is a 1 size fits all config file at https://github.com/SwiftOnSecurity/sysmon-config. I also maintain a fork at https://github.com/ceramicskate0/sysmon-config. There is also a good one here https://github.com/ion-storm/sysmon-config.
