@@ -34,6 +34,13 @@ If your worried about this being malware ive taken the liberty of having it chec
 I also recommend running it in a sandbox of your choice before letting run in your enviorment (just a recomendation from a security person). There is no eviormental detection code in the app , anti vm/detection, or any kill commands in the code. 
 
 
+
+
+
+
+
+
+
 # Knowledge Base Stuff:
 
 ## Configuration and Usage Syntax:
