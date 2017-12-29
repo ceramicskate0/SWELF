@@ -1,7 +1,6 @@
 # Simple-Windows-Event-Log-Forwarder (SWELF)
-Now Beta release of a simple for almost anyone windows event log forwarding agent. This mean bugs may exist and it could cause issues on a machine (but its unlikely) its run on. Currently testing on windows 10. App is designed to be run as a scheduled task for now.
-If your worried about this being malware ive taken the liberty of having it check for you on virustotal. https://www.virustotal.com/#/file/7170e94b1b1608167c56b3f9f19a8651141d8d4e51f02c7aae4f34a1b2b5d7b8/detection
-
+Now in early release. SWELF is designed to be a simple for almost anyone to use windows event log forwarding agent. This mean bugs may exist and it could cause issues on a machine its run on (but its unlikely. Issue like app crash failed task). This app is a log forwarder and log searching (both eventlog and local log) app. 
+Soon (as in not right now) it will have the ablility to intigrate with powershell to allow users to build plugins that the app can use to expand its capability. For example, it could run scripts awesome scripts like https://github.com/sans-blue-team/DeepBlueCLI or https://github.com/danielbohannon/Revoke-Obfuscation (this one will need a little scripting on your end since its a powershell module not a script file) and use their output to create logs to send to your SIEM. This would mean that processing of the logs takes place at the endpoint not the SIEM.
 
 # App Usage Info:
 - Reserved characters are , : =
@@ -17,7 +16,10 @@ If your worried about this being malware ive taken the liberty of having it chec
         - Powershell.exe
         - Itself
         
-# SWELF tested on the following Log Collection Platforms or SIEM:
+# SWELF Testing:
+Currently testing on windows 10 with confiured Device Guard/app whitelisting, UAC, HIDS, locked down powershell configuration, EMET, and AV. App is designed to be run as a scheduled task for now. Im taking recommendations via issues just label as enhancements for design, UI, source code, and features.
+
+Log Collection Platforms or SIEMs:
     - Kibana/ELK
     - Splunk (Needs more testing as of 11/30/17)
     - AlienVault (Needs more testing as of 11/30/17)
@@ -25,7 +27,16 @@ If your worried about this being malware ive taken the liberty of having it chec
 # Sidenote:
 - If your using Sysmon and want a starting point for a config file there is a 1 size fits all config file at https://github.com/SwiftOnSecurity/sysmon-config. I also maintain a fork at https://github.com/ceramicskate0/sysmon-config. There is also a good one here https://github.com/ion-storm/sysmon-config.
 
+# Security Concerns
+If your worried about this being malware ive taken the liberty of having it check for you on virustotal. https://www.virustotal.com/#/file/7170e94b1b1608167c56b3f9f19a8651141d8d4e51f02c7aae4f34a1b2b5d7b8/detection.
+I also recommend running it in a sandbox of your choice before letting run in your enviorment (just a recomendation from a security person). There is no eviormental detection code in the app , anti vm/detection, or any kill commands in the code (unless its missing config files). 
+
+----------------------------------------------------------------------------------------------------------------------------------------
+# Knowledge Base Stuff:
+
+
 # Configuration and Usage Syntax:
+
 ## C:\ ..\Config\
   
 ##  DirectoriesToMonitor.conf
