@@ -33,11 +33,10 @@ Log Collection Platforms or SIEMs:
 If your worried about this being malware ive taken the liberty of having it check for you on virustotal. https://www.virustotal.com/#/file/7170e94b1b1608167c56b3f9f19a8651141d8d4e51f02c7aae4f34a1b2b5d7b8/detection.
 I also recommend running it in a sandbox of your choice before letting run in your enviorment (just a recomendation from a security person). There is no eviormental detection code in the app , anti vm/detection, or any kill commands in the code. 
 
-----------------------------------------------------------------------------------------------------------------------------------------
+
 # Knowledge Base Stuff:
 
-
-# Configuration and Usage Syntax:
+## Configuration and Usage Syntax:
 
 ## C:\ ..\Config\
   
