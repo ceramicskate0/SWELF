@@ -20,8 +20,11 @@ Soon (as in not right now) it will have the ablility to intigrate with powershel
 Currently testing on windows 10 with confiured Device Guard/app whitelisting, UAC, HIDS, locked down powershell configuration, EMET, and AV. App is designed to be run as a scheduled task for now. Im taking recommendations via issues just label as enhancements for design, UI, source code, and features.
 
 Log Collection Platforms or SIEMs:
+
     - Kibana/ELK
+    
     - Splunk (Needs more testing as of 11/30/17)
+    
     - AlienVault (Needs more testing as of 11/30/17)
     
 # Sidenote:
@@ -29,7 +32,7 @@ Log Collection Platforms or SIEMs:
 
 # Security Concerns:
 If your worried about this being malware ive taken the liberty of having it check for you on virustotal. https://www.virustotal.com/#/file/7170e94b1b1608167c56b3f9f19a8651141d8d4e51f02c7aae4f34a1b2b5d7b8/detection.
-I also recommend running it in a sandbox of your choice before letting run in your enviorment (just a recomendation from a security person). There is no eviormental detection code in the app , anti vm/detection, or any kill commands in the code (unless its missing config files). 
+I also recommend running it in a sandbox of your choice before letting run in your enviorment (just a recomendation from a security person). There is no eviormental detection code in the app , anti vm/detection, or any kill commands in the code. 
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 # Knowledge Base Stuff:
