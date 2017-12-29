@@ -27,7 +27,7 @@ Log Collection Platforms or SIEMs:
 # Sidenote:
 - If your using Sysmon and want a starting point for a config file there is a 1 size fits all config file at https://github.com/SwiftOnSecurity/sysmon-config. I also maintain a fork at https://github.com/ceramicskate0/sysmon-config. There is also a good one here https://github.com/ion-storm/sysmon-config.
 
-# Security Concerns
+# Security Concerns:
 If your worried about this being malware ive taken the liberty of having it check for you on virustotal. https://www.virustotal.com/#/file/7170e94b1b1608167c56b3f9f19a8651141d8d4e51f02c7aae4f34a1b2b5d7b8/detection.
 I also recommend running it in a sandbox of your choice before letting run in your enviorment (just a recomendation from a security person). There is no eviormental detection code in the app , anti vm/detection, or any kill commands in the code (unless its missing config files). 
 
