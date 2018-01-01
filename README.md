@@ -72,10 +72,13 @@ I also recommend running it in a sandbox of your choice before letting run in yo
 ##  ConsoleAppConfig.conf
   
       Log_Collector={IPv4 of place to send some form of eventlog over port 514}
+      Log_Collector1-5={IPv4 of place to send some form of eventlog over port 514}
       outputformat={"xml" or "data" or "syslog" or "syslogxml"}
     
 --------------------------------------------------------------------------------
-     example(Send Data): Log_Collector=127.0.0.1
+     example(Send Data): Log_Collector=10.0.0.3
+     example(Send Data): Log_Collector1=10.0.0.1
+     example(Send Data)(max collector number): Log_Collector5=10.0.0.2
      example(Dont Send Data): Log_Collector=
      example(Dont Send Data): 
      example: outputformat=syslog
@@ -86,10 +89,11 @@ I also recommend running it in a sandbox of your choice before letting run in yo
   
      length':'{Minumum log length before its an event}
      count':'{Term or statement to count}':'{Number of times in log before its a counted event}    
-     
+     commandline_length':'{Number of chars in either tagert or parent commandline arguement (it will evaluate the largest one)}
 --------------------------------------------------------------------------------
      example: length:200    
      example: count:;:8
+     example commandline_length:400
 --------------------------------------------------------------------------------  
      
    Any combination of the following as long as they are in order. 
