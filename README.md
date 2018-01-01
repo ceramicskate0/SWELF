@@ -87,11 +87,11 @@ I also recommend running it in a sandbox of your choice before letting run in yo
 ## C:\ ..\Searchs\Search.txt
   ### How to:
   
-     length':'{Minumum chars in eventlog event data section (does this by counting chars in the entire EventData Part of any eventlog)}
+     eventdata_length':'{Minumum chars in eventlog event data section (does this by counting chars in the entire EventData Part of any eventlog)}
      count':'{Term or statement to count}':'{Number of times in log before its a counted event}    
      commandline_length':'{Number of chars in either tagert or parent commandline arguement (it will evaluate the largest one)(Only works for Sysmon Logs)}
 --------------------------------------------------------------------------------
-     example: length:200    
+     example: eventdata_length:200    
      example: count:;:8
      example(Only works for Sysmon Logs): commandline_length:500
 --------------------------------------------------------------------------------  
