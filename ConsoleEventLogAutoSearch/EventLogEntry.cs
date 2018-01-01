@@ -1,4 +1,4 @@
-﻿//Written by Ceramicskate0
+//Written by Ceramicskate0
 //Copyright 2017
 using System;
 using System.Xml;
@@ -33,12 +33,22 @@ namespace ConsoleEventLogAutoSearch
         public string Severity { get; set; }
         public string TaskDisplayName { get; set; }
         public DateTime CreatedTime { get; set; }
+        public static int CommandLineArgLength { get; set; }
+        public static string CommandLineArgs { get; set; }
 
         public string GET_Hash_FromLogFile
         {
             get
             {
                 return GET_FileHash();
+            }
+        }
+
+        public string GET_Sysmon_CommandLineArgs
+        {
+            get
+            {
+                return GET_Sysmon_CMDLineArgs();
             }
         }
 
@@ -64,7 +74,7 @@ namespace ConsoleEventLogAutoSearch
         {
             this.Dispose();
         }
-
+        
         private string GET_FileHash()
         {
             if (EventData.Contains("Hashes: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational"))
@@ -85,5 +95,49 @@ namespace ConsoleEventLogAutoSearch
                 return "";
             }
         }
+
+        private string GET_Sysmon_CMDLineArgs()
+        {
+            string commandLine="";
+            try
+            {
+                if (EventData.Contains("commandline: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational"))
+                {
+                    string data = EventData;
+                    string[] delm1 = { "commandline: ", "currentdirectory: " };
+
+                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+                    if (datA[1].Length>commandLine.Length )
+                    {
+                        commandLine = "Target-CommandLine: " + datA[1];
+                    }
+                }
+
+                if (EventData.Contains("parentcommandline: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational"))
+                {
+                    string data = EventData;
+                    string[] delm1 = { "parentcommandline: ", "" };
+
+                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+                    if ((datA[1].Length + "Target-CommandLine: ".Length) > commandLine.Length)
+                    {
+                        commandLine += "\nParent-CommandLine: " + datA[1];
+                    }
+                }
+                if (commandLine.Length>1)
+                {
+                    commandLine += "\nParent-CommandLine: " ;
+                }
+                CommandLineArgLength = commandLine.Length;
+                CommandLineArgs = commandLine;
+                return commandLine;
+            }
+            catch (Exception e)
+            {
+                return commandLine;
+            }
         }
+    }
     }
