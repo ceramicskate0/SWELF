@@ -1,4 +1,4 @@
-﻿//Written by Ceramicskate0
+//Written by Ceramicskate0
 //Copyright 2017
 using System;
 using System.Linq;
@@ -13,7 +13,6 @@ namespace ConsoleEventLogAutoSearch
     {
         private Dictionary<int, List<EventLogEntry>> EVENTLOG_SEARCH_DATA_MODEL = new Dictionary<int, List<EventLogEntry>>();
         private Queue<EventLogEntry> EventLogs_From_WindowsAPI = new Queue<EventLogEntry>();
-        private static List<string> Unparse_Search_Term = Settings.Searchs_Terms_Unparsed;
         private static List<EventLogEntry> Matchs = new List<EventLogEntry>();
 
         public Search_EventLogs(Queue<EventLogEntry> eventLogs_From_WindowsAPI)
@@ -25,13 +24,13 @@ namespace ConsoleEventLogAutoSearch
         {
             try
             {
-                for (int x = 0; x < Unparse_Search_Term.Count; ++x)
+                for (int x = 0; x < Settings.Logs_Search_Terms_Unparsed.Count; ++x)
                 {
-                    if (Unparse_Search_Term.ElementAt(x).Contains('#') == false)
+                    if (Settings.Logs_Search_Terms_Unparsed.ElementAt(x).Contains('#') == false)
                     {
-                        if (Unparse_Search_Term.ElementAt(x).Contains("count:") || Unparse_Search_Term.ElementAt(x).Contains("length:"))
+                        if (Settings.Logs_Search_Terms_Unparsed.ElementAt(x).Contains("count:") || Settings.Logs_Search_Terms_Unparsed.ElementAt(x).Contains("eventdata_length:") || Settings.Logs_Search_Terms_Unparsed.ElementAt(x).Contains("commandline_length:"))
                         {
-                            SEARCH_Run_Commands(Unparse_Search_Term.ElementAt(x));
+                            SEARCH_Run_Commands(Settings.Logs_Search_Terms_Unparsed.ElementAt(x));
                         }
                         else
                         {
@@ -110,6 +109,14 @@ namespace ConsoleEventLogAutoSearch
             return EventsThatMatchSearch;
         }
 
+        private List<EventLogEntry> SEARCH_Length_Sysmon_CMDLine_Args(int length)
+        {
+            List<EventLogEntry> EventsThatMatchSearch = new List<EventLogEntry>();
+            IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(s => s.GET_Sysmon_CommandLineArgs.ToCharArray().Length >= length).ToList();
+            EventsThatMatchSearch = results.ToList();
+            return EventsThatMatchSearch;
+        }
+
         private void SEARCH_Run_Commands(string xSearch)
         {
             try
@@ -122,9 +129,17 @@ namespace ConsoleEventLogAutoSearch
                             Matchs.AddRange(SEARCH_Counts_in_Log(Searchs[1].ToString(), Convert.ToInt32(Searchs[2])));
                             break;
                         }
-                    case "length":
+                    case "eventdata_length":
                         {
                             Matchs.AddRange(SEARCH_Length_of_LogEntry(Convert.ToInt32(Searchs[1])));
+                            break;
+                        }
+                    case "commandline_length":
+                        {
+                            if (Convert.ToInt32(Searchs[1]) != -1)
+                            {
+                                Matchs.AddRange(SEARCH_Length_Sysmon_CMDLine_Args(Convert.ToInt32(Searchs[1])));
+                            }
                             break;
                         }
                 }
@@ -137,7 +152,7 @@ namespace ConsoleEventLogAutoSearch
 
         private void SEARCH_FindTerms(int x)
         {
-                string[] SearchsArgs = Unparse_Search_Term.ElementAt(x).Split(',').ToArray();
+                string[] SearchsArgs = Settings.Logs_Search_Terms_Unparsed.ElementAt(x).Split(',').ToArray();
                 switch (SearchsArgs.Length)
                 {
                     case 1://search term only
