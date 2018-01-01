@@ -13,8 +13,7 @@ namespace ConsoleEventLogAutoSearch
 {
     class Network_Forwarder
     {
-        private static string BufferedString = "";
-        private static IPAddress IPAddr = Settings.GET_LogCollector_Location().MapToIPv4();
+        private static List<IPAddress> IPAddr = Settings.GET_LogCollector_Location();
         private static int port = Settings.LogForwardLocation_Port;
 
         public static void SEND_Eventlogs(EventLogEntry Data)
@@ -22,15 +21,38 @@ namespace ConsoleEventLogAutoSearch
             UdpClient udpClient = new UdpClient(11000);
             try
             {
-                udpClient.Connect(IPAddr.MapToIPv4().ToString(), port);
-                Byte[] sendBytes = Encoding.ASCII.GetBytes(GET_Log_OutputFormat(Data));
-                udpClient.Send(sendBytes, sendBytes.Length);
-                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                udpClient.Close();
+                for (int x = 0; x < IPAddr.Count; ++x)
+                {
+                    udpClient.Connect(IPAddr.ElementAt(x).MapToIPv4().ToString(), port);
+                    Byte[] sendBytes = Encoding.ASCII.GetBytes(GET_Log_OutputFormat(Data));
+                    udpClient.Send(sendBytes, sendBytes.Length);
+                    IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    udpClient.Close();
+                }
             }
             catch (Exception e)
             {
                 Errors.Log_Error("SWELF NETWORK ERROR: ", e.Message.ToString());
+            }
+        }
+
+        public static void SEND_Log(string Data)
+        {
+            UdpClient udpClient = new UdpClient(11000);
+            try
+            {
+                for (int x = 0; x < IPAddr.Count; ++x)
+                {
+                    udpClient.Connect(IPAddr.ElementAt(x).MapToIPv4().ToString(), port);
+                    Byte[] sendBytes = Encoding.ASCII.GetBytes(Data);
+                    udpClient.Send(sendBytes, sendBytes.Length);
+                    IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    udpClient.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Errors.Log_Error("SWELF SEND_Log ERROR: ", e.Message.ToString());
             }
         }
 
@@ -39,11 +61,14 @@ namespace ConsoleEventLogAutoSearch
             UdpClient udpClient = new UdpClient(11001);
             try
             {
-                udpClient.Connect(IPAddr.MapToIPv4().ToString(), port);
-                Byte[] sendBytes = Encoding.ASCII.GetBytes(Data);
-                udpClient.Send(sendBytes, sendBytes.Length);
-                IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                udpClient.Close();
+                for (int x = 0; x < IPAddr.Count; ++x)
+                {
+                    udpClient.Connect(IPAddr.ElementAt(x).MapToIPv4().ToString(), port);
+                    Byte[] sendBytes = Encoding.ASCII.GetBytes(Data);
+                    udpClient.Send(sendBytes, sendBytes.Length);
+                    IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    udpClient.Close();
+                }
             }
             catch (Exception e)
             {
@@ -87,5 +112,19 @@ namespace ConsoleEventLogAutoSearch
             }
             return thing;
         }       
+
+        private static int FIND_Open_SourcePort()
+        {
+            int startingAtPort = 11000;
+            int maxNumberOfPortsToCheck = 500;
+            var range = Enumerable.Range(startingAtPort, maxNumberOfPortsToCheck);
+            var portsInUse =
+                from p in range
+                join used in System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().GetActiveUdpListeners()
+            on p equals used.Port
+                select p;
+            int FirstFreeUDPPortInRange = range.Except(portsInUse).FirstOrDefault();
+            return FirstFreeUDPPortInRange;
+        }
     }
 }
