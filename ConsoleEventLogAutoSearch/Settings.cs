@@ -1,4 +1,4 @@
-﻿//Written by Ceramicskate0
+//Written by Ceramicskate0
 //Copyright 2017
 using System;
 using System.Collections.Generic;
@@ -8,34 +8,36 @@ using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace ConsoleEventLogAutoSearch
 {
     class Settings
     {
         public static int LogForwardLocation_Port = 514;
+
         public static List<string> EventLogs_ListOfAvaliable = EventLogSession.GlobalSession.GetLogNames().ToList();
         public static Dictionary<string, long> EventLog_w_PlaceKeeper = new Dictionary<string, long>();
         public static List<string> EventLog_w_PlaceKeeper_List = new List<string>();
         public static Dictionary<string, string> Args = new Dictionary<string, string>();//program config arguements
-        public static List<string> Searchs_Terms_Unparsed = new List<string>();
+        public static List<string> Logs_Search_Terms_Unparsed = new List<string>();
         public static Queue<EventLogEntry> CriticalEvents = new Queue<EventLogEntry>();
         private static Dictionary<string, long> EventLog_w_PlaceKeeper_Backup = new Dictionary<string, long>();
 
         private static string Config_File_Location = Directory.GetCurrentDirectory() + "\\Config";
-        private static string Search_File_Location = Directory.GetCurrentDirectory() + "\\Searchs";
-        private static string Log_File_Location = Directory.GetCurrentDirectory() + "\\Logs";
+        private static string Search_File_Location = Directory.GetCurrentDirectory() + "\\Log_Searchs";
+        private static string SWELF_Log_File_Location = Directory.GetCurrentDirectory() + "\\SWELF_Logs";
 
-        private static string ErrorFile = "ErrorLog.log";
+        private static string ErrorFile = "Error_Log.log";
         private static string AppConfigFile = "ConsoleAppConfig.conf";
         private static string EventLogID_PlaceHolder = "Eventlog_with_PlaceKeeper.txt";
-        private static string SearchTerms = "Search.txt";
-        private static string FilesToMonitor = "FilesToMonitor.conf";
-        private static string DirectoriesToMonitor = "DirectoriesToMonitor.conf";
+        private static string SearchTermsFileName = "Searchs.txt";
+        private static string FilesToMonitor = "Files_To_Monitor.conf";
+        private static string DirectoriesToMonitor = "Directories_To_Monitor.conf";
 
         public static string Virus_Total_API_Key = "";
 
-        private static string WHELA_EventLog_Name = "SWELF_Events_of_Interest";
+        private static string SWELF_EventLog_Name = "SWELF_Events_of_Interest";
 
         public static EventLog EvtLog = new EventLog();
 
@@ -44,7 +46,7 @@ namespace ConsoleEventLogAutoSearch
         {
             get
             {
-                return Log_File_Location + "\\" + ErrorFile;
+                return SWELF_Log_File_Location + "\\" + ErrorFile;
             }
         }
 
@@ -68,7 +70,7 @@ namespace ConsoleEventLogAutoSearch
                     if (!ConfgiFileline.Contains("#"))
                     {
                         args = ConfgiFileline.Split('=').ToList();
-                        Args.Add(args.ElementAt(0), args.ElementAt(1));
+                        Args.Add(args.ElementAt(0).ToLower(), args.ElementAt(1).ToLower());
                         args.Clear();
                     }
                 }  
@@ -87,23 +89,47 @@ namespace ConsoleEventLogAutoSearch
             }
         }
 
-        public static IPAddress GET_LogCollector_Location()
+        public static List<IPAddress> GET_LogCollector_Location()
         {
-            IPAddress IPAddr;
-            if (Args.ContainsKey("log_collector")==true && !String.IsNullOrEmpty(Args["log_collector"]))
+            List<IPAddress> IPAddr= new List<IPAddress> ();
+
+            if (Args.ContainsKey("log_collector") ==true && !String.IsNullOrEmpty(Args["log_collector"]))
             {
-                IPAddr = IPAddress.Parse(Args["log_collector"]);
+                IPAddr.Add(IPAddress.Parse(Args["log_collector"]));
             }
-            else
+            if (Args.ContainsKey("log_collector1") == true && !String.IsNullOrEmpty(Args["log_collector1"]))
             {
-                IPAddr = IPAddress.Parse("127.0.0.1");
+                IPAddr.Add(IPAddress.Parse(Args["log_collector1"]));
             }
+            if (Args.ContainsKey("log_collector2") == true && !String.IsNullOrEmpty(Args["log_collector2"]))
+            {
+                IPAddr.Add(IPAddress.Parse(Args["log_collector2"]));
+            }
+            if (Args.ContainsKey("log_collector3") == true && !String.IsNullOrEmpty(Args["log_collector3"]))
+            {
+                IPAddr.Add(IPAddress.Parse(Args["log_collector3"]));
+            }
+            if (Args.ContainsKey("log_collector4") == true && !String.IsNullOrEmpty(Args["log_collector4"]))
+            {
+                IPAddr.Add(IPAddress.Parse(Args["log_collector4"]));
+            }
+            if (Args.ContainsKey("log_collector5") == true && !String.IsNullOrEmpty(Args["log_collector5"]))
+            {
+                IPAddr.Add(IPAddress.Parse(Args["log_collector5"]));
+            }
+
+            if (IPAddr.Count<=0)
+            {
+                IPAddr.Add(IPAddress.Parse("127.0.0.1"));
+            }
+
+            IPAddr=IPAddr.Distinct().ToList();
             return IPAddr;
         }
 
         private static void CHECK_if_all_Search_Terms_have_Indexed_LogsSources()
         {
-            foreach (string SearchLogType in Searchs_Terms_Unparsed)//search terms
+            foreach (string SearchLogType in Logs_Search_Terms_Unparsed)//search terms
             {
                 string[] SearchsArgs = SearchLogType.Split(',').ToArray();
                 bool LogSoucreIsInToBeIndexQueue = false;
@@ -135,15 +161,15 @@ namespace ConsoleEventLogAutoSearch
             try
             {
                 string line;
-                if (!File.Exists(Search_File_Location + "\\" + SearchTerms))
+                if (!File.Exists(Search_File_Location + "\\" + SearchTermsFileName))
                 {
-                    File.Create(Search_File_Location + "\\" + SearchTerms).Close();
-                    File.AppendAllText(Search_File_Location + "\\" + SearchTerms, WRITE_Default_Search_File());
+                    File.Create(Search_File_Location + "\\" + SearchTermsFileName).Close();
+                    File.AppendAllText(Search_File_Location + "\\" + SearchTermsFileName, WRITE_Default_Logs_Search_File());
                 }
-                StreamReader file = new StreamReader(Search_File_Location + "\\" + SearchTerms);
+                StreamReader file = new StreamReader(Search_File_Location + "\\" + SearchTermsFileName);
                 while ((line = file.ReadLine()) != null)
                 {
-                    Searchs_Terms_Unparsed.Add(line.ToLower());
+                    Logs_Search_Terms_Unparsed.Add(line.ToLower());
                 }
                 file.Close();
                 
@@ -154,37 +180,25 @@ namespace ConsoleEventLogAutoSearch
                 {
                     Directory.CreateDirectory(Search_File_Location);
                 }
-                if (!File.Exists(Search_File_Location + "\\" + SearchTerms))
+                if (!File.Exists(Search_File_Location + "\\" + SearchTermsFileName))
                 {
-                    File.Create(Search_File_Location + "\\" + SearchTerms).Close();
+                    File.Create(Search_File_Location + "\\" + SearchTermsFileName).Close();
                 }
-                File.AppendAllText(Search_File_Location + "\\" + SearchTerms, WRITE_Default_Search_File());
+                File.AppendAllText(Search_File_Location + "\\" + SearchTermsFileName, WRITE_Default_Logs_Search_File());
             }
         }
+
 
         public static void GET_ErrorLog_Ready()
         {
-            if (!Directory.Exists(Log_File_Location))
+            if (!Directory.Exists(SWELF_Log_File_Location))
             {
-                Directory.CreateDirectory(Log_File_Location);
+                Directory.CreateDirectory(SWELF_Log_File_Location);
             }
-            if (!File.Exists(Log_File_Location + "\\" + ErrorFile))
+            if (!File.Exists(SWELF_Log_File_Location + "\\" + ErrorFile))
             {
-                File.Create(Log_File_Location + "\\" + ErrorFile).Close();
+                File.Create(SWELF_Log_File_Location + "\\" + ErrorFile).Close();
             }
-        }
-
-        public static string GET_FilesToMonitor_Path()
-        {
-            if (!Directory.Exists(Config_File_Location))
-            {
-                Directory.CreateDirectory(Config_File_Location);
-            }
-            if (!File.Exists(Config_File_Location + "\\" + FilesToMonitor))
-            {
-                File.Create(Config_File_Location + "\\" + FilesToMonitor).Close();
-            }
-            return Config_File_Location + "\\" + FilesToMonitor;
         }
 
         public static string GET_DirToMonitor_Path()
@@ -255,14 +269,22 @@ namespace ConsoleEventLogAutoSearch
 
         private static void SET_WindowsEventLog_Loc()
         {
-            if (!EventLog.SourceExists(WHELA_EventLog_Name))
+            try
             {
-                EventLog.CreateEventSource("SWELF", WHELA_EventLog_Name);
-                EvtLog.Source = WHELA_EventLog_Name;
+                if (!EventLog.SourceExists(SWELF_EventLog_Name))
+                {
+                    EventLog.CreateEventSource("SWELF", SWELF_EventLog_Name);
+                    EvtLog.Source = SWELF_EventLog_Name;
+                }
+                else
+                {
+                    EvtLog.Source = SWELF_EventLog_Name;
+                }
             }
-            else
+            catch
             {
-                EvtLog.Source = WHELA_EventLog_Name;
+                EventLog.CreateEventSource("SWELF", SWELF_EventLog_Name);
+                EvtLog.Source = SWELF_EventLog_Name;
             }
         }
 
@@ -278,26 +300,32 @@ namespace ConsoleEventLogAutoSearch
 
         private static string WRITE_Default_ConsoleAppConfig_File()
         {
-            string log = "#Must Be IPV4 \nLog_Collector=127.0.0.1\n#syslogxml,syslog,xml,data\noutputformat=syslog";
+            string log = "#Must Be IPV4 \nlog_collector=127.0.0.1\n#syslogxml,syslog,xml,data\noutputformat=syslog";
             return log;
         }
 
         private static string WRITE_Default_Eventlog_with_PlaceKeeper_File()
         {
-            string log= "#LOG NAME,START AT INDEX(1 if unknown)\nMicrosoft-Windows-PowerShell/Operational=1\nWindows PowerShell=1\nMicrosoft-Windows-WMI-Activity/Operational=1\nMicrosoft-Windows-Sysmon/Operational=1\nSecurity=1\n";
+            string log= "#LOG NAME,START AT INDEX(1 if unknown)\nMicrosoft-Windows-PowerShell/Operational=1\nWindows PowerShell=1\nMicrosoft-Windows-WMI-Activity/Operational=1\nMicrosoft-Windows-Sysmon/Operational=1\nSecurity=1";
             return log;
         }
 
-        private static string WRITE_Default_Search_File()
+        private static string WRITE_Default_Logs_Search_File()
         {
-            string log = "#SearchTerm,EventLogName,EventID\ncmd.exe\npowershell.exe\ncsc.exe\ncleared\niex\nwebclient\n";
+            string log = "#SearchTerm,EventLogName,EventID\ncmd.exe\npowershell.exe\ncsc.exe\ncleared\niex\nwebclient";
+            return log;
+        }
+
+        private static string WRITE_Default_Powershell_Search_File()
+        {
+            string log = "#Powershell Script To Run FullPath,SearchTerm";
             return log;
         }
 
         public static void ADD_Eventlog_to_CriticalEvents(string Data, string EventName)
         {
             EventLogEntry Eventlog = new EventLogEntry();
-            Eventlog.LogName = WHELA_EventLog_Name;
+            Eventlog.LogName = SWELF_EventLog_Name;
             Eventlog.Severity = "Critical";
             Eventlog.TaskDisplayName = EventName;
             Eventlog.ComputerName = Environment.MachineName;
@@ -312,8 +340,7 @@ namespace ConsoleEventLogAutoSearch
         public static void Log_Storage_Location_Unavailable(string e)
         {
             EventLog_w_PlaceKeeper = EventLog_w_PlaceKeeper_Backup;
-            string errormsg= "NETWORK ERROR: " + e + " Access to log storage location may not be available.";
-            Errors.WriteErrorsToLog(errormsg);
+            Errors.WriteErrorsToLog("NETWORK ERROR: " + e + " Access to log storage location may not be available.");
         }
             
     }
