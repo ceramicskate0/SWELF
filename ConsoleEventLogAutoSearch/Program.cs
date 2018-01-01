@@ -1,4 +1,4 @@
-﻿//Written by Ceramicskate0
+//Written by Ceramicskate0
 //Copyright 2017
 using System;
 using System.Collections.Generic;
@@ -7,6 +7,7 @@ using System.Text;
 using System.Diagnostics.Eventing.Reader;
 using System.Diagnostics.Eventing;
 using System.Diagnostics;
+using System.IO;
 
 namespace ConsoleEventLogAutoSearch
 {
@@ -41,7 +42,7 @@ namespace ConsoleEventLogAutoSearch
                         }
                         catch (Exception e)
                         {
-                            Errors.Log_Error("SWELF ERROR: ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x)+ " "+e.Message.ToString());
+                            Errors.Log_Error("SWELF APP ERROR: ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x)+ " " +e.Message.ToString());
                         }
 
                         for (int z = 0; z < EvntLogSearch.EventLog_Log_File.EventLogs_From_WindowsAPI.Count; ++z)
@@ -52,17 +53,18 @@ namespace ConsoleEventLogAutoSearch
                             }
                             catch (Exception e)
                             {
-                                Errors.Log_Error("SWELF ERROR: ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " " + e.Message.ToString());
+                                Errors.Log_Error("SWELF EVENTLOG ERROR: ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " " + e.Message.ToString());
                             }
                         }
                     }
                     try
                     {
+
                         if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == false && String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)//Does admin want to send off logs?
                         {
                             for (int x = 0; x < EvntLogSearch.EventLog_Log_File.EventLogs_From_WindowsAPI.Count; ++x)
                             {
-                                Network_Forwarder.SEND_Data_from_Eventlogs(EvntLogSearch.EventLog_Log_File.EventLogs_From_WindowsAPI.Dequeue());
+                                Network_Forwarder.SEND_Eventlogs(EvntLogSearch.EventLog_Log_File.EventLogs_From_WindowsAPI.Dequeue());
                             }
                         }
                     }
@@ -93,10 +95,8 @@ namespace ConsoleEventLogAutoSearch
             }
             catch (Exception e)//WTF HAPPENED??!?!?!?!
             {
-                Errors.Log_Error("SWELF MAIN() ERROR: ", e.Message.ToString() + ", Also the app died");
+                Errors.Log_Error("SWELF MAIN ERROR: ", e.Message.ToString() + ", Also the app died");
             }
-            GC.Collect();
-            Environment.Exit(0);
         }
     }
 }
