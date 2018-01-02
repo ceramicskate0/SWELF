@@ -1,13 +1,14 @@
 # Simple-Windows-Event-Log-Forwarder (SWELF)
-Now in early release. SWELF is designed to be a simple for almost anyone to use windows event log forwarding agent. This mean bugs may exist and it could cause issues on a machine its run on (but its unlikely. Issue like app crash failed task). This app is a log forwarder and log searching (both eventlog and local log) app. This means that you can tell your log forwarding agent (SWELF) exactly what logs to forward and it wont forward the rest. For example, you want powershell logs from endpoints and there are just to many? If you know what you want them to have in the log inorder to forward them then SWELF can help. 
+Now in early release. SWELF is designed to be a simple for almost anyone to use windows event log forwarding agent. This mean bugs may exist and it could cause issues on a machine its run on (but its unlikely. Issue like app crash). This app is a log forwarder and with the ability to search and forward just the logs you want. This means that you can tell your log forwarding agent (SWELF) exactly what logs to forward and it wont forward the rest (This will help with that pesky "to many logs", "we cant send those logs its to much noise", or "the SIEM cant handle all the logs" issues with SIEMs and IT Departments). 
+For example, you want powershell logs (dont lie every security person does) from endpoints and there are just to many. If you know what you want them to have in the log in order to forward them then SWELF can help. You tell it the log source and/or the event ID and/or the key words and/or the number of chars in log and/or the length of the commandline, and/or the length of the log itself and the SWELF app with send just that log to your SIEM.
 
 # App Usage Info:
-- Reserved characters are , : =
+- Reserved characters in SWELF files are , : =
 - For config files all single lines that contain '#' will be treated as comments
-- Remember that the event log for the app will need enough space to store logs from all the sources your searching. This will be important if you want to forward logs and the device is often off the network that the destinaiton is on.
-- App will require rights for (Admin on local machine is recommended):
+- Remember that the event log for the app will need enough space to store logs from all the sources your searching. This will be important if you want to forward logs and the device is often off the network that the destination is on.
+- App will require rights for (Admin on local machine is recommended and needed to read eventlog since the patch the UAC bypass issue):
     - Read/Write/Create Windows Eventlog. 
-    - Write to its needed files to the directory the app is loacted at when run. 
+    - Write to its needed files to the directory the app is located at when run. 
     - Execute. 
     - Send Log data over 514/UDP to IP in config file you specify.
     - Read from disk and any location on local machine you want it to.
@@ -16,7 +17,7 @@ Now in early release. SWELF is designed to be a simple for almost anyone to use 
         - Itself
         
 # SWELF Testing:
-Currently testing on windows 10 with confiured Device Guard/app whitelisting, UAC, HIDS, locked down powershell configuration, EMET, and AV. App is designed to be run as a scheduled task for now. Im taking recommendations via issues just label as enhancements for design, UI, source code, and features.
+Currently testing on windows 10 with configured Device Guard/app whitelisting, UAC, HIDS, locked down powershell configuration, EMET, and AV. App is designed to be run as a scheduled task for now. Im taking recommendations via issues just label as enhancements for design, UI, source code, and features.
 
 Log Collection Platforms or SIEMs:
 
@@ -30,7 +31,7 @@ Log Collection Platforms or SIEMs:
 
 # Security Concerns:
 If your worried about this being malware ive taken the liberty of having it check for you on virustotal. https://www.virustotal.com/#/file-analysis/YmZlMmMyMzE0NDVhMzQyZDM2MzRmNTBhMDdiMzVmNDM6MTUxNDc3MjY3NA==.
-I also recommend running it in a sandbox of your choice before letting run in your enviorment (just a recomendation from a security person). There is no eviormental detection code in the app , anti vm/detection, or any kill commands in the code. 
+I also recommend running it in a sandbox of your choice before letting run in your environment (just a recommendation from a security person). There is no environmental detection code in the app , anti vm/detection, or any kill commands in the code. 
 
 
 # Knowledge Base Stuff:
@@ -59,7 +60,7 @@ I also recommend running it in a sandbox of your choice before letting run in yo
   
       Logname '=' EventID Number (if 1st run '1' can be used)
     
-      WARNING: Only change to number if you wish to have app rescan logs from begining.
+      WARNING: Only change to number if you wish to have app rescan logs from beginning.
       NOTE: If you forget to add the log here and you want to search it never fear app will handle it for you :)
     
 --------------------------------------------------------------------------------
@@ -87,9 +88,9 @@ I also recommend running it in a sandbox of your choice before letting run in yo
 ## C:\ ..\Searchs\Search.txt
   ### How to:
   
-     eventdata_length':'{Minumum chars in eventlog event data section (does this by counting chars in the entire EventData Part of any eventlog)}
+     eventdata_length':'{Minimum chars in eventlog event data section (does this by counting chars in the entire EventData Part of any eventlog)}
      count':'{Term or statement to count}':'{Number of times in log before its a counted event}    
-     commandline_length':'{Number of chars in either tagert or parent commandline arguement (it will evaluate the largest one)(Only works for Sysmon Logs)}
+     commandline_length':'{Number of chars in either target or parent commandline argument (it will evaluate the largest one)(Only works for Sysmon Logs)}
 --------------------------------------------------------------------------------
      example: eventdata_length:200    
      example: count:;:8
