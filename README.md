@@ -60,8 +60,9 @@ I also recommend running it in a sandbox of your choice before letting run in yo
   
       Logname '=' EventID Number (if 1st run '1' can be used)
     
-      WARNING: Only change to number if you wish to have app rescan logs from beginning.
-      NOTE: If you forget to add the log here and you want to search it never fear app will handle it for you :)
+    
+WARNING: Only change to number if you wish to have app rescan logs from beginning.
+NOTE: If you forget to add the log here and you want to search it never fear app will handle it for you :)
     
 --------------------------------------------------------------------------------
      example: microsoft-windows-sysmon/operational=1
