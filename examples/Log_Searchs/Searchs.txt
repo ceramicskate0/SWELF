@@ -1,0 +1,7 @@
+#SearchTerm,EventLogName,EventID
+CommandLine=,windows powershell,
+commandline_length:500
+count:;:8
+eventdata_length:200
+powershell.exe
+iex
