@@ -62,6 +62,7 @@ I also recommend running it in a sandbox of your choice before letting run in yo
     
     
 WARNING: Only change to number if you wish to have app rescan logs from beginning.
+
 NOTE: If you forget to add the log here and you want to search it never fear app will handle it for you :)
     
 --------------------------------------------------------------------------------
