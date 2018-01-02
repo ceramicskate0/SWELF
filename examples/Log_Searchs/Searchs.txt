@@ -1,7 +1,14 @@
 #SearchTerm,EventLogName,EventID
-CommandLine=,windows powershell,
+wscript.exe,windows powershell,
 commandline_length:500
-count:;:8
-eventdata_length:200
+count:;:12
+eventdata_length:1500
 powershell.exe
 iex
+download
+webclient
+cmd.exe
+powershell.exe
+csc.exe
+jscript.exe
+wscript.exe
