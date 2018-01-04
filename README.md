@@ -14,38 +14,26 @@ The goal here is ideally between this app, Sysmon (or another way to monitor com
 - For config files all single lines that contain '#' will be treated as comments
 - Remember that the event log for the app will need enough space to store logs from all the sources your searching. This will be important if you want to forward logs and the device is often off the network that the destination is on.
 
-App will require rights for proper function (local admin is recommended and needed to read eventlog since the patch the UAC bypass issue):
-    - Read/Write/Create Windows Eventlog. 
-    - Write to its needed files to the directory the app is located at when run. 
-    - Execute. 
+App usage and function:
+    - Require rights for proper function (local admin is recommended and needed to read eventlog since the patch the UAC bypass            issue)
+    - Execution. 
     - Send Log data over 514/UDP to IP in config file you specify.
     - Read from disk and any location on local machine you want it to.
+    - App will read and write eventlogs
+    - App will use powershell for API calls to windows event    
     - Launch processes (List Below)
-        - Powershell.exe
-        - Itself      
-
-Log Collection Platforms or SIEMs being used in testing SWELF:
-    - Kibana/ELK
-    - Splunk (Needs more testing as of 11/30/17)
-    
+        - Powershell.exe (API Calls for eventlog class)
+    - App will run in its execution account
+    - App will read/write and function in its current folder
+    - App takes in not commands
+    - App will read whats its told in config file and forward that to where its configured
+    - If app is not configured to send log data and no IP given app default is 127.0.0.1  
 
 # Security Concerns:
 --------------------------------------------------------------------------------
 Worried about this being malware ive taken the liberty of having it checked for you on virustotal. https://www.virustotal.com/#/file-analysis/YmZlMmMyMzE0NDVhMzQyZDM2MzRmNTBhMDdiMzVmNDM6MTUxNDc3MjY3NA==.
 I also recommend running it in a sandbox of your choice before letting it run in your environment (just a recommendation from a security person). There is no environmental detection code in the app , anti vm/detection, or any kill commands in the code (other than error handling).
 
---------------------------------------------------------------------------------
-
-Proper app function (for IR folks):
-- App will read and write eventlogs
-- App will use powershell for API calls to windows event
-- App will run in its execution account
-- App will read/write and function in its current folder
-- App takes in not commands
-- App will only send logs over udp 514 to ip in config file
-- App will read whats its told in config file and forward that to where its configured
-- If app is not configured to send log data and no IP given app default is 127.0.0.1
-- 
 --------------------------------------------------------------------------------
 
 
@@ -152,3 +140,7 @@ NOTE: If you forget to add the log here and you want to search it never fear app
 
 # SWELF Testing:
 Currently testing on windows 10 with configured Device Guard/app whitelisting, UAC, HIDS, locked down powershell configuration, EMET, and AV. App is designed to be run as a scheduled task for now. Im taking recommendations via issues just label as enhancements for design, UI, source code, and features.
+
+Log Collection Platforms or SIEMs being used in testing SWELF:
+    - Kibana/ELK
+    - Splunk (Needs more testing as of 11/30/17)
