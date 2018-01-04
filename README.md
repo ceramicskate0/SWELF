@@ -1,12 +1,20 @@
 # Simple-Windows-Event-Log-Forwarder (SWELF)
 Now in early release. SWELF is designed to be a simple for almost anyone to use windows event log forwarding agent. This mean bugs may exist and it could cause issues on a machine its run on (but its unlikely. Issue like app crash). This app is a log forwarder and with the ability to search and forward just the logs you want. This means that you can tell your log forwarding agent (SWELF) exactly what logs to forward and it wont forward the rest (This will help with that pesky "to many logs", "we cant send those logs its to much noise", or "the SIEM cant handle all the logs" issues with SIEMs and IT Departments). 
-For example, you want powershell logs (dont lie every security person does) from endpoints and there are just to many. If you know what you want them to have in the log in order to forward them then SWELF can help. You tell it the log source and/or the event ID and/or the key words and/or the number of chars in log and/or the length of the commandline, and/or the length of the log itself and the SWELF app with send just that log to your SIEM.
+For example, you want powershell logs (dont lie every security person does) from endpoints and there are just to many. If you know what you want them to have in the log in order to forward them then SWELF can help. You tell it the log source and/or the event ID and/or the key words and/or the number of chars in log and/or the length of the commandline, and/or the length of the log itself and the SWELF app with send just that log to your SIEM. 
+
+# The Apps Goal
+--------------------------------------------------------------------------------
+The goal here is ideally between this app, Sysmon (or another way to monitor commandline, network connections on the endpoint, and generate hashs  (sha256) for running stuff), properly configured Powershell Logging (script block logging), configured your other favorite log sources to get everything you want/need, a SIEM or Log collector (SIEM recommended)(To sort through what your do want to forward), and a little review of your log data you could in theory make a leap forward in finding the footprints that alot of security solutions just cant seem to find (fileless). 
+# Sidenote:
+- If your using Sysmon and want a starting point for a config file there is a 1 size fits all config file at https://github.com/SwiftOnSecurity/sysmon-config. I also maintain a fork at https://github.com/ceramicskate0/sysmon-config. There is also a good one here https://github.com/ion-storm/sysmon-config.
 
 # App Usage Info:
+--------------------------------------------------------------------------------
 - Reserved characters in SWELF files are , : =
 - For config files all single lines that contain '#' will be treated as comments
 - Remember that the event log for the app will need enough space to store logs from all the sources your searching. This will be important if you want to forward logs and the device is often off the network that the destination is on.
-- App will require rights for (Admin on local machine is recommended and needed to read eventlog since the patch the UAC bypass issue):
+
+App will require rights for proper function (local admin is recommended and needed to read eventlog since the patch the UAC bypass issue):
     - Read/Write/Create Windows Eventlog. 
     - Write to its needed files to the directory the app is located at when run. 
     - Execute. 
@@ -14,28 +22,40 @@ For example, you want powershell logs (dont lie every security person does) from
     - Read from disk and any location on local machine you want it to.
     - Launch processes (List Below)
         - Powershell.exe
-        - Itself
-        
-# SWELF Testing:
-Currently testing on windows 10 with configured Device Guard/app whitelisting, UAC, HIDS, locked down powershell configuration, EMET, and AV. App is designed to be run as a scheduled task for now. Im taking recommendations via issues just label as enhancements for design, UI, source code, and features.
+        - Itself      
 
-Log Collection Platforms or SIEMs:
+Log Collection Platforms or SIEMs being used in testing SWELF:
 
     - Kibana/ELK
     
     - Splunk (Needs more testing as of 11/30/17)
     
-    
-# Sidenote:
-- If your using Sysmon and want a starting point for a config file there is a 1 size fits all config file at https://github.com/SwiftOnSecurity/sysmon-config. I also maintain a fork at https://github.com/ceramicskate0/sysmon-config. There is also a good one here https://github.com/ion-storm/sysmon-config.
 
 # Security Concerns:
-If your worried about this being malware ive taken the liberty of having it check for you on virustotal. https://www.virustotal.com/#/file-analysis/YmZlMmMyMzE0NDVhMzQyZDM2MzRmNTBhMDdiMzVmNDM6MTUxNDc3MjY3NA==.
-I also recommend running it in a sandbox of your choice before letting run in your environment (just a recommendation from a security person). There is no environmental detection code in the app , anti vm/detection, or any kill commands in the code. 
+--------------------------------------------------------------------------------
+If your worried about this being malware ive taken the liberty of having it checked for you on virustotal. https://www.virustotal.com/#/file-analysis/YmZlMmMyMzE0NDVhMzQyZDM2MzRmNTBhMDdiMzVmNDM6MTUxNDc3MjY3NA==.
+I also recommend running it in a sandbox of your choice before letting it run in your environment (just a recommendation from a security person). There is no environmental detection code in the app , anti vm/detection, or any kill commands in the code (other than error handling).
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+Proper app function (for IR folks):
+- App will read and write eventlogs
+- App will use powershell for API calls to windows event
+- App will run in its execution account
+- App will read/write and function in its current folder
+- App takes in not commands
+- App will only send logs over udp 514 to ip in config file
+- App will read whats its told in config file and forward that to where its configured
+- If app is not configured to send log data and no IP given app default is 127.0.0.1
+- 
+--------------------------------------------------------------------------------
 
+# 
 
 # Knowledge Base Stuff:
+--------------------------------------------------------------------------------
+
 ## Configuration and Usage Syntax:
+--------------------------------------------------------------------------------
 
 ## C:\ ..\Config\
   
@@ -132,4 +152,5 @@ NOTE: If you forget to add the log here and you want to search it never fear app
      
 --------------------------------------------------------------------------------
 
-
+# SWELF Testing:
+Currently testing on windows 10 with configured Device Guard/app whitelisting, UAC, HIDS, locked down powershell configuration, EMET, and AV. App is designed to be run as a scheduled task for now. Im taking recommendations via issues just label as enhancements for design, UI, source code, and features.
