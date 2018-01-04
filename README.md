@@ -12,10 +12,12 @@ The goal here is ideally between this app, Sysmon (or another way to monitor com
 --------------------------------------------------------------------------------
 - Reserved characters in SWELF files are , : =
 - For config files all single lines that contain '#' will be treated as comments
-- Remember that the event log for the app will need enough space to store logs from all the sources your searching. This will be important if you want to forward logs and the device is often off the network that the destination is on.
+- Remember that the event log for the app will need enough space to store logs from all the sources your searching. This will be        
+  important if you want to forward logs and the device is often off the network that the destination is on.
 
 App usage and function:
-    - Require rights for proper function (local admin is recommended and needed to read eventlog since the patch the UAC bypass            issue)
+    - Require rights for proper function (local admin is recommended and needed to read eventlog since the patch the UAC bypass       
+    issue)
     - Execution. 
     - Send Log data over 514/UDP to IP in config file you specify.
     - Read from disk and any location on local machine you want it to.
