@@ -155,8 +155,11 @@ NOTE: If you forget to add the log here and you want to search it never fear app
 --------------------------------------------------------------------------------
 
 # SWELF Testing:
+--------------------------------------------------------------------------------
 Currently testing on windows 10 with configured Device Guard/app whitelisting, UAC, HIDS, locked down powershell configuration, EMET, and AV. App is designed to be run as a scheduled task for now. Im taking recommendations via issues just label as enhancements for design, UI, source code, and features.
 
 Log Collection Platforms or SIEMs being used in testing SWELF:
+
     - Kibana/ELK
+
     - Splunk (Needs more testing as of 11/30/17)
