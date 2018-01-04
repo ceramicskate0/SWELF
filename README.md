@@ -36,6 +36,7 @@ Log Collection Platforms or SIEMs being used in testing SWELF:
 If your worried about this being malware ive taken the liberty of having it checked for you on virustotal. https://www.virustotal.com/#/file-analysis/YmZlMmMyMzE0NDVhMzQyZDM2MzRmNTBhMDdiMzVmNDM6MTUxNDc3MjY3NA==.
 I also recommend running it in a sandbox of your choice before letting it run in your environment (just a recommendation from a security person). There is no environmental detection code in the app , anti vm/detection, or any kill commands in the code (other than error handling).
 --------------------------------------------------------------------------------
+
 --------------------------------------------------------------------------------
 Proper app function (for IR folks):
 - App will read and write eventlogs
