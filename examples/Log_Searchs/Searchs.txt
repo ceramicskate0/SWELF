@@ -17,3 +17,4 @@ csc.exe
 jscript.exe
 wscript.exe
 csript.exe
+wscript.shell
