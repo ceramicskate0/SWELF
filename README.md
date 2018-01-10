@@ -115,20 +115,29 @@ NOTE: If you forget to add the log here and you want to search it never fear app
 ## C:\ ..\Log_Searchs\Search.txt
   ### How to:
   --------------------------------------------------------------------------------
+  
+  Search Commands:
+  
      eventdata_length':'{Minimum chars in eventlog event data section (does this by counting chars in the entire EventData Part of any eventlog)}
      
      count':'{Term or statement to count}':'{Number of times in log before its a counted event}   
      
      commandline_length':'{Number of chars in either target or parent commandline argument (it will evaluate the largest one)(Only works for Sysmon Logs)}
+     
+     commandline_contains':'{The string in only the command line that you want to forward (Only works for Sysmon Logs)}
 --------------------------------------------------------------------------------
      example: eventdata_length:200  
      
      example: count:;:8
      
      example(Only works for Sysmon Logs): commandline_length:500
---------------------------------------------------------------------------------  
      
-   Any combination of the following as long as they are in order. 
+     example(Only works for Sysmon Logs):commandline_contains:<script>
+--------------------------------------------------------------------------------  
+
+General Searching:
+
+Any combination of the following as long as they are in order. 
    
      {Term or statement to search for} ',' {EventLogName} ',' {EventID}
      
