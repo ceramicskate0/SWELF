@@ -38,7 +38,7 @@ App usage and function:
     - App takes in not commands
     - App will read whats its told in config file and forward that to where its configured
     - If app is not configured to send log data and no IP given app default is 127.0.0.1  
-
+#
 # Security Concerns:
 --------------------------------------------------------------------------------
 Worried about this being malware ive taken the liberty of having it checked for you on virustotal. https://www.virustotal.com/#/file-analysis/YmZlMmMyMzE0NDVhMzQyZDM2MzRmNTBhMDdiMzVmNDM6MTUxNDc3MjY3NA==.
@@ -170,7 +170,9 @@ Any combination of the following as long as they are in order.
      Location of applications local error log.
      
 --------------------------------------------------------------------------------
-
+#
+#
+#
 # SWELF Testing:
 --------------------------------------------------------------------------------
 Currently testing on windows 10 with configured Device Guard/app whitelisting, UAC, HIDS, locked down powershell configuration, EMET, and AV. App is designed to be run as a scheduled task for now. Im taking recommendations via issues just label as enhancements for design, UI, source code, and features.
