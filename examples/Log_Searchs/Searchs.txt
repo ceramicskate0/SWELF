@@ -1,8 +1,10 @@
 #SearchTerm,EventLogName,EventID
 wscript.exe,windows powershell,
-commandline_length:500
+commandline_length:400
+commandline_contains:<script>
 count:;:12
-eventdata_length:1500
+count:':25
+eventdata_length:10000
 powershell.exe
 iex
 download
@@ -12,3 +14,4 @@ powershell.exe
 csc.exe
 jscript.exe
 wscript.exe
+csript.exe
