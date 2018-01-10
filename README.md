@@ -116,7 +116,7 @@ NOTE: If you forget to add the log here and you want to search it never fear app
   ### How to:
   --------------------------------------------------------------------------------
   
-  Search Commands:
+##  Search Commands:
   
      eventdata_length':'{Minimum chars in eventlog event data section (does this by counting chars in the entire EventData Part of any eventlog)}
      
@@ -135,7 +135,7 @@ NOTE: If you forget to add the log here and you want to search it never fear app
      example(Only works for Sysmon Logs):commandline_contains:<script>
 --------------------------------------------------------------------------------  
 
-General Searching:
+##  General Searching:
 
 Any combination of the following as long as they are in order. 
    
