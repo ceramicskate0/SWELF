@@ -3,6 +3,7 @@ wscript.exe,windows powershell,
 commandline_length:400
 commandline_contains:<script>
 commandline_contains:mshta javascript
+commandline_contains:rundll32.exe javascript
 commandline_contains:$env
 count:;:12
 count:':25
