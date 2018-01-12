@@ -185,4 +185,6 @@ Log Collection Platforms or SIEMs being used in testing SWELF:
 
     - Kibana/ELK
 
-    - Splunk (Needs more testing as of 11/30/17)
+    - Splunk 
+    
+    - Kiwi Syslog
