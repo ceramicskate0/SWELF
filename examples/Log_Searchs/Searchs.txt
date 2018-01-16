@@ -20,3 +20,6 @@ wscript.shell
 mshta.exe javascript:
 mshta vbscript:
 regsvr32.exe /s /u /i:
+bitsadmin.exe  /transfer /Download
+powershell New-Service
+sc create
