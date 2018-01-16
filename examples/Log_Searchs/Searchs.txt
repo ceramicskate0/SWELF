@@ -17,3 +17,6 @@ jscript.exe
 wscript.exe
 csript.exe
 wscript.shell
+mshta.exe javascript:
+mshta vbscript:
+regsvr32.exe /s /u /i:
