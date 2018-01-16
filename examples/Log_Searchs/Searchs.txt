@@ -12,8 +12,6 @@ powershell.exe
 iex
 download
 webclient
-cmd.exe
-powershell.exe
 csc.exe
 jscript.exe
 wscript.exe
