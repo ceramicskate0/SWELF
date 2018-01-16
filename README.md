@@ -43,12 +43,6 @@ App usage and function:
     - App will read whats its told in config file and forward that to where its configured
     - If app is not configured to send log data and no IP given app default is 127.0.0.1  
 #
-# Security Concerns:
---------------------------------------------------------------------------------
-Worried about this being malware ive taken the liberty of having it checked for you on virustotal. https://www.virustotal.com/#/file-analysis/YmZlMmMyMzE0NDVhMzQyZDM2MzRmNTBhMDdiMzVmNDM6MTUxNDc3MjY3NA==.
-I also recommend running it in a sandbox of your choice before letting it run in your environment (just a recommendation from a security person). There is no environmental detection code in the app , anti vm/detection, or any kill commands in the code (other than error handling).
-
-#
 #
 #
 # Knowledge Base Stuff:
