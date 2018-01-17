@@ -121,17 +121,25 @@ NOTE: If you forget to add the log here and you want to search it never fear app
      
      count':'{Term or statement to count}':'{Number of times in log before its a counted event}   
      
-     commandline_length':'{Number of chars in either target or parent commandline argument (it will evaluate the largest one)(Only works for Sysmon Logs)}
+     commandline_length':'{Number of chars in either target or parent commandline argument (it will evaluate the largest one)(Only works for Sysmon Logs)} (Available in Version 0.1.0.6 and later)
      
-     commandline_contains':'{The string in only the command line that you want to forward (Only works for Sysmon Logs)}
+     commandline_contains':'{The string in only the command line that you want to forward (Only works for Sysmon Logs)} (Available in Version 0.1.0.6 and later)
+     
+     regex':'{Regex string} (Available in Version 0.1.0.9 and later)
+     
 --------------------------------------------------------------------------------
      example: eventdata_length:200  
      
+     example: regex:\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b
+          
      example: count:;:8
+     
+     example: eventdata_length:9000
      
      example(Only works for Sysmon Logs): commandline_length:500
      
      example(Only works for Sysmon Logs):commandline_contains:<script>
+     
 --------------------------------------------------------------------------------  
 
 ##  General Searching:
