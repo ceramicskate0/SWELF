@@ -14,7 +14,9 @@ download
 webclient
 csc.exe
 jscript.exe
+cvtres.exe
 wscript.exe
+vbscript.exe
 csript.exe
 wscript.shell
 mshta.exe javascript:
