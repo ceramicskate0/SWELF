@@ -10,10 +10,8 @@ count:;:12
 count:':25
 count:+:12
 eventdata_length:10000
-powershell.exe
-iex
-download
-webclient
+iex,windows powershell,
+webclient,windows powershell,
 csc.exe
 jscript.exe
 cvtres.exe
@@ -25,5 +23,5 @@ mshta.exe javascript:
 mshta vbscript:
 regsvr32.exe /s /u /i:
 bitsadmin.exe  /transfer /Download
-powershell New-Service
+powershell New-Service,windows powershell,
 sc create
