@@ -10,7 +10,7 @@ count:;:12
 count:':25
 count:+:12
 eventdata_length:10000
--windowstyle hidden,windows powershell,
+commandline_contains:-windowstyle hidden
 iex,windows powershell,
 webclient,windows powershell,
 csc.exe
