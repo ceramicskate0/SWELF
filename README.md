@@ -33,13 +33,11 @@ App usage and function:
     - Execution. 
     - Send Log data over 514/UDP to IP in config file you specify.
     - Read from disk and any location on local machine you want it to.
-    - App will read and write eventlogs
-    - App will use powershell for API calls to windows event    
-    - Launch processes (List Below)
-        - Powershell.exe (API Calls for eventlog class)
+    - App will read and write eventlogs  
+    - Launch processes (itself)
     - App will run in its execution account
-    - App will read/write and function in its current folder
-    - App takes in not commands
+    - App will write and function in its current folder
+    - App will remove local logs read in and processed
     - App will read whats its told in config file and forward that to where its configured
     - If app is not configured to send log data and no IP given app default is 127.0.0.1  
 #
