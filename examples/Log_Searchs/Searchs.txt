@@ -28,4 +28,4 @@ bitsadmin.exe /download
 powershell New-Service,windows powershell,
 sc create
 ,Microsoft-Windows-Sysmon/Operational,19
-,Microsoft-Windows-Sysmon/Operational,13
+,Microsoft-Windows-Sysmon/Operational,12
