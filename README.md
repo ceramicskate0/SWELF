@@ -4,8 +4,9 @@ Summary:
 
 You tell it the log source and/or the event ID and/or the key words and/or the number of chars in log and/or the length of the commandline, and/or the length of the log itself and the SWELF app with send just that log to your SIEM.
 
+The details:
 
-Now in early release and so close to 1st offical release. SWELF is designed to be a simple for almost anyone to use windows event log forwarding agent that will 1st search your logs for what you want then forward just those logs (if you told it to). 
+Now in early release. SWELF is designed to be a simple enough for almost anyone to use for windows event log forwarding. The agent that will 1st search your logs for what you want then forward just those logs (if you told it to). 
 Since its early release this mean bugs may exist and it could cause issues on a machine its run on (but its unlikely. Issue like app crash or fail to starts...errr). 
 But this also means im taking feature requests (even if you dont code).
 This app is a log forwarder and with the ability to search and forward just the logs you want or at least as close to it as you want. This means that you can tell your log forwarding agent (SWELF) exactly what logs to forward and it wont forward the rest (This will help with that pesky "to many logs", "we cant send those logs its to much noise", or "the SIEM cant handle all the logs" issues with SIEMs and IT Departments). ;D
