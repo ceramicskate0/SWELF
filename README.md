@@ -11,10 +11,6 @@ But this also means im taking feature requests (even if you dont code).
 This app is a log forwarder and with the ability to search and forward just the logs you want or at least as close to it as you want. This means that you can tell your log forwarding agent (SWELF) exactly what logs to forward and it wont forward the rest (This will help with that pesky "to many logs", "we cant send those logs its to much noise", or "the SIEM cant handle all the logs" issues with SIEMs and IT Departments). ;D
 For example, you want powershell logs (dont lie every security person does) from endpoints and there are just to many. You know what you want them to have in the log, or what they should looks like, or how long they are, or some keyword,then SWELF will forward in order just the logs to your network location on syslog (514)/udp. 
 
-TESTING:
-- Currenlt testing central config option in app to use Sysvol as location to store app config and have app read it making entprise config easier than GPO of scheudled task. (V 0.1.0.9)
-
-
 
 # How to get the App
 --------------------------------------------------------------------------------
@@ -188,6 +184,9 @@ NOTE: If you forget to add the log here and you want to search it never fear app
 # SWELF Testing:
 --------------------------------------------------------------------------------
 Currently testing on windows 10 with configured Device Guard/app whitelisting, UAC, HIDS, locked down powershell configuration, EMET, and AV. App is designed to be run as a scheduled task for now. Im taking recommendations via issues just label as enhancements for design, UI, source code, and features.
+
+New Features:
+- Currenlt testing central config option in app to use Sysvol as location to store app config and have app read it making entprise config easier than GPO of scheudled task. (V 0.1.0.9)
 
 Log Collection Platforms or SIEMs being used in testing SWELF:
 
