@@ -57,65 +57,6 @@ App usage and function:
 ## Configuration and Usage Syntax:
 --------------------------------------------------------------------------------
 
-## C:\ ..\Config\
-  
-##  DirectoriesToMonitor.conf
-  
-      Place path to a directory to monitor (it will monitor all files of type .txt and .log only).
-    
---------------------------------------------------------------------------------
-     example: C:\FolderName\
---------------------------------------------------------------------------------
-
-##  FilesToMonitor.conf
-  
-      Place full file path to file to monitor every time app is run
-    
---------------------------------------------------------------------------------
-     example: C:\FolderName\File.txt 
-     
-     example: C:\FolderName\File.log
---------------------------------------------------------------------------------
-
-##  Eventlog_with_PlaceKeeper.txt
-  
-      Logname '=' EventID Number (if 1st run '1' can be used)
-    
-    
-WARNING: Only change to number if you wish to have app rescan logs from beginning.
-
-NOTE: If you forget to add the log here and you want to search it never fear app will handle it for you :)
-    
---------------------------------------------------------------------------------
-     example: microsoft-windows-sysmon/operational=1
-     (Set to 1 to reset log collection)
-     
-     example: microsoft-windows-powershell/operational=28395756
-     (Normal operation of app)
---------------------------------------------------------------------------------
-
-##  ConsoleAppConfig.conf
-  
-      Log_Collector={IPv4 of place to send some form of eventlog over port 514}
-      
-      Log_Collector1-5={IPv4 of place to send some form of eventlog over port 514}
-      
-      outputformat={"xml" or "data" or "syslog" or "syslogxml"}
-    
---------------------------------------------------------------------------------
-     example(Send Data): Log_Collector=10.0.0.3
-     
-     example(Send Data): Log_Collector1=10.0.0.1
-     
-     example(Send Data)(max collector number): Log_Collector5=10.0.0.2
-     
-     example(Dont Send Data): Log_Collector=
-     
-     example(Dont Send Data): 
-     
-     example: outputformat=syslog
---------------------------------------------------------------------------------
-
 ## C:\ ..\Log_Searchs\Search.txt
   ### How to:
   --------------------------------------------------------------------------------
@@ -175,6 +116,66 @@ Any combination of the following as long as they are in order.
      example: log file was cleared 
      (This will be used to search ALL logs)
 -------------------------------------------------------------------------------- 
+
+
+## C:\ ..\Config\
+  
+##  DirectoriesToMonitor.conf
+  
+      Place path to a directory to monitor (it will monitor all files of type .txt and .log only).
+    
+--------------------------------------------------------------------------------
+     example: C:\FolderName\
+--------------------------------------------------------------------------------
+
+##  FilesToMonitor.conf
+  
+      Place full file path to file to monitor every time app is run
+    
+--------------------------------------------------------------------------------
+     example: C:\FolderName\File.txt 
+     
+     example: C:\FolderName\File.log
+--------------------------------------------------------------------------------
+
+##  Eventlog_with_PlaceKeeper.txt
+  
+      Logname '=' EventID Number (if 1st run '1' can be used)
+    
+    
+WARNING: Only change to number if you wish to have app rescan logs from beginning.
+
+NOTE: If you forget to add the log here and you want to search it never fear app will handle it for you :)
+    
+--------------------------------------------------------------------------------
+     example: microsoft-windows-sysmon/operational=1
+     (Set to 1 to reset log collection)
+     
+     example: microsoft-windows-powershell/operational=28395756
+     (Normal operation of app)
+--------------------------------------------------------------------------------
+
+##  ConsoleAppConfig.conf
+  
+      Log_Collector={IPv4 of place to send some form of eventlog over port 514}
+      
+      Log_Collector1-5={IPv4 of place to send some form of eventlog over port 514}
+      
+      outputformat={"xml" or "data" or "syslog" or "syslogxml"}
+    
+--------------------------------------------------------------------------------
+     example(Send Data): Log_Collector=10.0.0.3
+     
+     example(Send Data): Log_Collector1=10.0.0.1
+     
+     example(Send Data)(max collector number): Log_Collector5=10.0.0.2
+     
+     example(Dont Send Data): Log_Collector=
+     
+     example(Dont Send Data): 
+     
+     example: outputformat=syslog
+--------------------------------------------------------------------------------
   
 ## C:\ ..\SWELF_Logs\ErrorLog.log
 
