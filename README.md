@@ -19,8 +19,9 @@ How to get the app? Click the menu option up top called 'Release' Click the newe
 # The Apps Goal
 --------------------------------------------------------------------------------
 The goal here is ideally between this app, Sysmon (or another way to monitor commandline, network connections on the endpoint, and generate hashs  (sha256) for running stuff), properly configured Powershell Logging (script block logging), configured your other favorite log sources to get everything you want/need, a SIEM or Log collector (SIEM recommended)(To sort through what your do want to forward), and a little review of your log data you could in theory make a leap forward in finding the footprints that alot of security solutions just cant seem to find (fileless). 
+
 # Sidenote:
-- If your using Sysmon and want a starting point for a config file there is a 1 size fits all config file at https://github.com/SwiftOnSecurity/sysmon-config. I also maintain a fork at https://github.com/ceramicskate0/sysmon-config. There is also a good one here https://github.com/ion-storm/sysmon-config.
+- If your using Sysmon (Highly recommended) and want a starting point for a config file there is a 1 size fits all config file at https://github.com/SwiftOnSecurity/sysmon-config. This will further reduce logs created and sent to SIEM. There is also a good one here https://github.com/ion-storm/sysmon-config.
 
 # App Usage Info:
 --------------------------------------------------------------------------------
