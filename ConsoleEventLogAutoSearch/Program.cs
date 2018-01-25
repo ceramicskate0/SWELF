@@ -41,7 +41,6 @@ namespace SWELF
 
         private static void Start_Setup()
         {
-            //CHECK_If_Running_as_Admin();
             try
             {
                 Settings.InitializeAppSettings();
@@ -54,21 +53,7 @@ namespace SWELF
                 Environment.Exit(2);
             }
         }
-
-        private static void Start_Run_Plugins()
-        {
-            try
-            {
-                Powershell_Plugin.Run_PS_Script("C:\\Users\\Host\\Downloads\\DeepBlueCLI-master\\DeepBlue.ps1", "C:\\Users\\Host\\Downloads\\DeepBlueCLI-master\\evtx\\psattack-security.evtx");
-                //TODO if found return/forward/add to list of logs to forward
-            }
-            catch (Exception e)
-            {
-                Errors.Log_Error("SWELF PLUGIN ERROR: ", "Powershell_Plugin.Run_PS_Script() " + e.Message.ToString());
-                Network_Forwarder.SEND_Data_from_File("SWELF PLUGIN ERROR: Powershell_Plugin.Run_PS_Script() - " + e.Message.ToString());
-            }
-        }
-
+        
         private static void Start_Read_Search_Write_Forward_EventLogs()
         {
             if (Settings.EventLog_w_PlaceKeeper_List.Count > 0)
