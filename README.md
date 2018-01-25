@@ -26,7 +26,7 @@ The goal here is ideally between this app, Sysmon (or another way to monitor com
 
 # App Usage Info:
 --------------------------------------------------------------------------------
-- Reserved characters in SWELF files are , : =
+- Reserved characters in SWELF files are  , : = ~
 - For config files all single lines that contain '#' will be treated as comments
 - Remember that the event log for the app will need enough space to store logs from all the sources your searching. This will be       important if you want to forward logs and the device is often off the network that the destination is on.
 
@@ -51,6 +51,9 @@ App usage and function:
 # Knowledge Base Stuff:
 #
 #
+Prior to release 0.1.1.0 the ',' char was used in search config when 0.1.1.0 relesed that char was replaced with '~' for regex searching whicb was a feature that was introduced in that release.
+#
+#
 
 ## Configuration and Usage Syntax:
 --------------------------------------------------------------------------------
@@ -60,6 +63,8 @@ App usage and function:
   --------------------------------------------------------------------------------
   
 ##  Search Commands:
+  Search commands can be combined in v. 0.1.1.0 to apply to a single log source and/or eventid.
+  {Search Commands in v 0.1.0.9} '~' {EventLogName} '~' {EventID}
   
      eventdata_length':'{Minimum chars in eventlog event data section (does this by counting chars in the entire EventData Part of any eventlog)}
      
@@ -90,19 +95,19 @@ App usage and function:
 
 Any combination of the following as long as they are in order. 
    
-     {Term or statement to search for} ',' {EventLogName} ',' {EventID}
+     {Term or statement to search for}{Search Commands in v 0.1.1.0} '~' {EventLogName} '~' {EventID}
      
 --------------------------------------------------------------------------------
      example: powershell.exe,microsoft-windows-sysmon/operational,1 
      (This will be used to search microsoft-windows-sysmon/operational logs for cmd.exe with event id 1)
     
-    example: ,microsoft-windows-sysmon/operational,1
+    example: ~microsoft-windows-sysmon/operational~1
     (Return all event id 1 in sysmon log)
      
-     example: cmd.exe,microsoft-windows-sysmon/operational 
+     example: cmd.exe~microsoft-windows-sysmon/operational 
      (This will be used to search microsoft-windows-sysmon/operational logs for cmd.exe)
      
-     example: cmd.exe,microsoft-windows-powershell/operational 
+     example: cmd.exe~microsoft-windows-powershell/operational 
      (This will be used to search microsoft-windows-sysmon/operational logs)
      
      example: has been restricted by your Administrator by location with policy rule 
