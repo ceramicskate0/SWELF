@@ -64,7 +64,7 @@ Prior to release 0.1.1.0 the ',' char was used in search config when 0.1.1.0 rel
   
 ##  Search Commands:
   Search commands can be combined in v. 0.1.1.0 to apply to a single log source and/or eventid.
-  {Search Commands in v 0.1.0.9} '~' {EventLogName} '~' {EventID}
+  {Search Commands in v 0.1.0.9}  '~'  {EventLogName}  '~'  {EventID}
   
      eventdata_length':'{Minimum chars in eventlog event data section (does this by counting chars in the entire EventData Part of any eventlog)}
      
