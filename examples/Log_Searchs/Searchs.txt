@@ -1,18 +1,21 @@
 #SearchTerm,EventLogName,EventID
-wscript.exe,windows powershell,
+count:':25
+count:+:12
+count:;:12~Microsoft-Windows-Sysmon/Operational~
+webclient~windows powershell~
+iex~windows powershell~
+wscript.exe~windows powershell~
 commandline_length:400
 commandline_contains:<script>
 commandline_contains:mshta -Enbedding
 commandline_contains:mshta javascript
 commandline_contains:rundll32.exe javascript
 commandline_contains:$env
-count:;:12
-count:':25
-count:+:12
 eventdata_length:10000
+~Microsoft-Windows-Sysmon/Operational~19
+~Microsoft-Windows-Sysmon/Operational~9
+~Microsoft-Windows-Sysmon/Operational~12
 commandline_contains:-windowstyle hidden
-iex,windows powershell,
-webclient,windows powershell,
 csc.exe
 jscript.exe
 cvtres.exe
@@ -25,7 +28,5 @@ mshta vbscript:
 regsvr32.exe /s /u /i:
 bitsadmin.exe  /transfer
 bitsadmin.exe /download 
-powershell New-Service,windows powershell,
+powershell New-Service~windows powershell~
 sc create
-,Microsoft-Windows-Sysmon/Operational,19
-,Microsoft-Windows-Sysmon/Operational,12
