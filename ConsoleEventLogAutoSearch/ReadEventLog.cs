@@ -1,5 +1,5 @@
-﻿//Written by Ceramicskate0
-//Copyright 2017
+//Written by Ceramicskate0
+//Copyright 2018
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Diagnostics.Eventing.Reader;
 using System.Diagnostics;
 using System.IO;
 
-namespace ConsoleEventLogAutoSearch
+namespace SWELF
 {
     class ReadEventLog
     {
@@ -25,9 +25,9 @@ namespace ConsoleEventLogAutoSearch
             FileContents_From_FileReads = new List<string>();
         }
 
-        public void READ_EventLog(string Eventlog_FullName,long eventRecordID=1)
+        public void READ_EventLog(string Eventlog_FullName,long PlaceKeeper_EventRecordID=1)
         {
-            long EVTlog_PlaceHolder = eventRecordID;
+            long EVTlog_PlaceHolder = PlaceKeeper_EventRecordID;
             try
             {
                 if (EVTlog_PlaceHolder == 1)
@@ -40,41 +40,49 @@ namespace ConsoleEventLogAutoSearch
                 EVTlog_PlaceHolder = 1;
             }
 
-            if (FIND_EventLogExsits(Eventlog_FullName))
+            if (Settings.FIND_EventLog_Exsits(Eventlog_FullName))
             {
-                EventLogFile EventLogFileName = new EventLogFile(Eventlog_FullName, eventRecordID);
+                EventLogFile EventLogFileName = new EventLogFile(Eventlog_FullName, PlaceKeeper_EventRecordID);
+
                 long First_EventID = EventLogFileName.First_EventLogID_From_Check;
                 long Last_EventID = EventLogFileName.Last_EventLogID_From_Check;
-                if (First_EventID < eventRecordID)//more logs added to event log since last read
+
+                if (PlaceKeeper_EventRecordID > First_EventID && PlaceKeeper_EventRecordID < Last_EventID)//Normal operation placekkeeper in middle of log file
                 {
-                    EVTlog_PlaceHolder = eventRecordID;
+                    EVTlog_PlaceHolder = PlaceKeeper_EventRecordID;
                     READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder, EventLogFileName);
                     Settings.EventLog_w_PlaceKeeper[Eventlog_FullName.ToLower()] = Last_EventID;
                 }
-                else if (Last_EventID == eventRecordID)//no logs added
+                else if (Last_EventID == PlaceKeeper_EventRecordID)//no logs added
                 {
-                    EVTlog_PlaceHolder = eventRecordID;
+                    EVTlog_PlaceHolder = PlaceKeeper_EventRecordID;
                 }
-                else if (First_EventID > eventRecordID)//missed all logs and missing log files send alert for missing log files
+                else if (PlaceKeeper_EventRecordID==1)
                 {
                     EVTlog_PlaceHolder = First_EventID;
                     READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder, EventLogFileName);
-                    HostEventLogAgent_Eventlog.WRITE_Warning_EventLog("Missed all logs from "+ Eventlog_FullName+" possible first run or no search items to find in search config.");
+                    HostEventLogAgent_Eventlog.WRITE_Warning_EventLog("Logging as app or EventLog Source 1st run for "+ Eventlog_FullName +" "+ Settings.ComputerName);
+                    Settings.EventLog_w_PlaceKeeper[Eventlog_FullName] = Last_EventID;
+                }
+                else if (First_EventID > PlaceKeeper_EventRecordID)//missed all logs and missing log files send alert for missing log files
+                {
+                    EVTlog_PlaceHolder = First_EventID;
+                    READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder, EventLogFileName);
+                    HostEventLogAgent_Eventlog.WRITE_Critical_EventLog("Missed all logs from "+ Eventlog_FullName+" on machine "+Settings.ComputerName +" the first eventlog id was older than where app left off.");
                     Settings.EventLog_w_PlaceKeeper[Eventlog_FullName.ToLower()] = Last_EventID;
                 }
-                else//unknown condition assume 1st run
+                else//unknown/catch condition assume 1st run
                 {
                     EVTlog_PlaceHolder = First_EventID;
                     READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder, EventLogFileName);
-                    //TODO write event log /error and prepare to send event log of error in read state for unknown condition.
-                    HostEventLogAgent_Eventlog.WRITE_EventLog("Logging as app or EventLog Source 1st run");
+                    HostEventLogAgent_Eventlog.WRITE_Warning_EventLog("ERROR: App unable to determine app reading state in event log. App starting over. App not told to reset. "+Eventlog_FullName +" "+ Settings.ComputerName);
                     Settings.EventLog_w_PlaceKeeper[Eventlog_FullName] = Last_EventID;
                 }
                 EventLog_Log_File = EventLogFileName;
             }
             else
             {
-                Errors.Log_Error("ReadEventLog->Read_EventLog()", "EventLog does not exist.");
+                Errors.Log_Error("ERROR: ReadEventLog->Read_EventLog()", Eventlog_FullName+" EventLog does not exist.");
             }
         }
 
@@ -93,7 +101,7 @@ namespace ConsoleEventLogAutoSearch
             }
             catch (Exception e)
             {
-                Errors.Log_Error("READ_Local_Log_Files() ERROR: ", e.Message.ToString());
+                Errors.Log_Error("ERROR: READ_Local_Log_Files() ", e.Message.ToString());
             }
         }
 
@@ -130,7 +138,7 @@ namespace ConsoleEventLogAutoSearch
             }
             catch (Exception e)
             {
-                Errors.Log_Error("READ_Local_Log_Dirs() ERROR: ", e.Message.ToString());
+                Errors.Log_Error("ERROR: READ_Local_Log_Dirs() ", e.Message.ToString());
             }
         }
 
@@ -160,7 +168,7 @@ namespace ConsoleEventLogAutoSearch
             }
             catch (Exception e)
             {
-                Errors.Log_Error("READ_Local_Log_Dirs() ERROR: ", e.Message.ToString());
+                Errors.Log_Error("ERROR: READ_Local_Log_Dirs() ", e.Message.ToString());
             }
         }
 
@@ -168,6 +176,7 @@ namespace ConsoleEventLogAutoSearch
         {
             EventLogQuery eventsQuery = new EventLogQuery(Eventlog_FullName, PathType.LogName);
             EventLogReader EventLogtoReader = new EventLogReader(eventsQuery);
+
             while (GET_EventLogEntry_From_API(EventLogtoReader) != null)
             {
                INDEX_Record_FROM_API(EventLogFileName, Windows_EventLog_API, EventRecordID);
@@ -191,19 +200,16 @@ namespace ConsoleEventLogAutoSearch
                     Eventlog.LogName = Windows_EventLog_API.LogName;
                     Eventlog.Severity = Windows_EventLog_API.OpcodeDisplayName;
                     Eventlog.TaskDisplayName = Windows_EventLog_API.TaskDisplayName;
-                    Eventlog.PID = Windows_EventLog_API.ProcessId.Value;
                     Eventlog.ComputerName = Windows_EventLog_API.MachineName;
-                    Eventlog.UserID = Windows_EventLog_API.UserId.ToString();
-                    Eventlog.EventData = Windows_EventLog_API.FormatDescription().ToLower().ToString();
                     Eventlog.EventID = Windows_EventLog_API.Id;
                     Eventlog.GET_XML_of_Log = Windows_EventLog_API.ToXml();
                     Eventlog.CreatedTime = Windows_EventLog_API.TimeCreated.Value;
-
-                    EventLogFileName.EventlogMissing = CHECK_IfEventLogMissing(EventLogFileName, Eventlog);
+                    EventLogFileName.EventlogMissing = CHECK_If_EventLog_Missing(EventLogFileName, Eventlog);
                     EventLogFileName.ID_EVENTLOG = Windows_EventLog_API.RecordId.Value;
-                    EventLogFileName.Hashes_From_EventLog.Add(Eventlog.GET_Hash_FromLogFile);//will check in class if sysmon or not, only check hash for sysmon
-                    EventLogFileName.Add_IP(Eventlog.GET_IP_FromLogFile);//will check all logs BUT high false positive
+                    Eventlog.EventData = Windows_EventLog_API.FormatDescription().ToLower().ToString();
 
+                    EventLogFileName.Add_HASH(Eventlog.GET_Hash_FromLogFile);
+                    EventLogFileName.Add_IP(Eventlog.GET_IP_FromLogFile);
                     EventLogFileName.Enqueue_Log(Eventlog);
                 }
             }
@@ -212,21 +218,20 @@ namespace ConsoleEventLogAutoSearch
                 if (!MissingLogInFileDueToException)
                 {
                     Settings.GET_ErrorLog_Ready();
-                    string ALert = "Logs on " + Eventlog.ComputerName + " under Event Log name " + Eventlog.LogName + " near event id " + EventRecordID.ToString() + " found eventlogs missing.";
-                    Errors.WriteErrorsToLog(ALert);
-                    Errors.Log_Error("INDEX_Record_FROM_API()", e.Message.ToString());
+                    //string Alert = "ALERT: Logs on " + Settings.ComputerName + " under Event Log name " + Eventlog.LogName + " near event id " + EventRecordID.ToString() + " found Eventlogs missing.";
+                    Errors.Log_Error("ERROR: INDEX_Record_FROM_API() ", e.Message.ToString());
                 }
                 MissingLogInFileDueToException = true;
             }
         }
 
-        private static bool CHECK_IfEventLogMissing(EventLogFile ELF, EventLogEntry EVE)
+        private static bool CHECK_If_EventLog_Missing(EventLogFile ELF, EventLogEntry EVE)
         {
-            if (EVE.EventLog_Seq_num != ELF.ID_EVENTLOG + 1 && ELF.EventlogMissing == false && ELF.ID_EVENTLOG != 0)
+            if ((EVE.EventLog_Seq_num != ELF.ID_EVENTLOG + 1) && ELF.EventlogMissing == false && (ELF.ID_EVENTLOG != 0 && EVE.EventRecordID!=0))
             {
                 ELF.EventlogMissing = true;
-                string Alert = "Logs on " + EVE.ComputerName + " under Event Log name " + EVE.LogName + " near event id " + EVE.EventRecordID.ToString() + " found eventlogs missing.";
-                Errors.WriteErrorsToLog(Alert);
+                string Alert = "ALERT: Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.";
+                Errors.WRITE_Errors_To_Log(Alert);
                 Settings.ADD_Eventlog_to_CriticalEvents(Alert, "Missing Event Log");
                 return true;
             }
@@ -234,18 +239,6 @@ namespace ConsoleEventLogAutoSearch
             {
                 return false;
             }
-        }
-
-        private static bool FIND_EventLogExsits(string EventLog_ToFind)
-        {
-            for (int x = 0; x < Settings.EventLogs_ListOfAvaliable.Count; ++x)
-            {
-                if (Settings.EventLogs_ListOfAvaliable.ElementAt(x).ToLower() == EventLog_ToFind)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 
