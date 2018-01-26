@@ -17,6 +17,9 @@ For example, you want powershell logs (dont lie every security person does) from
 --------------------------------------------------------------------------------
 How to get the app? Click the menu option up top called 'Release' Click the newest one and then download exe.
 
+ # Requirements
+ - .Net 4.5.2 or newer
+ 
 # The Apps Goal
 --------------------------------------------------------------------------------
 The goal here is ideally between this app, Sysmon (or another way to monitor commandline, network connections on the endpoint, and generate hashs  (sha256) for running stuff), properly configured Powershell Logging (script block logging), configured your other favorite log sources to get everything you want/need, a SIEM or Log collector (SIEM recommended)(To sort through what your do want to forward), and a little review of your log data you could in theory make a leap forward in finding the footprints that alot of security solutions just cant seem to find (fileless). 
