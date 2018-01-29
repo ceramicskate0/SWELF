@@ -2,7 +2,7 @@
 
 Summary:
 
-You tell it the log source and/or the event ID and/or the key words and/or the number of chars in log and/or the length of the commandline, and/or the length of the log itself and the SWELF app with send just that log to your SIEM.
+Having to many log issues?!! This might help you, you tell it the log source and/or the event ID and/or the key words and/or the number of chars in log and/or the length of the commandline, and/or the length of the log itself and the SWELF app with send just that log to your SIEM, from a windows machine and in syslog format. RAW eventlog XML format, and a mixture or eventdata in xml as a syslog message. 
 
 The details:
 
@@ -10,7 +10,7 @@ Now in early release. SWELF is designed to be a simple enough for almost anyone 
 Since its early release this mean bugs may exist and it could cause issues on a machine its run on (but its unlikely. Issue like app crash or fail to starts...errr). 
 But this also means im taking feature requests (even if you dont code).
 This app is a log forwarder and with the ability to search and forward just the logs you want or at least as close to it as you want. This means that you can tell your log forwarding agent (SWELF) exactly what logs to forward and it wont forward the rest (This will help with that pesky "to many logs", "we cant send those logs its to much noise", or "the SIEM cant handle all the logs" issues with SIEMs and IT Departments). ;D
-For example, you want powershell logs (dont lie every security person does) from endpoints and there are just to many. You know what you want them to have in the log, or what they should looks like, or how long they are, or some keyword,then SWELF will forward in order just the logs to your network location on syslog (514)/udp. 
+For example, you want powershell logs (dont lie to yourself every security person does, or at least you better). You know what you want them to have in the log, or what they should looks like, or how long they are, or some keyword, then SWELF will forward in order just the logs to your network location on syslog (514)/udp. 
 
 
 # How to get the App
