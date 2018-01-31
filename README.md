@@ -34,7 +34,7 @@ The goal here is ideally between this app, Sysmon (or another way to monitor com
 
 # Sidenote:
 --------------------------------------------------------------------------------
-- If your using Sysmon (Highly recommended) and want a starting point for a config file there is a 1 size fits all config file at https://github.com/SwiftOnSecurity/sysmon-config. This will further reduce logs created and sent to SIEM. There is also a good one here https://github.com/ion-storm/sysmon-config.
+- If your using Sysmon (Highly recommended) and want a starting point for a config file there is a 1 size fits all config file at https://github.com/SwiftOnSecurity/sysmon-config. This will further reduce logs created and sent to SIEM. There is also a good one here https://github.com/ion-storm/sysmon-config. Need a SIEM? AlienVault and Security Onion(with Elk stack) is a good free placed to start.
 
 # App Usage Info:
 --------------------------------------------------------------------------------
@@ -209,7 +209,7 @@ New Features:
 
 Log Collection Platforms or SIEMs being used in testing SWELF:
 
-    - Kibana/ELK
+    - Kibana/ELK (on Security Onion)
 
     - Splunk 
     
