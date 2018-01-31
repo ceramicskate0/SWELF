@@ -43,7 +43,7 @@ The goal here is ideally between this app, Sysmon (or another way to monitor com
 - Remember that the event log for the app will need enough space to store logs from all the sources your searching. This will be       important if you want to forward logs and the device is often off the network that the destination is on.
 
 
-#App usage and function:
+# App usage and function:
 --------------------------------------------------------------------------------
     - Require rights for proper function (local admin is recommended and needed to read eventlog since the patch the UAC bypass       
     issue)
