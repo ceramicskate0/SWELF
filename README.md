@@ -12,12 +12,20 @@ But this also means im taking feature requests (even if you dont code).
 This app is a log forwarder and with the ability to search and forward just the logs you want or at least as close to it as you want. This means that you can tell your log forwarding agent (SWELF) exactly what logs to forward and it wont forward the rest (This will help with that pesky "to many logs", "we cant send those logs its to much noise", or "the SIEM cant handle all the logs" issues with SIEMs and IT Departments). ;D
 For example, you want powershell logs (dont lie to yourself every security person does, or at least you better). You know what you want them to have in the log, or what they should looks like, or how long they are, or some keyword, then SWELF will forward in order just the logs to your network location on syslog (514)/udp. 
 
+# Contribution or Recomendations:
+--------------------------------------------------------------------------------
+Open an issue, more detail the better. Shy? Hit me up on twitter (Goota be a hip dev person so I got one). 
+
+# Issues:
+--------------------------------------------------------------------------------
+Open and issue we will chat it out. (BE A NICE HUMAN) Also please copy and paste the agents error log into issue. Shy? Hit me up on twitter.
 
 # How to get the App
 --------------------------------------------------------------------------------
 How to get the app? Click the menu option up top called 'Release' Click the newest one and then download exe.
 
  # Requirements
+ --------------------------------------------------------------------------------
  - .Net 4.5.2 or newer
  
 # The Apps Goal
@@ -25,6 +33,7 @@ How to get the app? Click the menu option up top called 'Release' Click the newe
 The goal here is ideally between this app, Sysmon (or another way to monitor commandline, network connections on the endpoint, and generate hashs  (sha256) for running stuff), properly configured Powershell Logging (script block logging), configured your other favorite log sources to get everything you want/need, a SIEM or Log collector (SIEM recommended)(To sort through what your do want to forward), and a little review of your log data you could in theory make a leap forward in finding the footprints that alot of security solutions just cant seem to find (fileless). 
 
 # Sidenote:
+--------------------------------------------------------------------------------
 - If your using Sysmon (Highly recommended) and want a starting point for a config file there is a 1 size fits all config file at https://github.com/SwiftOnSecurity/sysmon-config. This will further reduce logs created and sent to SIEM. There is also a good one here https://github.com/ion-storm/sysmon-config.
 
 # App Usage Info:
@@ -34,8 +43,8 @@ The goal here is ideally between this app, Sysmon (or another way to monitor com
 - Remember that the event log for the app will need enough space to store logs from all the sources your searching. This will be       important if you want to forward logs and the device is often off the network that the destination is on.
 
 
-App usage and function:
-
+#App usage and function:
+--------------------------------------------------------------------------------
     - Require rights for proper function (local admin is recommended and needed to read eventlog since the patch the UAC bypass       
     issue)
     - Execution. 
