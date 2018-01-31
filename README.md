@@ -1,4 +1,4 @@
-# Simple-Windows-Event-Log-Forwarder (SWELF)
+# Simple-Windows-Event-Log-Forwarder (SWELF) 
 
 Summary:
 
