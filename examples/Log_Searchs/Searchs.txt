@@ -15,6 +15,7 @@ eventdata_length:10000
 ~Microsoft-Windows-Sysmon/Operational~19
 ~Microsoft-Windows-Sysmon/Operational~9
 ~Microsoft-Windows-Sysmon/Operational~12
+~Microsoft-Windows-Windows Defender/Operational~
 commandline_contains:-windowstyle hidden
 csc.exe
 jscript.exe
