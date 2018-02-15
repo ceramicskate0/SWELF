@@ -23,7 +23,7 @@ commandline_contains:-windowstyle hidden
 csc.exe
 jscript.exe
 cvtres.exe
-wscript.exe
+wscript
 vbscript.exe
 csript.exe
 wscript.shell
