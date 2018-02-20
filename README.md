@@ -12,6 +12,7 @@ But this also means im taking feature requests (even if you dont code).
 This app is a log forwarder and with the ability to search and forward just the logs you want or at least as close to it as you want. This means that you can tell your log forwarding agent (SWELF) exactly what logs to forward and it wont forward the rest (This will help with that pesky "to many logs", "we cant send those logs its to much noise", or "the SIEM cant handle all the logs" issues with SIEMs and IT Departments). ;D
 For example, you want powershell logs (dont lie to yourself every security person does, or at least you better). You know what you want them to have in the log, or what they should looks like, or how long they are, or some keyword, then SWELF will forward in order just the logs to your network location on syslog (514)/udp. 
 
+## [Want to know more or have Questions check out the WIKI:](https://github.com/ceramicskate0/SWELF/wiki)
 
 # The Apps Goal
 --------------------------------------------------------------------------------
