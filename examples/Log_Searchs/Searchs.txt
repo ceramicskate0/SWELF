@@ -1,6 +1,7 @@
 #SearchTerm,EventLogName,EventID
 count:':25
 count:+:12
+count:&:8
 count:;:12~Microsoft-Windows-Sysmon/Operational~
 count:-split:4
 webclient~windows powershell~
