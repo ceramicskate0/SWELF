@@ -2,6 +2,7 @@
 count:':25
 count:+:12
 count:;:12~Microsoft-Windows-Sysmon/Operational~
+count:-split:4
 webclient~windows powershell~
 iex~windows powershell~
 wscript.exe~windows powershell~
