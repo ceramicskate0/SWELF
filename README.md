@@ -1,5 +1,8 @@
 # Simple-Windows-Event-Log-Forwarder (SWELF) 
 
+# SWELF Design
+![swelf design](https://user-images.githubusercontent.com/6934294/36569090-30ac4258-17e1-11e8-9263-a81cee3ef7a8.PNG)
+
 Summary:
 
 Having to many log issues?!! This might help you, you tell it the log source and/or the event ID and/or the key words and/or the number of chars in log and/or the length of the commandline, and/or the length of the log itself and the SWELF app with send just that log to your SIEM, from a windows machine and in syslog format. RAW eventlog XML format, and a mixture or eventdata in xml as a syslog message. 
@@ -22,5 +25,3 @@ The goal here is ideally between this app, Sysmon (or another way to monitor com
 # Legal Disclaimer:
 If you use this software you do so at your own risk and your own responsibility/liability. I do/have NEVER authorized, condoned, or recommend the use of anything in any of my repos for any malicious reason. Do not use for evil, malicious purposes, or on machines you do not own. Test it before you use it.
 
-# SWELF Design Document
-![swelf design](https://user-images.githubusercontent.com/6934294/36569090-30ac4258-17e1-11e8-9263-a81cee3ef7a8.PNG)
