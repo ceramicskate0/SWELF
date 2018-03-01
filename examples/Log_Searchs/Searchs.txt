@@ -38,3 +38,4 @@ powershell New-Service~windows powershell~
 sc create
 cmstp.exe
 rundll32.exe javascript:
+~AMSI/Operational~
