@@ -39,3 +39,4 @@ sc create
 cmstp.exe
 rundll32.exe javascript:
 ~AMSI/Operational~
+Iexpress.exe
