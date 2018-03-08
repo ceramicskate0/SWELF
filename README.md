@@ -2,7 +2,8 @@
 
 ## Summary:
 
-Having to many log issues?!! This might help you, you tell it the log source and/or the event ID and/or the key words and/or the number of chars in log and/or the length of the commandline, and/or the length of the log itself and the SWELF app will send just that log to your Log Collection location from a windows machine.
+Having the to many log issue?!! Or maybe just cant find what you want from a log forwarder.
+This might help you, you tell it the log source and/or the event ID and/or the key words and/or the number of chars in log and/or the length of the commandline, and/or the length of the log itself and the SWELF app will send just that log to your Log Collection location from a windows machine.
 
 ## SWELF Design (After Central Configuration is Pushed)
 ![swelf design](https://user-images.githubusercontent.com/6934294/36953050-de3a92e6-1fdc-11e8-9d8f-44a3660249b1.PNG)
