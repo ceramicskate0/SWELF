@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright 2017
+//Copyright 2018
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 
-namespace ConsoleEventLogAutoSearch
+namespace SWELF
 {
     class HostEventLogAgent_Eventlog
     {
-        public static void WRITE_EventLog(string log)
+        public static void WRITE_EventLog_From_SWELF_Search(string log)
         {
             using (EventLog myLogger = new EventLog(Settings.EvtLog.Source, ".", Settings.EvtLog.Source))
             {
@@ -36,11 +36,22 @@ namespace ConsoleEventLogAutoSearch
             }
         }
 
-        public static void WRITE_All_App_EventLog(Queue<EventLogEntry> Logs)
+        public static void WRITE_All_App_EventLog(Queue<EventLogEntry> Logs, string Severity)
         {
             while (Logs.Count>0)
             {
-                WRITE_Critical_EventLog(Logs.Dequeue().EventData);
+                if (Severity.ToLower() == "critical")
+                {
+                    WRITE_Critical_EventLog(Logs.Dequeue().EventData);
+                }
+                else if (Severity.ToLower() == "warning")
+                {
+                    WRITE_Warning_EventLog(Logs.Dequeue().EventData);
+                }
+                else if (Severity.ToLower() == "informational")
+                {
+                    WRITE_EventLog_From_SWELF_Search(Logs.Dequeue().EventData);
+                }
             }
         }
     }

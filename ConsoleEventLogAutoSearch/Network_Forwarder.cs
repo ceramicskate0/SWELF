@@ -1,4 +1,4 @@
-//Written by Ceramicskate0
+﻿//Written by Ceramicskate0
 //Copyright 2018
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Web;
+using System.IO;
 
 namespace SWELF
 {
@@ -16,17 +17,24 @@ namespace SWELF
         private static List<IPAddress> IPAddr = Settings.GET_LogCollector_Location();
         private static int port = Settings.Log_Forward_Location_Port;
 
-        public static void SEND_Eventlogs(EventLogEntry Data)
+        public static void SEND_Logs(EventLogEntry Data)
         {
             UdpClient udpClient = new UdpClient(FIND_Open_SourcePort());
             try
             {
                 for (int x = 0; x < IPAddr.Count; ++x)
                 {
-                    udpClient.Connect(IPAddr.ElementAt(x).MapToIPv4().ToString(), port);
-                    byte[] sendBytes = Encoding.ASCII.GetBytes(GET_Log_OutputFormat(Data));
-                    udpClient.Send(sendBytes, sendBytes.Length);
-                    udpClient.Close();
+                    if (Settings.AppConfig_File_Args["output_format"] == "json")
+                    {
+                        SEND_Logs_JSON(IPAddr.ElementAt(x).MapToIPv4().ToString(),Data);
+                    }
+                    else
+                    {
+                        udpClient.Connect(IPAddr.ElementAt(x).MapToIPv4().ToString(), port);
+                        byte[] sendBytes = Encoding.ASCII.GetBytes(GET_Log_OutputFormat(Data));
+                        udpClient.Send(sendBytes, sendBytes.Length);
+                        udpClient.Close();
+                    }
                 }
             }
             catch (Exception e)
@@ -42,6 +50,7 @@ namespace SWELF
             {
                 for (int x = 0; x < IPAddr.Count; ++x)
                 {
+                    //TODO: SEND IN JSON FORMAT
                     udpClient.Connect(IPAddr.ElementAt(x).MapToIPv4().ToString(), port);
                     byte[] sendBytes = Encoding.ASCII.GetBytes(Log_File_Data);
                     udpClient.Send(sendBytes, sendBytes.Length);
@@ -55,9 +64,35 @@ namespace SWELF
             }
         }
 
+        private static void SEND_Logs_JSON(string WebLocation, EventLogEntry Data)
+        {
+            //TODO: Deal with unknown file format local log file reads
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://" + WebLocation);
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = @"
+{
+
+}
+";
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+            /*var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+            }*/
+        }
+
         private static string GET_Log_OutputFormat(EventLogEntry data)
         {
-            string format=Settings.Args["outputformat"];
+            string format=Settings.AppConfig_File_Args["output_format"];
             string Data;
             switch (format.ToLower())
             {
@@ -68,13 +103,13 @@ namespace SWELF
                     }
                 case "syslog":
                     {
-                        Data = DateTime.Now.ToString("MMM dd HH:mm:ss") + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.EventData;
+                        Data = DateTime.Now.ToString("MMM dd HH:mm:ss") + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.LogName + "   " + data.CreatedTime + "   " + data.EventRecordID + "   " + data.TaskDisplayName + "   " + data.EventData;
                         break;
 
                     }
                 case "syslogxml":
                     {
-                        Data = DateTime.Now.ToString("MMM dd HH:mm:ss") + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.GET_XML_of_Log;
+                        Data = DateTime.Now.ToString("MMM dd HH:mm:ss") + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.LogName + "   " + data.CreatedTime + "   " + data.EventRecordID + "   " + data.TaskDisplayName + "   " + data.GET_XML_of_Log;
                         break;
 
                     }
@@ -104,6 +139,12 @@ namespace SWELF
                 select p;
             int FirstFreeUDPPortInRange = range.Except(portsInUse).FirstOrDefault();
             return FirstFreeUDPPortInRange;
+        }
+
+        private static bool RUN_Security_Check_IP_Addrs()
+        {
+            //TODO:check if IP is on blacklist in host windows and on same domain
+            return true;
         }
     }
 }

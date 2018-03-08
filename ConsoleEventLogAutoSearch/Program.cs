@@ -1,46 +1,98 @@
-//Written by Ceramicskate0
+﻿//Written by Ceramicskate0
 //Copyright 2018
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Security.Principal;
-using System.Diagnostics.Eventing.Reader;
-using System.Diagnostics.Eventing;
-using System.Diagnostics;
-
+using System.ServiceProcess;
+using System.Threading;
+using System.Configuration.Install;
+using System.ComponentModel;
 
 namespace SWELF
 {
-    class Program
+    public class Program
     {
         private static ReadEventLog EvntLogSearch = new ReadEventLog();
+        public static List<string> Program_Start_Args = new List<string>();
 
         public static void Main(string[] args)
         {
-            
-            try
+            Program_Start_Args = Environment.GetCommandLineArgs().ToList();
+
+            if (((Program_Start_Args.Contains("-output_csv".ToLower()) && Program_Start_Args.Contains("-evtx_file".ToLower())) && (Program_Start_Args.Contains("-search_terms".ToLower()) || Program_Start_Args.Contains("-find".ToLower()))) || Program_Start_Args.Contains("-help".ToLower()))
             {
-                Start_Setup();
-
-                Start_Read_Search_Write_Forward_EventLogs();
-
-                Start_ReadLocal_Logs();
-
-                Start_Send_File_Based_Logs();
-
-                Start_Write_Errors();
+                Start_EVTX_Process();
             }
-            catch (Exception e)
+            else if (Program_Start_Args.Count>1 && (Program_Start_Args.Contains("-dissolve".ToLower())==false))
             {
-                Errors.Log_Error("ALERT: SWELF MAIN ERROR: ", e.Message.ToString() + ", Also the app died");
-                Start_Write_Errors();
-                Environment.Exit(2);
+                Settings.SHOW_Help_Menu();
             }
+            else
+            {
+                try
+                {
+                    Start_Live_Process();
+                }
+                catch (Exception e)
+                {
+                    Errors.Log_Error("ALERT: SWELF MAIN ERROR: ", e.Message.ToString() + ", Also the app halted.");
+                    Start_Write_Errors();
+                    Stop(2);
+                }
+            }
+        }
+
+        public static void Start_EVTX_Process()
+        {
+            PARSE_CMDS();
+
+            Search_EventLogs search_Obj = new Search_EventLogs(EvntLogSearch.EVTX_File_Logs);
+
+            Queue<EventLogEntry> Matchs_in_EVTS_File = search_Obj.Search(Settings.CMDLine_EVTX_File);
+
+            Output_File.Write_Ouput_CSV(Settings.CMDLine_Output_CSV, Matchs_in_EVTS_File);
+
+            if (Settings.CMDLine_Dissolve)
+            {
+                Settings.Dissolve();
+            }
+        }
+
+        public static void Start_Live_Process()
+        {
+            if (Program_Start_Args.ElementAt(0).ToLower().Equals("-dissolve") && Settings.FIND_EventLog_Exsits(Settings.SWELF_EventLog_Name) == false && Settings.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
+            {
+                Settings.CMDLine_Dissolve = true;
+            }
+            Start_Setup();
+            //if (Settings.CHECK_If_Running_as_Admin())
+            // {
+            //Start_Run_Plugins();
+            Start_Read_Search_Write_Forward_EventLogs();
+            //}
+            //else
+            // {
+            //    Errors.Log_Error("ALERT: if (SWELFisAdmin)", Settings.ComputerName+" SWELF MAIN ERROR: APP not running as admin and was unable to read eventlogs.");
+            //    Start_Write_Errors();
+            // }
+            Start_ReadLocal_Logs();
+            Start_Send_File_Based_Logs();
+            Start_Write_Errors();
+            if (Settings.CMDLine_Dissolve)
+            {
+                Settings.Dissolve();
+            }
+        }
+
+        public static void Stop(int error_code)
+        {
+            Environment.Exit(error_code);
         }
 
         private static void Start_Setup()
         {
+            //CHECK_If_Running_as_Admin();
             try
             {
                 Settings.InitializeAppSettings();
@@ -48,12 +100,26 @@ namespace SWELF
             catch (Exception e)
             {
                 Errors.Log_Error("ALERT: SWELF MAIN ERROR: ", "Settings.InitializeAppSettings() " + e.Message.ToString());
-                HostEventLogAgent_Eventlog.WRITE_All_App_EventLog(Settings.CriticalEvents);
+                HostEventLogAgent_Eventlog.WRITE_All_App_EventLog(Settings.CriticalEvents,"critical");
                 Start_Write_Errors();
-                Environment.Exit(2);
+                Stop(2);
             }
         }
-        
+
+        private static void Start_Run_Plugins()
+        {
+            try
+            {
+                Powershell_Plugin.Run_PS_Script("C:\\Users\\Host\\Downloads\\DeepBlueCLI-master\\DeepBlue.ps1", "C:\\Users\\Host\\Downloads\\DeepBlueCLI-master\\evtx\\psattack-security.evtx");
+                //TODO if found return/forward/add to list of logs to forward
+            }
+            catch (Exception e)
+            {
+                Errors.Log_Error("SWELF PLUGIN ERROR: ", "Powershell_Plugin.Run_PS_Script() " + e.Message.ToString());
+                Network_Forwarder.SEND_Data_from_File("SWELF PLUGIN ERROR: Powershell_Plugin.Run_PS_Script() - " + e.Message.ToString());
+            }
+        }
+
         private static void Start_Read_Search_Write_Forward_EventLogs()
         {
             if (Settings.EventLog_w_PlaceKeeper_List.Count > 0)
@@ -63,18 +129,32 @@ namespace SWELF
                     try
                     {
                         EvntLogSearch.READ_EventLog(Settings.EventLog_w_PlaceKeeper_List.ElementAt(x), Settings.EventLog_w_PlaceKeeper[Settings.EventLog_w_PlaceKeeper_List.ElementAt(x)]);
-                        Search_EventLogs search_Obj = new Search_EventLogs(EvntLogSearch.EventLog_Log_File.EventLogs_From_WindowsAPI);
-                        EvntLogSearch.EventLog_Log_File.EventLogs_From_WindowsAPI = search_Obj.Search(Settings.EventLog_w_PlaceKeeper_List.ElementAt(x));
+                        Search_EventLogs search_Obj = new Search_EventLogs(EvntLogSearch.EventLog_Log_API.EventLogs_From_WindowsAPI);
+                        EvntLogSearch.EventLog_Log_API.EventLogs_From_WindowsAPI = search_Obj.Search(Settings.EventLog_w_PlaceKeeper_List.ElementAt(x));
                     }
                     catch (Exception e)
                     {
-                        Errors.Log_Error("ALERT: SWELF APP ERROR: ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " " + e.Message.ToString());
+                        if (e.Message == "Object reference not set to an instance of an object.")
+                        {
+                            Errors.Log_Error("ALERT: SWELF: ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " Event Log Empty.");
+                        }
+                        else
+                        {
+                            Errors.Log_Error("ALERT: SWELF APP ERROR: ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " " + e.Message.ToString());
+                        }
                     }
                     Start_Write_To_SWELF_EventLogs(x);
                 }
                 try
                 {
-                    Start_Send_EventLogs();
+                    if (Program_Start_Args.Contains("-output_csv".ToLower()) && Program_Start_Args.Count==3 && (Settings.GET_LogCollector_Location().Count<1))
+                    {
+                        Output_File.Write_Ouput_CSV(Settings.CMDLine_Output_CSV, EvntLogSearch.EventLog_Log_API.EventLogs_From_WindowsAPI);
+                    }
+                    else
+                    {
+                        Start_Send_EventLogs();
+                    }
                 }
                 catch (Exception e)
                 {
@@ -92,11 +172,11 @@ namespace SWELF
 
         private static void Start_Write_To_SWELF_EventLogs(int x)
         {
-            for (int z = 0; z < EvntLogSearch.EventLog_Log_File.EventLogs_From_WindowsAPI.Count; ++z)
+            for (int z = 0; z < EvntLogSearch.EventLog_Log_API.EventLogs_From_WindowsAPI.Count; ++z)
             {
                 try
                 {
-                    HostEventLogAgent_Eventlog.WRITE_EventLog(EvntLogSearch.EventLog_Log_File.EventLogs_From_WindowsAPI.ElementAt(z).EventData);
+                    HostEventLogAgent_Eventlog.WRITE_EventLog_From_SWELF_Search(EvntLogSearch.EventLog_Log_API.EventLogs_From_WindowsAPI.ElementAt(z).EventData);
                 }
                 catch (Exception e)
                 {
@@ -109,9 +189,9 @@ namespace SWELF
         {
             if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == false && String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)//Does admin want to send off logs?
             {
-                for (int x = 0; x < EvntLogSearch.EventLog_Log_File.EventLogs_From_WindowsAPI.Count; ++x)
+                for (int x = 0; x < EvntLogSearch.EventLog_Log_API.EventLogs_From_WindowsAPI.Count; ++x)
                 {
-                    Network_Forwarder.SEND_Eventlogs(EvntLogSearch.EventLog_Log_File.EventLogs_From_WindowsAPI.Dequeue());
+                    Network_Forwarder.SEND_Logs(EvntLogSearch.EventLog_Log_API.EventLogs_From_WindowsAPI.Dequeue());
                 }
             }
         }
@@ -124,7 +204,7 @@ namespace SWELF
                 {
                     for (int z = 0; z < EvntLogSearch.FileContents_From_FileReads.Count; ++z)
                     {
-                        HostEventLogAgent_Eventlog.WRITE_EventLog(EvntLogSearch.FileContents_From_FileReads.ElementAt(z));
+                        HostEventLogAgent_Eventlog.WRITE_EventLog_From_SWELF_Search(EvntLogSearch.FileContents_From_FileReads.ElementAt(z));
                         Network_Forwarder.SEND_Data_from_File(EvntLogSearch.FileContents_From_FileReads.ElementAt(z));
                     }
                 }
@@ -141,16 +221,59 @@ namespace SWELF
             Errors.SEND_Errors_To_Central_Location();
         }
 
-        private static bool CHECK_If_Running_as_Admin()
+        private static void PARSE_CMDS()
         {
-            if (new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
+            for (int x = 0; x < Program_Start_Args.Count; ++x)
             {
-                return true;
+                switch (Program_Start_Args.ElementAt(x).ToLower())
+                {
+                    case "-help":
+                        {
+                            Settings.SHOW_Help_Menu();
+                            break;
+                        }
+                    case "-output_csv":
+                        {
+                            Settings.CMDLine_Output_CSV = Program_Start_Args.ElementAt(x + 1);
+                            break;
+                        }
+                    case "-evtx_file":
+                        {
+                            Settings.CMDLine_EVTX_File= Program_Start_Args.ElementAt(x + 1);
+                            EvntLogSearch.READ_EVTX_File(Settings.CMDLine_EVTX_File);
+                            Settings.EVTX_Override = true;
+                            break;
+                        }
+                    case "-search_terms":
+                        {
+                            Settings.CMDLine_Search_Terms= Program_Start_Args.ElementAt(x+1);
+                            Settings.READ_Search_Terms_File(Settings.CMDLine_Search_Terms);
+                            break;
+                        }
+                    case "-central_search_config":
+                        {
+                            Settings.CMDLine_Search_Terms = Program_Start_Args.ElementAt(x + 1);
+                            Settings.READ_CENTRAL_SEARCH_Config_File(Program_Start_Args.ElementAt(x + 1));
+                            Settings.READ_Search_Terms_File(Settings.CMDLine_Search_Terms);
+                            break;
+                        }
+                    case "-dissolve":
+                        {
+                            Settings.CMDLine_Dissolve = true;
+                            break;
+                        }
+                    case "-find":
+                        {
+                            Settings.CMDLine_Find_SEARCHTERM = Program_Start_Args.ElementAt(x + 1);
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
             }
-            else
-            {
-                return false;
             }
         }
-    }
 }
+

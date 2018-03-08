@@ -1,4 +1,4 @@
-//Written by Ceramicskate0
+﻿//Written by Ceramicskate0
 //Copyright 2018
 using System;
 using System.Linq;
@@ -16,8 +16,6 @@ namespace SWELF
         private static List<EventLogEntry> Log_Matchs = new List<EventLogEntry>();
         private static string CurrentEventLogBeingSearched = "";
 
-        private static string[] Search_Commands = { "count" + Settings.SplitChar_SearchCommandParse[0], "eventdata_length" + Settings.SplitChar_SearchCommandParse[0], "commandline_length" + Settings.SplitChar_SearchCommandParse[0], "commandline_contains" + Settings.SplitChar_SearchCommandParse[0], "commandline_count" + Settings.SplitChar_SearchCommandParse[0], "regex"+Settings.SplitChar_SearchCommandParse[0] };
-
         public Search_EventLogs(Queue<EventLogEntry> eventLogs_From_WindowsAPI)
         {
             EventLogs_From_WindowsAPI = eventLogs_From_WindowsAPI;
@@ -27,15 +25,15 @@ namespace SWELF
         {
             try
             {
-                if (SearchCommand.Contains(Settings.SplitChar_SearchCommandParse[0]))
+                if (SearchCommand.Contains(Settings.SplitChar_Search_Command_Parsers[0]))
                 {
-                    string[] Search_Command_Values = SearchCommand.Split(Settings.SplitChar_SearchCommandParse, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] Search_Command_Values = SearchCommand.Split(Settings.SplitChar_Search_Command_Parsers, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     switch (Search_Command_Values[0].ToLower())
                     {
                         case "count":
                             {
-                               Log_Matchs.AddRange(SEARCH_CMD_Counts_in_Log(Search_Command_Values[1].ToString(), Convert.ToInt32(Search_Command_Values[2]), Search_Command_Values, SearchCommand));
+                               Log_Matchs.AddRange(SEARCH_CMD_Counts_in_Log(Search_Command_Values[1].ToString(), Convert.ToInt32(Search_Command_Values[2]), Search_Command_Values));
                                 break;
                             }
                         case "eventdata_length":
@@ -92,7 +90,7 @@ namespace SWELF
                 {
                     if (Settings.Logs_Search_Terms_Unparsed.ElementAt(x).Contains(Settings.CommentCharConfigs) == false)
                     {
-                        if (Search_Commands.Any(s => Settings.Logs_Search_Terms_Unparsed.ElementAt(x).ToLower().IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0))
+                        if (Settings.Search_Commands.Any(s => Settings.Logs_Search_Terms_Unparsed.ElementAt(x).ToLower().IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0))
                         {
                             SEARCH_Run_Commands(Settings.Logs_Search_Terms_Unparsed.ElementAt(x));
                         }
@@ -163,34 +161,27 @@ namespace SWELF
             return results.ToList();
         }
 
-        private List<EventLogEntry> SEARCH_CMD_Counts_in_Log(string SearchTerm , int Min_Num_Of_Occurances, string[] SearchResults, string SearchCommand)
+        private List<EventLogEntry> SEARCH_CMD_Counts_in_Log(string SearchTerm , int Min_Num_Of_Occurances, string[] SearchResults)
         {
+            string[] SplitArray = { SearchTerm };
             try
             {
-                int Number_of_Parsers = SearchCommand.Count(f => f == Convert.ToChar(Settings.SplitChar_SearchCommandParse[0]));
-
-                if (Number_of_Parsers == 1)
+                if ((SearchResults.Length == 3 )|| (Settings.EVTX_Override && SearchResults.Length == 3))
                 {
-                    IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(s => s.EventData.Count(f => f == Convert.ToChar(SearchTerm)) >= Min_Num_Of_Occurances).ToList();
+                    IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(s => s.EventData.Split(SplitArray,StringSplitOptions.RemoveEmptyEntries).ToList().Count-1 >= Min_Num_Of_Occurances).ToList();
                     return results.ToList();
                 }
-                else if (Number_of_Parsers == 2 && (Settings.FIND_EventLog_Exsits(SearchResults[2])))
+                else if ((Settings.EVTX_Override && SearchResults.Length == 4) || (SearchResults.Length == 4 && (Settings.FIND_EventLog_Exsits(SearchResults[3]))))
                 {
-                    IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(s => s.EventData.Count(f => f == Convert.ToChar(SearchTerm)) >= Min_Num_Of_Occurances && s.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
+                    IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(s => s.EventData.Split(SplitArray, StringSplitOptions.RemoveEmptyEntries).ToList().Count - 1 >= Min_Num_Of_Occurances && s.LogName.ToLower() == SearchResults[3].ToLower()).ToList();
                     return results.ToList();
                 }
-                else if (Number_of_Parsers == 3 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length == 3)
+                else if ((Settings.EVTX_Override && SearchResults.Length == 5) || (SearchResults.Length == 5 && (Settings.FIND_EventLog_Exsits(SearchResults[3]))) )
                 {
-                    IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(s => s.EventData.Count(f => f == Convert.ToChar(SearchTerm)) >= Min_Num_Of_Occurances && s.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
-                    return results.ToList();
-                }
-                else if (Number_of_Parsers == 3 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length == 4)
-                {
-                    int EventID;
-                    bool testEventID = int.TryParse(SearchResults[3], out EventID);
+                    bool testEventID = int.TryParse(SearchResults[4], out int EventID);
                     if (testEventID)
                     {
-                        IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(s => s.EventData.Count(f => f == Convert.ToChar(SearchTerm)) >= Min_Num_Of_Occurances && s.LogName.ToLower() == SearchResults[2].ToLower() && s.EventID == EventID).ToList();
+                        IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(s => s.EventData.Split(SplitArray, StringSplitOptions.RemoveEmptyEntries).ToList().Count - 1 >= Min_Num_Of_Occurances && s.LogName.ToLower() == SearchResults[3].ToLower() && s.EventID == EventID).ToList();
                         return results.ToList();
                     }
                     else
@@ -202,14 +193,24 @@ namespace SWELF
                 }
                 else
                 {
-                    Errors.Log_Error("SEARCH_CMD_Counts_in_Log()", "The search term had bad input it was to long " + Settings.SplitChar_SearchCommandParse[0] + ". Check search config format.");
-                    IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(s => s.EventData.Count(f => f == Convert.ToChar(SearchTerm)) >= Min_Num_Of_Occurances).ToList();
-                    return results.ToList();
+                    if ((Settings.FIND_EventLog_Exsits(SearchResults[2])) || Settings.EVTX_Override)
+                    {
+                        Errors.Log_Error("SEARCH_CMD_Counts_in_Log()", "The search term had bad input it was to long " + Settings.SplitChar_Search_Command_Parsers[0] + ". Check search config format.");
+                        IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(s => s.EventData.Split(SplitArray, StringSplitOptions.RemoveEmptyEntries).ToList().Count - 1 >= Min_Num_Of_Occurances).ToList();
+                        return results.ToList();
+                    }
+                    else
+                    {
+                        Errors.Log_Error("SEARCH_CMD_Counts_in_Log()", "The search term had bad input Eventlog did not exist " + Settings.SplitChar_Search_Command_Parsers[0] + ". Check search config format.");
+                        List<EventLogEntry> results = new List<EventLogEntry>();
+                        return results.ToList();
+
+                    }
                 }
             }
-            catch
+            catch (Exception e)
             {
-                Errors.Log_Error("SEARCH_CMD_Counts_in_Log()", "The search term had bad input. Check search config format.");
+                Errors.Log_Error("SEARCH_CMD_Counts_in_Log()", "The search term had bad input. Check search config format. "+e.Message.ToString());
                 List<EventLogEntry> results = new List<EventLogEntry>();
                 return results.ToList();
             }
@@ -219,27 +220,24 @@ namespace SWELF
         {
             try
             {
-                int Number_of_Parsers = SearchCommand.Count(f => f == Convert.ToChar(Settings.SplitChar_SearchCommandParse[0]));
-
-                if (Number_of_Parsers == 1)
+                if (SearchResults.Length == 2 || (Settings.EVTX_Override && SearchResults.Length == 2))
                 {
                     IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length).ToList();
                     return results.ToList();
                 }
-                else if (Number_of_Parsers == 2 && (Settings.FIND_EventLog_Exsits(SearchResults[2])))
+                else if ((Settings.EVTX_Override && SearchResults.Length == 3) || (SearchResults.Length == 3 && (Settings.FIND_EventLog_Exsits(SearchResults[2]))))
                 {
                     IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length && f.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
                     return results.ToList();
                 }
-                else if (Number_of_Parsers == 3 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length == 3)
+                else if ((Settings.EVTX_Override && SearchResults.Length == 4) || (SearchResults.Length == 4 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length == 3))
                 {
                     IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length && f.LogName.ToLower().Equals(SearchResults[2].ToLower())).ToList();
                     return results.ToList();
                 }
-                else if (Number_of_Parsers == 3 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length == 4)
+                else if ((Settings.EVTX_Override && SearchResults.Length == 4) || (SearchResults.Length == 4 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length == 4))
                 {
-                    int EventID;
-                    bool testEventID = int.TryParse(SearchResults[3], out EventID);
+                    bool testEventID = int.TryParse(SearchResults[3], out int EventID);
                     if (testEventID)
                     {
                         IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length && f.LogName.ToLower() == SearchResults[2].ToLower() && f.EventID == EventID).ToList();
@@ -254,7 +252,7 @@ namespace SWELF
                 }
                 else
                 {
-                    Errors.Log_Error("SEARCH_CMD_Length_of_LogData()", "The search term had bad input it was to long " + Settings.SplitChar_SearchCommandParse[0] + ". Check search config format.");
+                    Errors.Log_Error("SEARCH_CMD_Length_of_LogData()", "The search term had bad input it was to long " + Settings.SplitChar_Search_Command_Parsers[0] + ". Check search config format.");
                     IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length).ToList();
                     return results.ToList();
                 }
@@ -272,7 +270,7 @@ namespace SWELF
             try
             {
                 var RegX = new Regex(Regex_SearchString, RegexOptions.IgnoreCase);
-                int Number_of_Parsers = SearchCommand.Count(f => f == Convert.ToChar(Settings.SplitChar_SearchCommandParse[0]));
+                int Number_of_Parsers = SearchCommand.Count(f => f == Convert.ToChar(Settings.SplitChar_Search_Command_Parsers[0]));
 
                 if (Number_of_Parsers == 1)
                 {
@@ -291,8 +289,7 @@ namespace SWELF
                 }
                 else if (Number_of_Parsers == 3 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length == 4)
                 {
-                    int EventID;
-                    bool testEventID = int.TryParse(SearchResults[3], out EventID);
+                    bool testEventID = int.TryParse(SearchResults[3], out int EventID);
                     if (testEventID)
                     {
                         IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(f => RegX.IsMatch(f.EventData) && f.LogName.ToLower() == SearchResults[2].ToLower() && f.EventID == EventID).ToList();
@@ -307,7 +304,7 @@ namespace SWELF
                 }
                 else
                 {
-                    Errors.Log_Error("SEARCH_CMD_For_Regex_in_Log()", "The search term had bad input it was to long " + Settings.SplitChar_SearchCommandParse[0] + ". Check search config format.");
+                    Errors.Log_Error("SEARCH_CMD_For_Regex_in_Log()", "The search term had bad input it was to long " + Settings.SplitChar_Search_Command_Parsers[0] + ". Check search config format.");
 
                     IList<EventLogEntry> results = EventLogs_From_WindowsAPI.Where(f => RegX.IsMatch(f.EventData)).ToList();
                     return results.ToList();
@@ -323,7 +320,7 @@ namespace SWELF
 
         private void SEARCH_FindTerms(int x)
         {
-                string[] SearchsArgs = Settings.Logs_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandParse, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                string[] SearchsArgs = Settings.Logs_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_Search_Command_Parsers, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                 switch (SearchsArgs.Length)
                 {

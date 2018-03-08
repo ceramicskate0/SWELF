@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright 2017
+//Copyright 2018
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics.Eventing.Reader;
 
-namespace ConsoleEventLogAutoSearch
+namespace SWELF
 {
-    class EventLogFile: APP_API
+    class EventLogFile
     {
         public Queue<EventLogEntry> EventLogs_From_WindowsAPI;
         public string EventLogFileName = "";
@@ -17,6 +17,8 @@ namespace ConsoleEventLogAutoSearch
         public bool EventlogMissing = false;
         public long Last_EventLogID_From_Check { get; set; }
         public long First_EventLogID_From_Check { get; set; }
+        public List<string> Hashes_From_Sysmon = new List<string>();
+        public List<string> IP_From_Sysmon = new List<string>();
 
         public EventLogFile(string Name,long ID_EVENTLOGRecordID=0)
         {
@@ -26,6 +28,7 @@ namespace ConsoleEventLogAutoSearch
             GET_Last_EventRecordID_InLogFile(Name);
             GET_First_EventRecordID_InLogFile(Name);
         }
+
 
         public long ID_EVENTLOG
         {
@@ -61,12 +64,12 @@ namespace ConsoleEventLogAutoSearch
 
         public void Dedup_IP_List()
         {
-            IP_From_EventLog=IP_From_EventLog.Distinct().ToList();
+            IP_From_Sysmon=IP_From_Sysmon.Distinct().ToList();
         }
 
         public void Dedup_Hash_List()
         {
-            Hashes_From_EventLog=Hashes_From_EventLog.Distinct().ToList();
+            Hashes_From_Sysmon=Hashes_From_Sysmon.Distinct().ToList();
         }
 
         private void GET_Last_EventRecordID_InLogFile(string Eventlog_FullName)
@@ -92,6 +95,26 @@ namespace ConsoleEventLogAutoSearch
             EventLogEntry Eventlog = new EventLogEntry();
             First_EventLogID_From_Check = Windows_EventLog_API.RecordId.Value;
             return First_EventLogID_From_Check = Windows_EventLog_API.RecordId.Value;
+        }
+
+        public void Add_IP(List<string> ListofIP)
+        {
+            foreach (string item in ListofIP)
+            {
+                IP_From_Sysmon.Add(item);
+            }
+        }
+
+        public void Add_HASH(string Hash)
+        {
+            try
+            {
+                Hashes_From_Sysmon.Add(Hash);
+            }
+            catch
+            {
+
+            }
         }
     }
 }

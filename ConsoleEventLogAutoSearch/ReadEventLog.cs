@@ -1,4 +1,4 @@
-//Written by Ceramicskate0
+﻿//Written by Ceramicskate0
 //Copyright 2018
 using System;
 using System.Collections.Generic;
@@ -15,9 +15,10 @@ namespace SWELF
     {
         private static EventRecord Windows_EventLog_API { get; set; }
         public string EvntLog_Name;
-        public EventLogFile EventLog_Log_File;
+        public EventLogFile EventLog_Log_API;//windows live api read
         public List<string> FileContents_From_FileReads;
         public static bool MissingLogInFileDueToException = false;
+        public Queue<EventLogEntry> EVTX_File_Logs = new Queue<EventLogEntry>();
 
         public ReadEventLog()
         {
@@ -78,7 +79,7 @@ namespace SWELF
                     HostEventLogAgent_Eventlog.WRITE_Warning_EventLog("ERROR: App unable to determine app reading state in event log. App starting over. App not told to reset. "+Eventlog_FullName +" "+ Settings.ComputerName);
                     Settings.EventLog_w_PlaceKeeper[Eventlog_FullName] = Last_EventID;
                 }
-                EventLog_Log_File = EventLogFileName;
+                EventLog_Log_API = EventLogFileName;
             }
             else
             {
@@ -124,7 +125,7 @@ namespace SWELF
 
                             for (int x = 0; x < FilePaths.Length - 1; ++x)
                             {
-                                if (File.Exists(FilePaths.ElementAt(x)) && (FilePaths.ElementAt(x).Contains(".txt") || FilePaths.ElementAt(x).Contains(".log")))
+                                if (Settings.VERIFY_if_File_Exists(FilePaths.ElementAt(x)) && (FilePaths.ElementAt(x).Contains(".txt") || FilePaths.ElementAt(x).Contains(".log")))
                                 {
                                     string FileContent = File.ReadAllText(FilePaths.ElementAt(x));
                                     File.Delete(FilePaths.ElementAt(x));
@@ -139,6 +140,30 @@ namespace SWELF
             catch (Exception e)
             {
                 Errors.Log_Error("ERROR: READ_Local_Log_Dirs() ", e.Message.ToString());
+            }
+        }
+
+        public void READ_EVTX_File(string Path)
+        {
+            using (var reader = new EventLogReader(Path, PathType.FilePath))
+            {
+                while ((Windows_EventLog_API = reader.ReadEvent()) != null)
+                {
+                    EventLogEntry Eventlog = new EventLogEntry();
+                    using (Windows_EventLog_API)
+                    {
+                        Eventlog.EventLog_Seq_num = Windows_EventLog_API.RecordId.Value;
+                        Eventlog.LogName = Windows_EventLog_API.LogName;
+                        Eventlog.Severity = Windows_EventLog_API.OpcodeDisplayName;
+                        Eventlog.TaskDisplayName = Windows_EventLog_API.TaskDisplayName;
+                        Eventlog.ComputerName = Windows_EventLog_API.MachineName;
+                        Eventlog.EventID = Windows_EventLog_API.Id;
+                        Eventlog.GET_XML_of_Log = Windows_EventLog_API.ToXml();
+                        Eventlog.CreatedTime = Windows_EventLog_API.TimeCreated.Value;
+                        Eventlog.EventData = Windows_EventLog_API.FormatDescription().ToLower().ToString();
+                    }
+                    EVTX_File_Logs.Enqueue(Eventlog);
+                }
             }
         }
 
@@ -230,9 +255,8 @@ namespace SWELF
             if ((EVE.EventLog_Seq_num != ELF.ID_EVENTLOG + 1) && ELF.EventlogMissing == false && (ELF.ID_EVENTLOG != 0 && EVE.EventRecordID!=0))
             {
                 ELF.EventlogMissing = true;
-                string Alert = "ALERT: Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.";
-                Errors.WRITE_Errors_To_Log(Alert);
-                Settings.ADD_Eventlog_to_CriticalEvents(Alert, "Missing Event Log");
+                Errors.WRITE_Errors_To_Log("ALERT:","Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.","Warning");
+                Settings.ADD_Eventlog_to_CriticalEvents("ALERT: Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.", "Missing Event Log","Warning");
                 return true;
             }
             else
@@ -240,6 +264,7 @@ namespace SWELF
                 return false;
             }
         }
+
     }
 
 }
