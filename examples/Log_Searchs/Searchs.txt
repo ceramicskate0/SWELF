@@ -1,12 +1,14 @@
 #SearchTerm,EventLogName,EventID
 count:':25
 count:+:12
+count:|:8~Microsoft-Windows-PowerShell/Operational
 count:&:8
+count:-split:4~Microsoft-Windows-PowerShell/Operational
 count:;:12~Microsoft-Windows-Sysmon/Operational~
 count:-split:4
-webclient~windows powershell~
+webclient~Microsoft-Windows-PowerShell/Operational
 iex~windows powershell~
-wscript.exe~windows powershell~
+wscript~Microsoft-Windows-PowerShell/Operational
 commandline_length:400
 commandline_contains:<script>
 commandline_contains:mshta -Enbedding
@@ -22,13 +24,11 @@ eventdata_length:10000
 ~microsoft-Windows-Windows Defender/Operational~malware
 ~microsoft-Windows-Windows Defender/Operational~disabled
 commandline_contains:-windowstyle hidden
-csc.exe
 jscript.exe
 cvtres.exe
-wscript
 vbscript.exe
 csript.exe
-wscript.shell
+wscript.shell~Microsoft-Windows-PowerShell/Operational
 mshta.exe javascript:
 mshta vbscript:
 regsvr32.exe /s /u /i:
