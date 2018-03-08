@@ -1,5 +1,9 @@
-Microsoft-Windows-PowerShell/Operational=1 
-Windows PowerShell=1 
-Microsoft-Windows-WMI-Activity/Operational=1 
-Microsoft-Windows-Sysmon/Operational=1 
-Security=1
+microsoft-windows-powershell/operational=1
+microsoft-windows-windows defender/operational=1
+windows powershell=1
+microsoft-windows-sysmon/operational=1
+security=1
+microsoft-windows-deviceguard/operational=1
+microsoft-windows-wmi-activity/operational=1
+microsoft-windows-bits-client/operational=1
+amsi/operational=1
