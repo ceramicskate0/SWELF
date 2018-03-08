@@ -40,3 +40,4 @@ cmstp.exe
 rundll32.exe javascript:
 ~AMSI/Operational~
 Iexpress.exe
+psr.exe
