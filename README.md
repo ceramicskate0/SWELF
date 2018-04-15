@@ -1,8 +1,6 @@
 # Simple-Windows-Event-Log-Forwarder (SWELF) 
 
-## HEY! FYI
-Baring any major reported bugs. Dev on the project will be on hold for a few months. I have to prep for an cyber exercise.
-
+![bf icon_v02](https://user-images.githubusercontent.com/6934294/38778422-18790d6c-407f-11e8-8594-be72577b26cd.png)
 ## Summary:
 
 Having the to many log issue?!! Or maybe just cant find what you want from a log forwarder? Maybe they are just to complicated and you want something simple?
