@@ -1,6 +1,5 @@
 # Simple-Windows-Event-Log-Forwarder (SWELF) 
 
-![bf icon_v02](https://user-images.githubusercontent.com/6934294/38778422-18790d6c-407f-11e8-8594-be72577b26cd.png)
 ## Summary:
 
 Having the to many log issue?!! Or maybe just cant find what you want from a log forwarder? Maybe they are just to complicated and you want something simple?
@@ -25,6 +24,7 @@ Known Good Hash for current relase of SWELF.exe (SHA 256): 5CDBBA57051643329AAE5
 --------------------------------------------------------------------------------
 The goal here is ideally between this app, Sysmon (or another way to monitor commandline, network connections on the endpoint, and generate hashs  (sha256) for running stuff), properly configured Powershell Logging (script block logging), configured your other favorite log sources to get everything you want/need, a SIEM or Log collector (SIEM recommended)(To sort through what your do want to forward), and a little review of your log data you could in theory make a leap forward in finding the footprints that alot of security solutions just cant seem to find (fileless). 
 
+![bf icon_v02](https://user-images.githubusercontent.com/6934294/38778422-18790d6c-407f-11e8-8594-be72577b26cd.png)
 
 # Legal Disclaimer:
 If you use this software you do so at your own risk and your own responsibility/liability. I do/have NEVER authorized, condoned, or recommend the use of anything in any of my repos for any malicious reason. Do not use for evil, malicious purposes, or on machines you do not own. Test it before you use it.
