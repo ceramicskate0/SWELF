@@ -63,3 +63,4 @@ ieexec.exe
 makecab.exe
 extrac.exe
 ftp.exe
+.bgi
