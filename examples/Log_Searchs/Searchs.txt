@@ -47,6 +47,8 @@ commandline_contains:bitsadmin  /transfer
 commandline_contains:bitsadmin /download 
 commandline_contains:rundll32.exe javascript
 commandline_contains:sc create
+commandline_contains:ATBroker /start
+commandline_contains:ATBroker.exe /start
 jscript.exe
 cvtres.exe
 vbscript.exe
