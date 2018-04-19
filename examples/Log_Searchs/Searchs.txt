@@ -15,6 +15,9 @@ commandline_contains:mshta -Enbedding
 commandline_contains:mshta javascript
 commandline_contains:rundll32.exe javascript
 commandline_contains:$env
+commandline_contains:print /D:
+commandline_contains:expand
+commandline_contains:cmstp.exe /ni /s
 eventdata_length:10000
 ~Microsoft-Windows-Sysmon/Operational~19
 ~Microsoft-Windows-Sysmon/Operational~9
