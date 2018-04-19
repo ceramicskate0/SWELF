@@ -42,3 +42,7 @@ rundll32.exe javascript:
 Iexpress.exe
 psr.exe
 CMSTP.exe
+expand.exe
+makecab.exe
+extrac.exe
+ftp.exe
