@@ -49,6 +49,7 @@ commandline_contains:rundll32.exe javascript
 commandline_contains:sc create
 commandline_contains:ATBroker /start
 commandline_contains:ATBroker.exe /start
+commandline_contains:EQNEDT32.EXE -Embedding
 jscript.exe
 cvtres.exe
 vbscript.exe
