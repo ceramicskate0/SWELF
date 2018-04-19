@@ -6,9 +6,20 @@ count:&:8
 count:-split:4~Microsoft-Windows-PowerShell/Operational
 count:;:12~Microsoft-Windows-Sysmon/Operational~
 count:-split:4
+eventdata_length:10000
 webclient~Microsoft-Windows-PowerShell/Operational
+powershell New-Service~windows powershell~
 iex~windows powershell~
 wscript~Microsoft-Windows-PowerShell/Operational
+wscript.shell~Microsoft-Windows-PowerShell/Operational
+~AMSI/Operational~
+~Microsoft-Windows-Sysmon/Operational~19
+~Microsoft-Windows-Sysmon/Operational~9
+~Microsoft-Windows-Sysmon/Operational~12
+~microsoft-Windows-Windows Defender/Operational~detected
+~microsoft-Windows-Windows Defender/Operational~detection 
+~microsoft-Windows-Windows Defender/Operational~malware
+~microsoft-Windows-Windows Defender/Operational~disabled
 commandline_length:400
 commandline_contains:<script>
 commandline_contains:mshta -Enbedding
@@ -18,34 +29,35 @@ commandline_contains:$env
 commandline_contains:print /D:
 commandline_contains:expand
 commandline_contains:cmstp.exe /ni /s
-eventdata_length:10000
-~Microsoft-Windows-Sysmon/Operational~19
-~Microsoft-Windows-Sysmon/Operational~9
-~Microsoft-Windows-Sysmon/Operational~12
-~microsoft-Windows-Windows Defender/Operational~detected
-~microsoft-Windows-Windows Defender/Operational~detection 
-~microsoft-Windows-Windows Defender/Operational~malware
-~microsoft-Windows-Windows Defender/Operational~disabled
+commandline_contains:msiexec /q /i
+commandline_contains:msiexec /quiet /i
+commandline_contains:odbcconf -f
+commandline_contains:pcalua.exe -a
+commandline_contains:regasm.exe /U
 commandline_contains:-windowstyle hidden
+commandline_contains:runscripthelper.exe surfacecheck
+commandline_contains:Scriptrunner.exe -appvscript
+commandline_contains:mshta.exe javascript
+commandline_contains:mshta javascript
+commandline_contains:mshta vbscript
+commandline_contains:regsvr32.exe /s /u /i
+commandline_contains:bitsadmin.exe  /transfer
+commandline_contains:bitsadmin.exe /download 
+commandline_contains:bitsadmin  /transfer
+commandline_contains:bitsadmin /download 
+commandline_contains:rundll32.exe javascript
+commandline_contains:sc create
 jscript.exe
 cvtres.exe
 vbscript.exe
 csript.exe
-wscript.shell~Microsoft-Windows-PowerShell/Operational
-mshta.exe javascript:
-mshta vbscript:
-regsvr32.exe /s /u /i:
-bitsadmin.exe  /transfer
-bitsadmin.exe /download 
-powershell New-Service~windows powershell~
-sc create
 cmstp.exe
-rundll32.exe javascript:
-~AMSI/Operational~
 Iexpress.exe
 psr.exe
 CMSTP.exe
 expand.exe
+control.exe
+ieexec.exe
 makecab.exe
 extrac.exe
 ftp.exe
