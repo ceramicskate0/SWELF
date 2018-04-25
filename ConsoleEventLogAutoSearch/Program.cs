@@ -110,7 +110,6 @@ namespace SWELF
         {
             try
             {
-                Powershell_Plugin.Run_PS_Script("C:\\Users\\Host\\Downloads\\DeepBlueCLI-master\\DeepBlue.ps1", "C:\\Users\\Host\\Downloads\\DeepBlueCLI-master\\evtx\\psattack-security.evtx");
                 //TODO if found return/forward/add to list of logs to forward
             }
             catch (Exception e)
