@@ -1,67 +1,42 @@
 #SearchTerm,EventLogName,EventID
-count:':25
 count:+:12
-count:|:8~Microsoft-Windows-PowerShell/Operational
-count:&:8
-count:-split:4~Microsoft-Windows-PowerShell/Operational
+count:&:10
 count:;:12~Microsoft-Windows-Sysmon/Operational~
 count:-split:4
-eventdata_length:10000
-webclient~Microsoft-Windows-PowerShell/Operational
-powershell New-Service~windows powershell~
+webclient~windows powershell~
 iex~windows powershell~
-wscript~Microsoft-Windows-PowerShell/Operational
-wscript.shell~Microsoft-Windows-PowerShell/Operational
+wscript.exe~windows powershell~
+powershell New-Service~windows powershell~
 ~AMSI/Operational~
 ~Microsoft-Windows-Sysmon/Operational~19
 ~Microsoft-Windows-Sysmon/Operational~9
 ~Microsoft-Windows-Sysmon/Operational~12
+mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
+mshta vbscript:~Microsoft-Windows-Sysmon/Operational~
+regsvr32.exe /s /u /i:~Microsoft-Windows-Sysmon/Operational~
+bitsadmin.exe  /transfer~Microsoft-Windows-Sysmon/Operational~
+bitsadmin.exe /download~Microsoft-Windows-Sysmon/Operational~ 
+rundll32.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 ~microsoft-Windows-Windows Defender/Operational~detected
 ~microsoft-Windows-Windows Defender/Operational~detection 
 ~microsoft-Windows-Windows Defender/Operational~malware
 ~microsoft-Windows-Windows Defender/Operational~disabled
+eventdata_length:10000~Microsoft-Windows-PowerShell/Operational
 commandline_length:400
 commandline_contains:<script>
 commandline_contains:mshta -Enbedding
 commandline_contains:mshta javascript
 commandline_contains:rundll32.exe javascript
 commandline_contains:$env
-commandline_contains:print /D:
-commandline_contains:expand
-commandline_contains:cmstp.exe /ni /s
-commandline_contains:msiexec /q /i
-commandline_contains:msiexec /quiet /i
-commandline_contains:odbcconf -f
-commandline_contains:pcalua.exe -a
-commandline_contains:regasm.exe /U
 commandline_contains:-windowstyle hidden
-commandline_contains:runscripthelper.exe surfacecheck
-commandline_contains:Scriptrunner.exe -appvscript
-commandline_contains:mshta.exe javascript
-commandline_contains:mshta javascript
-commandline_contains:mshta vbscript
-commandline_contains:regsvr32.exe /s /u /i
-commandline_contains:bitsadmin.exe  /transfer
-commandline_contains:bitsadmin.exe /download 
-commandline_contains:bitsadmin  /transfer
-commandline_contains:bitsadmin /download 
-commandline_contains:rundll32.exe javascript
-commandline_contains:sc create
-commandline_contains:ATBroker /start
-commandline_contains:ATBroker.exe /start
-commandline_contains:EQNEDT32.EXE -Embedding
+eventdata_length:10000
+csc.exe
 jscript.exe
 cvtres.exe
+wscript
 vbscript.exe
 csript.exe
+wscript.shell
+sc create
 cmstp.exe
 Iexpress.exe
-psr.exe
-CMSTP.exe
-expand.exe
-control.exe
-ieexec.exe
-makecab.exe
-extrac.exe
-ftp.exe
-.bgi
