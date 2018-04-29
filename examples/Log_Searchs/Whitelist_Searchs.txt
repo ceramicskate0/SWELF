@@ -1,2 +1,2 @@
 #SearchTerm ~ EventLogName ~ EventID to be released in full release
-CommandLine: "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --type=renderer --field-trial-handle=~microsoft-windows-sysmon/operational~
+"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --type=renderer --field-trial-handle=~microsoft-windows-sysmon/operational~
