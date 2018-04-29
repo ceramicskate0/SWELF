@@ -1,1 +1,2 @@
+#SearchTerm ~ EventLogName ~ EventID to be released in full release
 chrome.exe" --type=utility --field-trial-handle=1904~microsoft-windows-sysmon/operational~
