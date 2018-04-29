@@ -1,4 +1,5 @@
 #SearchTerm ~ EventLogName ~ EventID to be released in full release
 "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --type=renderer~microsoft-windows-sysmon/operational~
 "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --type=gpu-process~microsoft-windows-sysmon/operational~
-"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --type=watcher ~microsoft-windows-sysmon/operational~
+"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --type=watcher~microsoft-windows-sysmon/operational~
+"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --type=crashpad-handler~microsoft-windows-sysmon/operational~
