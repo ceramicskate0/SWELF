@@ -17,11 +17,11 @@ regsvr32.exe /s /u /i:~Microsoft-Windows-Sysmon/Operational~
 bitsadmin.exe  /transfer~Microsoft-Windows-Sysmon/Operational~
 bitsadmin.exe /download~Microsoft-Windows-Sysmon/Operational~ 
 rundll32.exe javascript:~Microsoft-Windows-Sysmon/Operational~
-REG.exe ADD HKCU\Environment~Microsoft-Windows-Sysmon/Operational~
 detected~microsoft-Windows-Windows Defender/Operational~
 detection~microsoft-Windows-Windows Defender/Operational~ 
 malware~microsoft-Windows-Windows Defender/Operational~
 disabled~microsoft-Windows-Windows Defender/Operational~
+windows defender antivirus configuration has changed.~microsoft-Windows-Windows Defender/Operational~
 eventdata_length:10000~Microsoft-Windows-PowerShell/Operational
 commandline_length:400
 commandline_contains:<script>
