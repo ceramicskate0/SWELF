@@ -4,3 +4,4 @@ Hashes: SHA256=6127626BDF3B7CF1231B49189CF717EC321CBBF39F342DC85DD90B57D3EAEE35~
 "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --type=gpu-process~microsoft-windows-sysmon/operational~
 "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --type=watcher~microsoft-windows-sysmon/operational~
 "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --type=crashpad-handler~microsoft-windows-sysmon/operational~
+windows defender antivirus scan has~microsoft-Windows-Windows Defender/Operational~
