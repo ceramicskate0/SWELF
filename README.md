@@ -1,7 +1,7 @@
 # Simple-Windows-Event-Log-Forwarder (SWELF) 
 
 # ANNOUNCEMENTS
-Dev will be on hold for Month of June
+- Dev work will be on hold for the month of June 18
 
 ## Summary:
 
