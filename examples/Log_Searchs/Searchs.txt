@@ -9,9 +9,11 @@ iex~windows powershell~
 wscript.exe~windows powershell~
 powershell New-Service~windows powershell~
 ~AMSI/Operational~
+Windows PowerShell has started an IPC listening thread~Microsoft-Windows-PowerShell/Operational~
 ~Microsoft-Windows-Sysmon/Operational~19
 ~Microsoft-Windows-Sysmon/Operational~9
 ~Microsoft-Windows-Sysmon/Operational~12
+has been restricted by your Administrator by location~Application~
 mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 mshta vbscript:~Microsoft-Windows-Sysmon/Operational~
 regsvr32.exe /s /u /i:~Microsoft-Windows-Sysmon/Operational~
@@ -23,6 +25,8 @@ detection~microsoft-Windows-Windows Defender/Operational~
 malware~microsoft-Windows-Windows Defender/Operational~
 disabled~microsoft-Windows-Windows Defender/Operational~
 windows defender antivirus configuration has changed.~microsoft-Windows-Windows Defender/Operational~
+~microsoft-Windows-Windows Defender/Operational~1123
+~microsoft-Windows-Windows Defender/Operational~5007
 windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
 eventdata_length:10000~Microsoft-Windows-PowerShell/Operational
 commandline_length:400
@@ -31,15 +35,42 @@ commandline_contains:mshta -Enbedding
 commandline_contains:mshta javascript
 commandline_contains:rundll32.exe javascript
 commandline_contains:$env
+commandline_contains:print /D:
+commandline_contains:expand
+commandline_contains:cmstp.exe /ni /s
+commandline_contains:msiexec /q /i
+commandline_contains:msiexec /quiet /i
+commandline_contains:odbcconf -f
+commandline_contains:pcalua.exe -a
+commandline_contains:regasm.exe /U
 commandline_contains:-windowstyle hidden
-eventdata_length:10000
-csc.exe
+commandline_contains:runscripthelper.exe surfacecheck
+commandline_contains:Scriptrunner.exe -appvscript
+commandline_contains:mshta.exe javascript
+commandline_contains:mshta javascript
+commandline_contains:mshta vbscript
+commandline_contains:regsvr32.exe /s /u /i
+commandline_contains:bitsadmin.exe  /transfer
+commandline_contains:bitsadmin.exe /download 
+commandline_contains:bitsadmin  /transfer
+commandline_contains:bitsadmin /download 
+commandline_contains:rundll32.exe javascript
+commandline_contains:sc create
+commandline_contains:ATBroker /start
+commandline_contains:ATBroker.exe /start
+commandline_contains:EQNEDT32.EXE -Embedding
 jscript.exe
 cvtres.exe
-wscript
 vbscript.exe
 csript.exe
-wscript.shell
-sc create
 cmstp.exe
 Iexpress.exe
+psr.exe
+CMSTP.exe
+expand.exe
+control.exe
+ieexec.exe
+makecab.exe
+extrac.exe
+ftp.exe
+.bgi
