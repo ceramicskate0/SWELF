@@ -7,3 +7,4 @@ microsoft-windows-deviceguard/operational=1
 microsoft-windows-wmi-activity/operational=1
 microsoft-windows-bits-client/operational=1
 amsi/operational=1
+application=1
