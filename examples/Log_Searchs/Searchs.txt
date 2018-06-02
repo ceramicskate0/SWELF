@@ -74,3 +74,4 @@ makecab.exe
 extrac.exe
 ftp.exe
 .bgi
+rundll32.exe javascript:
