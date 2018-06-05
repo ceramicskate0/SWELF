@@ -2,7 +2,7 @@
 count:+:12
 count:&:10
 count:;:12~Microsoft-Windows-Sysmon/Operational~
-count:-split:4
+count:-split:3
 VsBitsDownloadJob~microsoft-windows-bits-client/operational
 webclient~windows powershell~
 iex~windows powershell~
