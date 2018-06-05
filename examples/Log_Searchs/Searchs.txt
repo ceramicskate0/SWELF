@@ -29,7 +29,7 @@ windows defender antivirus configuration has changed.~microsoft-Windows-Windows 
 ~microsoft-Windows-Windows Defender/Operational~5007
 windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
 eventdata_length:10000~Microsoft-Windows-PowerShell/Operational
-commandline_length:400
+commandline_length:300
 commandline_contains:<script>
 commandline_contains:mshta -Enbedding
 commandline_contains:mshta javascript
@@ -46,15 +46,13 @@ commandline_contains:regasm.exe /U
 commandline_contains:-windowstyle hidden
 commandline_contains:runscripthelper.exe surfacecheck
 commandline_contains:Scriptrunner.exe -appvscript
-commandline_contains:mshta.exe javascript
-commandline_contains:mshta javascript
-commandline_contains:mshta vbscript
+commandline_contains:javascript
+commandline_contains:vbscript
 commandline_contains:regsvr32.exe /s /u /i
 commandline_contains:bitsadmin.exe  /transfer
 commandline_contains:bitsadmin.exe /download 
 commandline_contains:bitsadmin  /transfer
 commandline_contains:bitsadmin /download 
-commandline_contains:rundll32.exe javascript
 commandline_contains:sc create
 commandline_contains:ATBroker /start
 commandline_contains:ATBroker.exe /start
