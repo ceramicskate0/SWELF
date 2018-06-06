@@ -17,8 +17,6 @@ namespace SWELF
         public bool EventlogMissing = false;
         public long Last_EventLogID_From_Check { get; set; }
         public long First_EventLogID_From_Check { get; set; }
-        public List<string> Hashes_From_Sysmon = new List<string>();
-        public List<string> IP_From_Sysmon = new List<string>();
 
         public EventLogFile(string Name,long ID_EVENTLOGRecordID=0)
         {
@@ -29,6 +27,10 @@ namespace SWELF
             GET_First_EventRecordID_InLogFile(Name);
         }
 
+        public void Clear()
+        {
+            EventLogs_From_WindowsAPI.Clear();
+        }
 
         public long ID_EVENTLOG
         {
@@ -62,16 +64,6 @@ namespace SWELF
             return EventLogs_From_WindowsAPI.Dequeue();
         }
 
-        public void Dedup_IP_List()
-        {
-            IP_From_Sysmon=IP_From_Sysmon.Distinct().ToList();
-        }
-
-        public void Dedup_Hash_List()
-        {
-            Hashes_From_Sysmon=Hashes_From_Sysmon.Distinct().ToList();
-        }
-
         private void GET_Last_EventRecordID_InLogFile(string Eventlog_FullName)
         {
             TimeSpan Timeout = new TimeSpan(0, 30, 0);
@@ -95,26 +87,6 @@ namespace SWELF
             EventLogEntry Eventlog = new EventLogEntry();
             First_EventLogID_From_Check = Windows_EventLog_API.RecordId.Value;
             return First_EventLogID_From_Check = Windows_EventLog_API.RecordId.Value;
-        }
-
-        public void Add_IP(List<string> ListofIP)
-        {
-            foreach (string item in ListofIP)
-            {
-                IP_From_Sysmon.Add(item);
-            }
-        }
-
-        public void Add_HASH(string Hash)
-        {
-            try
-            {
-                Hashes_From_Sysmon.Add(Hash);
-            }
-            catch
-            {
-
-            }
         }
     }
 }

@@ -11,9 +11,7 @@ namespace SWELF
 {
     public class EventLogEntry
     {
-        private string hash_from_log;
         private Regex IP_RegX = new Regex(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b");
-        private List<string> IP_List = new List<string>();
         private string[] splitter = { "\n", "\r", " ", "  " };
         public long EventLog_Seq_num = 0;
 
@@ -30,14 +28,6 @@ namespace SWELF
         public static int CommandLineArgLength { get; set; }
         public static string CommandLineArgs { get; set; }
 
-        public string GET_Hash_FromLogFile
-        {
-            get
-            {
-                return GET_FileHash();
-            }
-        }
-
         public string GET_Sysmon_CommandLine_Args
         {
             get
@@ -46,21 +36,17 @@ namespace SWELF
             }
         }
 
-        public List<string> GET_IP_FromLogFile
+        public void GET_IP_FromLogFile()
         {
-            get
+            List<string> EventlogDataSegment = EventData.Split(splitter, StringSplitOptions.RemoveEmptyEntries).ToList();
+            EventlogDataSegment = EventlogDataSegment.Distinct().ToList();
+            EventlogDataSegment.Sort();
+            foreach (string line in EventlogDataSegment)
             {
-                List<string> EventlogDataSegment = EventData.Split(splitter, StringSplitOptions.RemoveEmptyEntries).ToList();
-                EventlogDataSegment = EventlogDataSegment.Distinct().ToList();
-                EventlogDataSegment.Sort();
-                foreach (string line in EventlogDataSegment)
+                if (IP_RegX.IsMatch(line) && line.Contains('.') && line.Contains('\\') == false)
                 {
-                    if (IP_RegX.IsMatch(line) && line.Contains('.') && line.Contains('\\') == false)
-                    {
-                        IP_List.Add(line);
-                    }
+                    Settings.IP_List_EVT_Logs.Add(line);
                 }
-                return IP_List;
             }
         }
 
@@ -69,7 +55,7 @@ namespace SWELF
             this.Dispose();
         }
         
-        private string GET_FileHash()
+        public void GET_FileHash()
         {
             if (LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventData.Contains("Hashes: "))
             {
@@ -80,12 +66,7 @@ namespace SWELF
                 string[] datA = data.Split(SplitOnHash, StringSplitOptions.RemoveEmptyEntries).ToArray();
                 string[] datAa = datA[1].Split(SPlitOnHash2, StringSplitOptions.RemoveEmptyEntries).ToArray();
                 data = datAa[0];
-                hash_from_log = data.Split(Settings.SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ElementAt(1).ToString();
-                return hash_from_log;
-            }
-            else
-            {
-                return "";
+                Settings.Hashs_From_EVT_Logs.Add(data.Split(Settings.SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ElementAt(1).ToString());
             }
         }
 

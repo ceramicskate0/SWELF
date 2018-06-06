@@ -20,6 +20,7 @@ namespace SWELF
             else
             {
                 File.Create(FilePath).Close();
+                File.AppendAllText(FilePath, "LogName" + "," + "EventRecordID" + "," + "EventID" + "," + "CreatedTime" + "," + "ComputerName" + "," + "UserID" + "," + "Severity" + "," + "TaskDisplayName" + "," + "EventData" + '\n');
                 Write_Contents(FilePath,FileContents);
             }
 
@@ -27,7 +28,6 @@ namespace SWELF
 
         private static void Write_Contents(string FilePath, Queue<EventLogEntry> FileContents)
         {
-            File.AppendAllText(FilePath, "LogName" + "," + "EventRecordID" + "," + "EventID" + "," + "CreatedTime" + "," + "ComputerName" + "," + "UserID" + "," + "Severity" + "," + "TaskDisplayName" + "," + "EventData" +'\n');
             for (int x=0; x<FileContents.Count;++x)
             {
                File.AppendAllText(FilePath,FORMAT_Output(FileContents.ElementAt(x)));

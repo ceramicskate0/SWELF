@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Diagnostics.Eventing.Reader;
 using System.Diagnostics;
 using System.IO;
+using System.Collections.Concurrent;
 
 namespace SWELF
 {
@@ -19,11 +20,17 @@ namespace SWELF
         public List<string> FileContents_From_FileReads;
         public static bool MissingLogInFileDueToException = false;
         public Queue<EventLogEntry> EVTX_File_Logs = new Queue<EventLogEntry>();
+        private static EventLogFile EventLogFileName;
 
         public ReadEventLog()
         {
             EvntLog_Name = "";
             FileContents_From_FileReads = new List<string>();
+        }
+
+        public void Clear_EventLogFileName()
+        {
+            EventLogFileName.Clear();
         }
 
         public void READ_EventLog(string Eventlog_FullName,long PlaceKeeper_EventRecordID=1)
@@ -43,8 +50,7 @@ namespace SWELF
 
             if (Settings.FIND_EventLog_Exsits(Eventlog_FullName))
             {
-                EventLogFile EventLogFileName = new EventLogFile(Eventlog_FullName, PlaceKeeper_EventRecordID);
-
+                EventLogFileName = new EventLogFile(Eventlog_FullName, PlaceKeeper_EventRecordID);
                 long First_EventID = EventLogFileName.First_EventLogID_From_Check;
                 long Last_EventID = EventLogFileName.Last_EventLogID_From_Check;
 
@@ -201,7 +207,7 @@ namespace SWELF
         {
             EventLogQuery eventsQuery = new EventLogQuery(Eventlog_FullName, PathType.LogName);
             EventLogReader EventLogtoReader = new EventLogReader(eventsQuery);
-
+           
             while (GET_EventLogEntry_From_API(EventLogtoReader) != null)
             {
                INDEX_Record_FROM_API(EventLogFileName, Windows_EventLog_API, EventRecordID);
@@ -233,8 +239,8 @@ namespace SWELF
                     EventLogFileName.ID_EVENTLOG = Windows_EventLog_API.RecordId.Value;
                     Eventlog.EventData = Windows_EventLog_API.FormatDescription().ToLower().ToString();
 
-                    EventLogFileName.Add_HASH(Eventlog.GET_Hash_FromLogFile);
-                    EventLogFileName.Add_IP(Eventlog.GET_IP_FromLogFile);
+                    Eventlog.GET_FileHash();
+                    Eventlog.GET_IP_FromLogFile();
                     EventLogFileName.Enqueue_Log(Eventlog);
                 }
             }
@@ -264,7 +270,5 @@ namespace SWELF
                 return false;
             }
         }
-
     }
-
 }

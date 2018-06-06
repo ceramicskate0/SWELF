@@ -43,7 +43,7 @@ namespace SWELF
                 File.AppendAllText(Settings.GET_ErrorLog_Location, err);
             }
             Settings.ADD_Eventlog_to_CriticalEvents(err, "SWELF App Error", Severity);
-            HostEventLogAgent_Eventlog.WRITE_All_App_EventLog(Settings.CriticalEvents,"critical");
+            HostEventLogAgent_Eventlog.WRITE_Critical_EventLog(err+" SWELF App Error");
 
             CHECK_Error_Log_Size();
         }
@@ -60,7 +60,7 @@ namespace SWELF
 
         public static void WRITE_Errors()
         {
-            for (int x = 0; x > ErrorsLog.Count; ++x)
+            for (int x = 0; x < ErrorsLog.Count; ++x)
             {
                 WRITE_Errors_To_Log_BATCH(ErrorsLog.ElementAt(x) + '\n');
             }
@@ -79,7 +79,7 @@ namespace SWELF
                 File.AppendAllText(Settings.GET_ErrorLog_Location, msg + '\n');
             }
             Settings.ADD_Eventlog_to_CriticalEvents(msg, "SWELF App Error","Warning");
-            HostEventLogAgent_Eventlog.WRITE_All_App_EventLog(Settings.CriticalEvents, "warning");
+            HostEventLogAgent_Eventlog.WRITE_Warning_EventLog(msg+" SWELF App Error");
 
             CHECK_Error_Log_Size();
         }
@@ -89,7 +89,7 @@ namespace SWELF
             string[]  Errors = File.ReadAllLines(Settings.GET_ErrorLog_Location);
             if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == false && String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)
             {
-                for (int x = 0; x > Errors.Length; ++x)
+                for (int x = 0; x < Errors.Length; ++x)
                 {
                     Network_Forwarder.SEND_Data_from_File(Errors[x]);
                 }

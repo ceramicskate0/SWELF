@@ -11,14 +11,19 @@ namespace SWELF
 {
     class Search_EventLogs
     {
-        public static List<EventLogEntry> Logs_With_Duplicate_Findings = new List<EventLogEntry>();
         private Queue<EventLogEntry> EventLogs_From_WindowsAPI = new Queue<EventLogEntry>();
-        private static List<EventLogEntry> Log_Matchs = new List<EventLogEntry>();
+        private static List<EventLogEntry> Logs_That_Matched_Search = new List<EventLogEntry>();
         private static string CurrentEventLogBeingSearched = "";
 
         public Search_EventLogs(Queue<EventLogEntry> eventLogs_From_WindowsAPI)
         {
             EventLogs_From_WindowsAPI = eventLogs_From_WindowsAPI;
+        }
+
+        public void Clear_Search()
+        {
+            EventLogs_From_WindowsAPI.Clear();
+            Logs_That_Matched_Search.Clear();
         }
 
         private void SEARCH_Run_Commands(string SearchCommand)
@@ -33,27 +38,27 @@ namespace SWELF
                     {
                         case "count":
                             {
-                               Log_Matchs.AddRange(SEARCH_CMD_Counts_in_Log(Search_Command_Values[1].ToString(), Convert.ToInt32(Search_Command_Values[2]), Search_Command_Values));
+                               Logs_That_Matched_Search.AddRange(SEARCH_CMD_Counts_in_Log(Search_Command_Values[1].ToString(), Convert.ToInt32(Search_Command_Values[2]), Search_Command_Values));
                                 break;
                             }
                         case "eventdata_length":
                             {
-                              Log_Matchs.AddRange(SEARCH_CMD_Length_of_LogData(Convert.ToInt32(Search_Command_Values[1]), Search_Command_Values, SearchCommand));
+                              Logs_That_Matched_Search.AddRange(SEARCH_CMD_Length_of_LogData(Convert.ToInt32(Search_Command_Values[1]), Search_Command_Values, SearchCommand));
                                 break;
                             }
                         case "regex":
                             {
-                                Log_Matchs.AddRange(SEARCH_CMD_For_Regex_in_Log(Search_Command_Values[1].ToString().ToLower(), SearchCommand.Split(Settings.SplitChar_Regex, StringSplitOptions.RemoveEmptyEntries).ToArray(), Search_Command_Values, SearchCommand));
+                                Logs_That_Matched_Search.AddRange(SEARCH_CMD_For_Regex_in_Log(Search_Command_Values[1].ToString().ToLower(), Search_Command_Values, SearchCommand));
                                 break;
                             }
                         case "commandline_count"://sysmon only
                             {
-                                Log_Matchs.AddRange(SEARCH_Counts_in_CMDLine(Search_Command_Values[1].ToString(), Convert.ToInt32(Search_Command_Values[2])));
+                                Logs_That_Matched_Search.AddRange(SEARCH_Counts_in_CMDLine(Search_Command_Values[1].ToString(), Convert.ToInt32(Search_Command_Values[2])));
                                 break;
                             }
                         case "commandline_contains"://sysmon only
                             {
-                                Log_Matchs.AddRange(SEARCH_Length_Sysmon_CMDLine_Args_Contains(Search_Command_Values[1]));
+                                Logs_That_Matched_Search.AddRange(SEARCH_Length_Sysmon_CMDLine_Args_Contains(Search_Command_Values[1]));
                                 break;
                             }
                         case "commandline_length"://sysmon only
@@ -63,7 +68,7 @@ namespace SWELF
                                     int Max_Length = -1;
                                     if (int.TryParse(Search_Command_Values[1], out Max_Length) && Max_Length != -1)
                                     {
-                                        Log_Matchs.AddRange(SEARCH_Length_Sysmon_CMDLine_Args_Length(Max_Length));
+                                        Logs_That_Matched_Search.AddRange(SEARCH_Length_Sysmon_CMDLine_Args_Length(Max_Length));
                                     }
                                 }
                                 catch (Exception e)
@@ -84,32 +89,150 @@ namespace SWELF
         public Queue<EventLogEntry> Search(string Current_EventLog)
         {
             CurrentEventLogBeingSearched = Current_EventLog;
-            try
-            {
-                for (int x = 0; x < Settings.Logs_Search_Terms_Unparsed.Count; ++x)
+            //Search LOGS
+            int temp_int_stor = 0;
+                for (int x = 0; x < Settings.Search_Terms_Unparsed.Count; ++x)
                 {
-                    if (Settings.Logs_Search_Terms_Unparsed.ElementAt(x).Contains(Settings.CommentCharConfigs) == false)
+                    temp_int_stor = x;
+                    try
                     {
-                        if (Settings.Search_Commands.Any(s => Settings.Logs_Search_Terms_Unparsed.ElementAt(x).ToLower().IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0))
+                        if (Settings.Search_Terms_Unparsed.ElementAt(x).Substring(0).Equals(Settings.CommentCharConfigs)==false)
                         {
-                            SEARCH_Run_Commands(Settings.Logs_Search_Terms_Unparsed.ElementAt(x));
-                        }
-                        else
-                        {
-                            SEARCH_FindTerms(x);
+                            if (Settings.Search_Commands.Any(s => Settings.Search_Terms_Unparsed.ElementAt(x).ToLower().IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0))
+                            {
+                                SEARCH_Run_Commands(Settings.Search_Terms_Unparsed.ElementAt(x));
+                            }
+                            else
+                            {
+                                SEARCH_FindTerms(x);
+                            }
                         }
                     }
+                    catch (Exception e)
+                    {
+                        Errors.Log_Error("ERROR: Search() Value=" + Settings.Search_Terms_Unparsed.ElementAt(temp_int_stor), e.Message.ToString());
+                    }
                 }
-                Logs_With_Duplicate_Findings = Log_Matchs.GroupBy(a => a).SelectMany(ab => ab.Skip(1).Take(1)).ToList();
-                Log_Matchs = Log_Matchs.Distinct().OrderBy(x => x.CreatedTime).ToList();
-                IEnumerable<EventLogEntry> noduplicates = Log_Matchs.Distinct();
-                var queue = new Queue<EventLogEntry>(Log_Matchs);
+                Remove_Whitelisted_Logs();
+                Logs_That_Matched_Search = Logs_That_Matched_Search.Distinct().OrderBy(x => x.CreatedTime).ToList();
+                IEnumerable<EventLogEntry> noduplicates = Logs_That_Matched_Search.Distinct();
+                var queue = new Queue<EventLogEntry>(Logs_That_Matched_Search);
                 return queue;
-            }
-            catch (Exception e)
+        }
+
+        private void Remove_Whitelisted_Logs()
+        {
+            for (int x = 0; x < Settings.WhiteList_Search_Terms_Unparsed.Count; ++x)
             {
-                Errors.Log_Error("Search() ", e.Message.ToString());
-                return null;
+                try
+                {
+                    string[] WhiteListSearchsArgs = Settings.WhiteList_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+                    switch (WhiteListSearchsArgs.Length)
+                    {
+                        case 1:
+                            {
+                                SEARCH_REMOVE_WhiteList(WhiteListSearchsArgs[0]);
+                                break;
+                            }
+                        case 2:
+                            {
+                                SEARCH_REMOVE_WhiteList(WhiteListSearchsArgs[0], WhiteListSearchsArgs[1]);
+                                break;
+                            }
+                        case 3:
+                            {
+                                SEARCH_REMOVE_WhiteList(WhiteListSearchsArgs[0], WhiteListSearchsArgs[1], Convert.ToInt32(WhiteListSearchsArgs[2]));
+                                break;
+                            }
+                        default:
+                            {
+                                SEARCH_REMOVE_WhiteList(WhiteListSearchsArgs[0]);
+                                break;
+                            }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Errors.Log_Error("ERROR: Remove_Whitelisted_Logs() Value=" + Settings.WhiteList_Search_Terms_Unparsed.ElementAt(x), e.Message.ToString());
+                }
+            }
+        }
+
+        private void SEARCH_REMOVE_WhiteList(string SearchTerm, string EventLogName="", int EventID=-1)
+        {
+            if (EventID > 0)
+            {
+                Logs_That_Matched_Search.RemoveAll(s => s.EventData.Contains(SearchTerm.ToLower()) && s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.Equals(EventID));
+            }
+            else if (!string.IsNullOrEmpty(SearchTerm))
+            {
+                Logs_That_Matched_Search.RemoveAll(s => s.EventData.Contains(SearchTerm) && s.LogName.ToLower().Equals(EventLogName));
+            }
+            else
+            {
+                Logs_That_Matched_Search.RemoveAll(s => s.EventData.Contains(SearchTerm.ToLower()));
+            }
+        }
+
+        private void SEARCH_FindTerms(int x)
+        {
+            string[] SearchsArgs = Settings.Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+            switch (SearchsArgs.Length)
+            {
+                case 1://search term only
+                    {
+                        Logs_That_Matched_Search.AddRange(SEARCH_Everything(SearchsArgs[0]));
+                        break;
+                    }
+                case 2://search log and term
+                    {
+                        if (EventLogs_From_WindowsAPI.Count > 0)
+                        {
+                            if (SearchsArgs[1].ToLower() == EventLogs_From_WindowsAPI.Peek().LogName.ToLower())
+                            {
+                                Logs_That_Matched_Search.AddRange(SEARCH_Everything(SearchsArgs[0]));
+                            }
+                        }
+                        break;
+                    }
+                case 3://search either term,and/or log, and/or eventid
+                    {
+                        if (String.IsNullOrEmpty(SearchsArgs[0]) == true && String.IsNullOrEmpty(SearchsArgs[1]) == true && String.IsNullOrEmpty(SearchsArgs[2]) == false)//Search only event id all others blank
+                        {
+                            Logs_That_Matched_Search.AddRange(SEARCH_EventID(Convert.ToInt32(SearchsArgs[2])));
+                        }
+                        else if (String.IsNullOrEmpty(SearchsArgs[0]) == true && String.IsNullOrEmpty(SearchsArgs[1]) == false && String.IsNullOrEmpty(SearchsArgs[2]) == false)//search event log for only ID
+                        {
+                            Logs_That_Matched_Search.AddRange(SEARCH_EventLog_For_EventID(Convert.ToInt32(SearchsArgs[2]), SearchsArgs[1]));
+                        }
+                        else if ((String.IsNullOrEmpty(SearchsArgs[0]) == false && String.IsNullOrEmpty(SearchsArgs[1]) == false && String.IsNullOrEmpty(SearchsArgs[2]) == true) && SearchsArgs[1].ToLower() == CurrentEventLogBeingSearched.ToLower())
+                        {
+                            Logs_That_Matched_Search.AddRange(SEARCH_Everything(SearchsArgs[0]));
+                        }
+                        else if ((String.IsNullOrEmpty(SearchsArgs[0]) == false && String.IsNullOrEmpty(SearchsArgs[1]) == false && String.IsNullOrEmpty(SearchsArgs[2]) == true) && SearchsArgs[1].ToLower() != CurrentEventLogBeingSearched.ToLower())
+                        {
+                            Logs_That_Matched_Search.AddRange(SEARCH_Eventlog_For_SearchTerm(SearchsArgs[0], SearchsArgs[1]));
+                        }
+                        else if ((String.IsNullOrEmpty(SearchsArgs[0]) == false && String.IsNullOrEmpty(SearchsArgs[1]) == false && String.IsNullOrWhiteSpace(SearchsArgs[2]) == true) && SearchsArgs[1].ToLower() != CurrentEventLogBeingSearched.ToLower())
+                        {
+                            Logs_That_Matched_Search.AddRange(SEARCH_Eventlog_For_SearchTerm(SearchsArgs[0], SearchsArgs[1]));
+                        }
+                        else //Gave 3 step search and somehow got here
+                        {
+                            Logs_That_Matched_Search.AddRange(SEARCH_EventID_and_Data(Convert.ToInt32(SearchsArgs[2]), SearchsArgs[0]));
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        foreach (string Search in SearchsArgs)
+                        {
+                            Logs_That_Matched_Search.AddRange(SEARCH_Everything(Search));
+                        }
+                        break;
+                    }
             }
         }
 
@@ -265,7 +388,7 @@ namespace SWELF
             }
         }
 
-        private List<EventLogEntry> SEARCH_CMD_For_Regex_in_Log(string Regex_SearchString, string[] RegexSearch, string[] SearchResults,string SearchCommand)
+        private List<EventLogEntry> SEARCH_CMD_For_Regex_in_Log(string Regex_SearchString, string[] SearchResults,string SearchCommand)
         {
             try
             {
@@ -316,63 +439,6 @@ namespace SWELF
                 List<EventLogEntry> results = new List<EventLogEntry>();
                 return results.ToList();
             }
-        }
-
-        private void SEARCH_FindTerms(int x)
-        {
-                string[] SearchsArgs = Settings.Logs_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_Search_Command_Parsers, StringSplitOptions.RemoveEmptyEntries).ToArray();
-
-                switch (SearchsArgs.Length)
-                {
-                    case 1://search term only
-                        {
-                            Log_Matchs.AddRange(SEARCH_Everything(SearchsArgs[0]));
-                            break;
-                        }
-                    case 2://search log and term
-                        {
-                            if (EventLogs_From_WindowsAPI.Count > 0)
-                            {
-                                if (SearchsArgs[1].ToLower() == EventLogs_From_WindowsAPI.Peek().LogName.ToLower())
-                                {
-                                    Log_Matchs.AddRange(SEARCH_Everything(SearchsArgs[0]));
-                                }
-                            }
-                            break;
-                        }
-                    case 3://search either term,and/or log, and/or eventid
-                        {
-                            if (String.IsNullOrEmpty(SearchsArgs[0])==true && String.IsNullOrEmpty(SearchsArgs[1]) == true && String.IsNullOrEmpty(SearchsArgs[2]) == false)//Search only event id all others blank
-                            {
-                            Log_Matchs.AddRange(SEARCH_EventID(Convert.ToInt32(SearchsArgs[2])));
-                            }
-                            else if (String.IsNullOrEmpty(SearchsArgs[0]) == true && String.IsNullOrEmpty(SearchsArgs[1]) == false && String.IsNullOrEmpty(SearchsArgs[2]) == false)//search event log for only ID
-                            {
-                            Log_Matchs.AddRange(SEARCH_EventLog_For_EventID(Convert.ToInt32(SearchsArgs[2]), SearchsArgs[1]));
-                            }
-                            else if ((String.IsNullOrEmpty(SearchsArgs[0]) == false && String.IsNullOrEmpty(SearchsArgs[1]) == false && String.IsNullOrEmpty(SearchsArgs[2]) == true) && SearchsArgs[1].ToLower() == CurrentEventLogBeingSearched.ToLower())
-                            {
-                            Log_Matchs.AddRange(SEARCH_Everything(SearchsArgs[0]));
-                            }
-                            else if ((String.IsNullOrEmpty(SearchsArgs[0]) == false && String.IsNullOrEmpty(SearchsArgs[1]) == false && String.IsNullOrEmpty(SearchsArgs[2]) == true) && SearchsArgs[1].ToLower() != CurrentEventLogBeingSearched.ToLower())
-                            {
-                            Log_Matchs.AddRange(SEARCH_Eventlog_For_SearchTerm(SearchsArgs[0], SearchsArgs[1]));
-                            }
-                            else //Gave 3 step search and somehow got here
-                            {
-                                Log_Matchs.AddRange(SEARCH_EventID_and_Data(Convert.ToInt32(SearchsArgs[2]), SearchsArgs[0]));
-                            }
-                        break;
-                        }
-                    default:
-                        {
-                            foreach (string Search in SearchsArgs)
-                            {
-                                Log_Matchs.AddRange(SEARCH_Everything(Search));
-                            }
-                            break;
-                        }
-                }
         }
     }
 }

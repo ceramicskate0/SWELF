@@ -14,44 +14,44 @@ namespace SWELF
     {
         public static void WRITE_EventLog_From_SWELF_Search(string log)
         {
-            using (EventLog myLogger = new EventLog(Settings.EvtLog.Source, ".", Settings.EvtLog.Source))
+            using (EventLog myLogger = new EventLog(Settings.EvtLog.Source, Environment.MachineName, Settings.EvtLog.Source))
             {
                 myLogger.WriteEntry(log, EventLogEntryType.Information);
             }
         }
-
+        public static void WRITE_EventLog_From_SWELF_Search(EventLogEntry EvntLog)
+        {
+            using (EventLog myLogger = new EventLog(Settings.EvtLog.Source, Environment.MachineName, EvntLog.LogName))
+            {
+                myLogger.WriteEntry(EvntLog.EventData, EventLogEntryType.Information, EvntLog.EventID);
+            }
+        }
         public static void WRITE_Critical_EventLog(string log)
         {
-            using (EventLog myLogger = new EventLog(Settings.EvtLog.Source, ".", Settings.EvtLog.Source))
+            using (EventLog myLogger = new EventLog(Settings.EvtLog.Source, Environment.MachineName, Settings.EvtLog.Source))
             {
-                myLogger.WriteEntry(log, EventLogEntryType.Error);
+                myLogger.WriteEntry(log, EventLogEntryType.Error, 2);
             }
         }
-
+        public static void WRITE_Critical_EventLog(EventLogEntry EvntLog)
+        {
+            using (EventLog myLogger = new EventLog(Settings.EvtLog.Source, Environment.MachineName, EvntLog.LogName))
+            {
+                myLogger.WriteEntry(EvntLog.EventData, EventLogEntryType.Error, EvntLog.EventID);
+            }
+        }
         public static void WRITE_Warning_EventLog(string log)
         {
-            using (EventLog myLogger = new EventLog(Settings.EvtLog.Source, ".", Settings.EvtLog.Source))
+            using (EventLog myLogger = new EventLog(Settings.EvtLog.Source, Environment.MachineName, Settings.EvtLog.Source))
             {
-                myLogger.WriteEntry(log, EventLogEntryType.Warning);
+                myLogger.WriteEntry(log, EventLogEntryType.Warning, 1);
             }
         }
-
-        public static void WRITE_All_App_EventLog(Queue<EventLogEntry> Logs, string Severity)
+        public static void WRITE_Warning_EventLog(EventLogEntry EvntLog)
         {
-            while (Logs.Count>0)
+            using (EventLog myLogger = new EventLog(Settings.EvtLog.Source, Environment.MachineName, EvntLog.LogName))
             {
-                if (Severity.ToLower() == "critical")
-                {
-                    WRITE_Critical_EventLog(Logs.Dequeue().EventData);
-                }
-                else if (Severity.ToLower() == "warning")
-                {
-                    WRITE_Warning_EventLog(Logs.Dequeue().EventData);
-                }
-                else if (Severity.ToLower() == "informational")
-                {
-                    WRITE_EventLog_From_SWELF_Search(Logs.Dequeue().EventData);
-                }
+                myLogger.WriteEntry(EvntLog.EventData, EventLogEntryType.Error, EvntLog.EventID);
             }
         }
     }
