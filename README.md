@@ -2,6 +2,7 @@
 
 # ANNOUNCEMENTS
 - Dev work will be on hold for the month of June 18
+- DUE TO MICROSOFT PURCHASE MAY MOVE TO BITBUCKET
 
 ## Summary:
 
