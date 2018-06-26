@@ -28,6 +28,13 @@ disabled~microsoft-Windows-Windows Defender/Operational~
 windows defender antivirus configuration has changed.~microsoft-Windows-Windows Defender/Operational~
 ~microsoft-Windows-Windows Defender/Operational~1123
 ~microsoft-Windows-Windows Defender/Operational~5007
+Microsoft-Windows-SoftwareRestrictionPolicies~Application~866
+Microsoft-Windows-WMI~Application~63
+Microsoft-Windows-User Profiles Service~Application~1534
+Microsoft-Windows-DistributedCOM~System~10016
+Microsoft-Windows-TerminalServices-RemoteConnectionManager~System~1056
+~System~104
+Microsoft-Windows-DNS-Client~System~1014
 windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
 eventdata_length:10000~Microsoft-Windows-PowerShell/Operational
 commandline_length:300
