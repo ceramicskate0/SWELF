@@ -33,6 +33,7 @@ Microsoft-Windows-WMI~Application~63
 Microsoft-Windows-User Profiles Service~Application~1534
 Microsoft-Windows-DistributedCOM~System~10016
 Microsoft-Windows-TerminalServices-RemoteConnectionManager~System~1056
+Signed: false~Microsoft-Windows-Sysmon/Operational~6
 ~System~104
 Microsoft-Windows-DNS-Client~System~1014
 windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
