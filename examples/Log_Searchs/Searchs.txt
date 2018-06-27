@@ -38,7 +38,8 @@ Microsoft-Windows-DNS-Client~System~1014
 windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
 eventdata_length:10000~Microsoft-Windows-PowerShell/Operational
 commandline_length:300
-commandline_contains:<script>
+commandline_contains:<
+commandline_contains:>
 commandline_contains:mshta -Enbedding
 commandline_contains:mshta javascript
 commandline_contains:rundll32.exe javascript
