@@ -19,6 +19,7 @@ count:|:2~windows powershell~
 count:-join:2~Microsoft-Windows-PowerShell/Operational~
 count:':30~Microsoft-Windows-PowerShell/Operational~
 count:+:5~Microsoft-Windows-PowerShell/Operational~
+count:&:5~Microsoft-Windows-PowerShell/Operational~
 count:;:12~Microsoft-Windows-PowerShell/Operational~
 count:|:2~Microsoft-Windows-PowerShell/Operational~
 iwr('http~Microsoft-Windows-PowerShell/Operational~
