@@ -15,7 +15,7 @@ powershell New-Service~windows powershell~
 #Windows-PowerShell/Operational
 count:-join:2~Microsoft-Windows-PowerShell/Operational~
 iwr('http~Microsoft-Windows-PowerShell/Operational~
-eventdata_length:10000~Microsoft-Windows-PowerShell/Operational
+eventdata_length:10000~Microsoft-Windows-PowerShell/Operational~
 
 #Application
 has been restricted by your Administrator by location~Application~
