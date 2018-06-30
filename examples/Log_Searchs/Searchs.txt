@@ -37,6 +37,16 @@ bitsadmin.exe /download~Microsoft-Windows-Sysmon/Operational~
 rundll32.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 count:;:12~Microsoft-Windows-Sysmon/Operational~
 Signed: false~Microsoft-Windows-Sysmon/Operational~6
+commandline_contains:msiexec /q /i~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:msiexec /quiet /i~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:mshta -Enbedding~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:mshta javascript~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:rundll32.exe javascript~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:ATBroker /start~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:ATBroker.exe /start~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:EQNEDT32.EXE -Embedding~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:pcalua.exe -a~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:regasm.exe /U~Microsoft-Windows-Sysmon/Operational~
 
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
@@ -76,27 +86,17 @@ Microsoft-Windows-DNS-Client~System~1014
 commandline_length:300
 commandline_contains:<
 commandline_contains:>
-commandline_contains:mshta -Enbedding
-commandline_contains:mshta javascript
-commandline_contains:rundll32.exe javascript
 commandline_contains:$env
 commandline_contains:print /D:
 commandline_contains:expand
 commandline_contains:cmstp.exe /ni /s
-commandline_contains:msiexec /q /i
-commandline_contains:msiexec /quiet /i
 commandline_contains:odbcconf -f
-commandline_contains:pcalua.exe -a
-commandline_contains:regasm.exe /U
 commandline_contains:-windowstyle hidden
 commandline_contains:runscripthelper.exe surfacecheck
 commandline_contains:Scriptrunner.exe -appvscript
 commandline_contains:javascript
 commandline_contains:vbscript
 commandline_contains:sc create
-commandline_contains:ATBroker /start
-commandline_contains:ATBroker.exe /start
-commandline_contains:EQNEDT32.EXE -Embedding
 
 #Command COUNT to be run on all
 count:+:12
