@@ -1,26 +1,36 @@
 #SearchTerm,EventLogName,EventID
-count:+:12
-count:&:10
-count:;:12~Microsoft-Windows-Sysmon/Operational~
-count:-split:3
+
 VsBitsDownloadJob~microsoft-windows-bits-client/operational
+
 webclient~windows powershell~
 iex~windows powershell~
 wscript.exe~windows powershell~
 powershell New-Service~windows powershell~
+
 ~AMSI/Operational~
+
 count:-join:2~Microsoft-Windows-PowerShell/Operational~
 iwr('http~Microsoft-Windows-PowerShell/Operational~
+eventdata_length:10000~Microsoft-Windows-PowerShell/Operational
+
 ~Microsoft-Windows-Sysmon/Operational~19
 ~Microsoft-Windows-Sysmon/Operational~9
 ~Microsoft-Windows-Sysmon/Operational~12
+
 has been restricted by your Administrator by location~Application~
+Microsoft-Windows-SoftwareRestrictionPolicies~Application~866
+Microsoft-Windows-WMI~Application~63
+Microsoft-Windows-User Profiles Service~Application~1534
+
 mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 mshta vbscript:~Microsoft-Windows-Sysmon/Operational~
 regsvr32.exe /s /u /i:~Microsoft-Windows-Sysmon/Operational~
 bitsadmin.exe  /transfer~Microsoft-Windows-Sysmon/Operational~
 bitsadmin.exe /download~Microsoft-Windows-Sysmon/Operational~ 
 rundll32.exe javascript:~Microsoft-Windows-Sysmon/Operational~
+count:;:12~Microsoft-Windows-Sysmon/Operational~
+Signed: false~Microsoft-Windows-Sysmon/Operational~6
+
 detected~microsoft-Windows-Windows Defender/Operational~
 detection~microsoft-Windows-Windows Defender/Operational~ 
 malware~microsoft-Windows-Windows Defender/Operational~
@@ -28,16 +38,16 @@ disabled~microsoft-Windows-Windows Defender/Operational~
 windows defender antivirus configuration has changed.~microsoft-Windows-Windows Defender/Operational~
 ~microsoft-Windows-Windows Defender/Operational~1123
 ~microsoft-Windows-Windows Defender/Operational~5007
-Microsoft-Windows-SoftwareRestrictionPolicies~Application~866
-Microsoft-Windows-WMI~Application~63
-Microsoft-Windows-User Profiles Service~Application~1534
-Microsoft-Windows-DistributedCOM~System~10016
-Microsoft-Windows-TerminalServices-RemoteConnectionManager~System~1056
-Signed: false~Microsoft-Windows-Sysmon/Operational~6
-~System~104
-Microsoft-Windows-DNS-Client~System~1014
 windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
-eventdata_length:10000~Microsoft-Windows-PowerShell/Operational
+
+Microsoft-Windows-DistributedCOM~System~10016
+
+Microsoft-Windows-TerminalServices-RemoteConnectionManager~System~1056
+
+~System~104
+
+Microsoft-Windows-DNS-Client~System~1014
+
 commandline_length:300
 commandline_contains:<
 commandline_contains:>
@@ -67,6 +77,11 @@ commandline_contains:sc create
 commandline_contains:ATBroker /start
 commandline_contains:ATBroker.exe /start
 commandline_contains:EQNEDT32.EXE -Embedding
+
+count:+:12
+count:&:10
+count:-split:3
+
 jscript.exe
 cvtres.exe
 vbscript.exe
