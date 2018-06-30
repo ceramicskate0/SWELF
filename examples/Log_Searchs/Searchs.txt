@@ -1,27 +1,30 @@
 #SearchTerm,EventLogName,EventID
-
+#windows-bits
 VsBitsDownloadJob~microsoft-windows-bits-client/operational
 
+#Windows Powershell
 webclient~windows powershell~
 iex~windows powershell~
 wscript.exe~windows powershell~
 powershell New-Service~windows powershell~
 
+#AMSI
 ~AMSI/Operational~
-
+#Windows-PowerShell/Operational
 count:-join:2~Microsoft-Windows-PowerShell/Operational~
 iwr('http~Microsoft-Windows-PowerShell/Operational~
 eventdata_length:10000~Microsoft-Windows-PowerShell/Operational
 
-~Microsoft-Windows-Sysmon/Operational~19
-~Microsoft-Windows-Sysmon/Operational~9
-~Microsoft-Windows-Sysmon/Operational~12
-
+#Application
 has been restricted by your Administrator by location~Application~
 Microsoft-Windows-SoftwareRestrictionPolicies~Application~866
 Microsoft-Windows-WMI~Application~63
 Microsoft-Windows-User Profiles Service~Application~1534
 
+#Windows-Sysmon/Operational
+~Microsoft-Windows-Sysmon/Operational~19
+~Microsoft-Windows-Sysmon/Operational~9
+~Microsoft-Windows-Sysmon/Operational~12
 mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 mshta vbscript:~Microsoft-Windows-Sysmon/Operational~
 regsvr32.exe /s /u /i:~Microsoft-Windows-Sysmon/Operational~
@@ -31,6 +34,7 @@ rundll32.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 count:;:12~Microsoft-Windows-Sysmon/Operational~
 Signed: false~Microsoft-Windows-Sysmon/Operational~6
 
+#Defender
 detected~microsoft-Windows-Windows Defender/Operational~
 detection~microsoft-Windows-Windows Defender/Operational~ 
 malware~microsoft-Windows-Windows Defender/Operational~
@@ -40,14 +44,19 @@ windows defender antivirus configuration has changed.~microsoft-Windows-Windows 
 ~microsoft-Windows-Windows Defender/Operational~5007
 windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
 
+#DistributedCOM
 Microsoft-Windows-DistributedCOM~System~10016
 
+#RemoteConnectionManager
 Microsoft-Windows-TerminalServices-RemoteConnectionManager~System~1056
 
+#System
 ~System~104
 
+#DNS-Client
 Microsoft-Windows-DNS-Client~System~1014
 
+#Commands COMMANDLINES to be run on all
 commandline_length:300
 commandline_contains:<
 commandline_contains:>
@@ -78,10 +87,12 @@ commandline_contains:ATBroker /start
 commandline_contains:ATBroker.exe /start
 commandline_contains:EQNEDT32.EXE -Embedding
 
+#Command COUNT to be run on all
 count:+:12
 count:&:10
 count:-split:3
 
+#KEYWORD SEARCHS to be run on all
 jscript.exe
 cvtres.exe
 vbscript.exe
