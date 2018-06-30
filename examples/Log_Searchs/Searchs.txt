@@ -93,11 +93,6 @@ commandline_contains:runscripthelper.exe surfacecheck
 commandline_contains:Scriptrunner.exe -appvscript
 commandline_contains:javascript
 commandline_contains:vbscript
-commandline_contains:regsvr32.exe /s /u /i
-commandline_contains:bitsadmin.exe  /transfer
-commandline_contains:bitsadmin.exe /download 
-commandline_contains:bitsadmin  /transfer
-commandline_contains:bitsadmin /download 
 commandline_contains:sc create
 commandline_contains:ATBroker /start
 commandline_contains:ATBroker.exe /start
