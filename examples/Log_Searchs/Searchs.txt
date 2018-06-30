@@ -21,6 +21,7 @@ iex~Microsoft-Windows-PowerShell/Operational~
 wscript~Microsoft-Windows-PowerShell/Operational~
 powershell New-Service~Microsoft-Windows-PowerShell/Operational~
 $env~Microsoft-Windows-PowerShell/Operational~
+http~Microsoft-Windows-PowerShell/Operational~
 
 #Application
 has been restricted by your Administrator by location~Application~
