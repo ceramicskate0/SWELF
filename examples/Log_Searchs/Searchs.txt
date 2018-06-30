@@ -7,7 +7,7 @@ VsBitsDownloadJob~microsoft-windows-bits-client/operational
 webclient~windows powershell~
 iex~windows powershell~
 wscript~windows powershell~
-powershell New-Service~windows powershell~
+New-Service~windows powershell~
 schtask~windows powershell~
 task~windows powershell~
 count:|:2~windows powershell~
