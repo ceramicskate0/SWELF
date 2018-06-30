@@ -10,7 +10,7 @@ wscript.exe~windows powershell~
 powershell New-Service~windows powershell~
 ~AMSI/Operational~
 count:-join:2~Microsoft-Windows-PowerShell/Operational~
-Windows PowerShell has started an IPC listening thread~Microsoft-Windows-PowerShell/Operational~
+iwr('~Microsoft-Windows-PowerShell/Operational~
 ~Microsoft-Windows-Sysmon/Operational~19
 ~Microsoft-Windows-Sysmon/Operational~9
 ~Microsoft-Windows-Sysmon/Operational~12
