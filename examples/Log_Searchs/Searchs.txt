@@ -8,12 +8,16 @@ webclient~windows powershell~
 iex~windows powershell~
 wscript~windows powershell~
 powershell New-Service~windows powershell~
+schtask~windows powershell~
+task~windows powershell~
 
 #AMSI
 ~AMSI/Operational~
 
 #Windows-PowerShell/Operational
 count:-join:2~Microsoft-Windows-PowerShell/Operational~
+count:':30~Microsoft-Windows-PowerShell/Operational~
+count:+:5~Microsoft-Windows-PowerShell/Operational~
 iwr('http~Microsoft-Windows-PowerShell/Operational~
 eventdata_length:10000~Microsoft-Windows-PowerShell/Operational~
 webclient~Microsoft-Windows-PowerShell/Operational~
@@ -22,6 +26,9 @@ wscript~Microsoft-Windows-PowerShell/Operational~
 powershell New-Service~Microsoft-Windows-PowerShell/Operational~
 $env~Microsoft-Windows-PowerShell/Operational~
 http~Microsoft-Windows-PowerShell/Operational~
+base64decode~Microsoft-Windows-PowerShell/Operational~
+count:;:12~Microsoft-Windows-PowerShell/Operational~
+|iex~Microsoft-Windows-PowerShell/Operational~
 
 #Application
 has been restricted by your Administrator by location~Application~
@@ -41,7 +48,7 @@ regsvr32.exe /s /u /i:~Microsoft-Windows-Sysmon/Operational~
 bitsadmin.exe  /transfer~Microsoft-Windows-Sysmon/Operational~
 bitsadmin.exe /download~Microsoft-Windows-Sysmon/Operational~ 
 rundll32.exe javascript:~Microsoft-Windows-Sysmon/Operational~
-count:;:12~Microsoft-Windows-Sysmon/Operational~
+count:;:2~Microsoft-Windows-Sysmon/Operational~
 Signed: false~Microsoft-Windows-Sysmon/Operational~6
 commandline_contains:msiexec /q /i~Microsoft-Windows-Sysmon/Operational~
 commandline_contains:msiexec /quiet /i~Microsoft-Windows-Sysmon/Operational~
