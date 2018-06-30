@@ -6,7 +6,7 @@ VsBitsDownloadJob~microsoft-windows-bits-client/operational
 #Windows Powershell
 webclient~windows powershell~
 iex~windows powershell~
-wscript.exe~windows powershell~
+wscript~windows powershell~
 powershell New-Service~windows powershell~
 
 #AMSI
