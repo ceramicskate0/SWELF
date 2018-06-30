@@ -118,6 +118,7 @@ ieexec.exe
 makecab.exe
 extrac.exe
 ftp.exe
+mshta
 .bgi
 rundll32.exe javascript:
 rundll32.exe http:
