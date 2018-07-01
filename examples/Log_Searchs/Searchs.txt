@@ -19,7 +19,6 @@ count:|:2~windows powershell~
 count:-join:2~Microsoft-Windows-PowerShell/Operational~
 count:':30~Microsoft-Windows-PowerShell/Operational~
 count:+:5~Microsoft-Windows-PowerShell/Operational~
-count:&:5~Microsoft-Windows-PowerShell/Operational~
 count:;:12~Microsoft-Windows-PowerShell/Operational~
 count:|:2~Microsoft-Windows-PowerShell/Operational~
 iwr('http~Microsoft-Windows-PowerShell/Operational~
@@ -32,12 +31,13 @@ $env~Microsoft-Windows-PowerShell/Operational~
 http~Microsoft-Windows-PowerShell/Operational~
 base64decode~Microsoft-Windows-PowerShell/Operational~
 |iex~Microsoft-Windows-PowerShell/Operational~
+count:&:10~Microsoft-Windows-PowerShell/Operational~
 frombase64string~Microsoft-Windows-PowerShell/Operational~
 
 #Application
 has been restricted by your Administrator by location~Application~
-Microsoft-Windows-SoftwareRestrictionPolicies~Application~866
-Microsoft-Windows-User Profiles Service~Application~1534
+~Microsoft-Windows-SoftwareRestrictionPolicies~Application~866
+~Microsoft-Windows-User Profiles Service~Application~1534
 
 #WMI~Application
 Microsoft-Windows-WMI~Application~63
@@ -77,10 +77,10 @@ windows defender antivirus configuration has changed.~microsoft-Windows-Windows 
 windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
 
 #DistributedCOM
-Microsoft-Windows-DistributedCOM~System~10016
+~Microsoft-Windows-DistributedCOM~System~10016
 
 #RemoteConnectionManager
-Microsoft-Windows-TerminalServices-RemoteConnectionManager~System~1056
+~Microsoft-Windows-TerminalServices-RemoteConnectionManager~System~1056
 
 #System
 ~System~104
@@ -98,7 +98,7 @@ Logon Type 10~Security~4624
 ~Microsoft-Windows-TaskScheduler/Operational~106
 
 #DNS-Client
-Microsoft-Windows-DNS-Client~System~1014
+~Microsoft-Windows-DNS-Client~System~1014
 
 #Commands COMMANDLINES to be run on all
 commandline_length:300
