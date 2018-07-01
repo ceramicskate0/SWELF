@@ -19,3 +19,4 @@ image: c:\program files (x86)\google\chrome\application\chrome.exe~Microsoft-Win
 mscorsvw.exe~microsoft-windows-sysmon/operational~
 parentcommandline: "c:\program files (x86)\google\chrome\application\chrome.exe"~Microsoft-Windows-Sysmon/Operational~
 runspace id: ~Microsoft-Windows-PowerShell/Operational~
+powershell console is~Microsoft-Windows-PowerShell/Operational~
