@@ -93,9 +93,9 @@ windows defender antivirus scanning for spyware and other potentially unwanted s
 ~Security~1102 
 ~Security~7045 
 ~Security~4720 
-Logon type 9~Security~4624 
-Logon Type 3~Security~4624 
-Logon Type 10~Security~4624
+Logon Type:		9~Security~4624 
+Logon Type:		3~Security~4624 
+Logon Type:		10~Security~4624
 
 #Microsoft-Windows-TaskScheduler/Operational
 ~Microsoft-Windows-TaskScheduler/Operational~106
