@@ -15,6 +15,9 @@ count:|:2~windows powershell~
 #AMSI
 ~AMSI/Operational~
 
+#Microsoft-Windows-Security-Mitigations/KernelMode
+~Microsoft-Windows-Security-Mitigations/KernelMode~
+
 #Windows-PowerShell/Operational
 count:-join:2~Microsoft-Windows-PowerShell/Operational~
 count:':30~Microsoft-Windows-PowerShell/Operational~
