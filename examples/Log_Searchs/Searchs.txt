@@ -85,14 +85,21 @@ windows defender antivirus scanning for spyware and other potentially unwanted s
 #RemoteConnectionManager
 ~Microsoft-Windows-TerminalServices-RemoteConnectionManager~System~1056
 
+#Microsoft-WindowsCodeIntegrity/Operational
+~Microsoft-WindowsCodeIntegrity/Operational~3033
+
 #System
 ~System~104
 ~System~7045
+~System~7040
+~System~7022
+~System~4719
 
 #Security
 ~Security~1102 
 ~Security~7045 
 ~Security~4720 
+#~Security~4688
 Logon Type:		9~Security~4624 
 Logon Type:		3~Security~4624 
 Logon Type:		10~Security~4624
