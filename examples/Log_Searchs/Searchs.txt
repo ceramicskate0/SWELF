@@ -11,6 +11,7 @@ New-Service~windows powershell~
 schtask~windows powershell~
 task~windows powershell~
 count:|:2~windows powershell~
+hidden~windows powershell~
 
 #AMSI
 ~AMSI/Operational~
