@@ -47,9 +47,16 @@ has been restricted by your Administrator by location~Application~
 Microsoft-Windows-WMI~Application~63
 
 #Windows-Sysmon/Operational
-~Microsoft-Windows-Sysmon/Operational~19
+~Microsoft-Windows-Sysmon/Operational~2
+~Microsoft-Windows-Sysmon/Operational~8
 ~Microsoft-Windows-Sysmon/Operational~9
+~Microsoft-Windows-Sysmon/Operational~10
 ~Microsoft-Windows-Sysmon/Operational~12
+~Microsoft-Windows-Sysmon/Operational~17
+~Microsoft-Windows-Sysmon/Operational~18
+~Microsoft-Windows-Sysmon/Operational~19
+~Microsoft-Windows-Sysmon/Operational~20
+~Microsoft-Windows-Sysmon/Operational~21
 mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 mshta vbscript:~Microsoft-Windows-Sysmon/Operational~
 regsvr32.exe /s /u /i:~Microsoft-Windows-Sysmon/Operational~
