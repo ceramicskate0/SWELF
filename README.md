@@ -8,11 +8,13 @@
 Having the to many log issue?!! Or maybe just cant find what you want from a log forwarder? Want to quickly get the logs you want from local evtx files? Maybe the other log forwarders are just too complicated and you want something simple that can do it all? SWELF might help you. You tell it the log source and/or the event ID and/or the key words and/or the number of chars in log and/or the length of the commandline, and/or the length of the log itself and the SWELF app will send just that log to your Log Collection location from a windows machine. SWELF is designed to be all windows native very low on requirements and setup as well as powerful and useful. Also an interesting case has come up recently, that red team could use this to help simulate a SIEM on a VM testing endpoint. :)
 
 ## What can it do:
--Read, search, and forward any live and Windows Eventlog and/or saved evtx file.
+-Read, search, and forward any live Windows Eventlog and/or saved evtx file for everything or just the log with the data you want.
 
--Read (and soon search) any local log file
+-Read (and soon search) any local log file for everything or just the log with the data you want.
 
--Read, search, and forward any Powershell Plugin output (ie that script you like thay you cant get output from at scale)
+
+-Read, search, and forward any Powershell Plugin output (ie that script you like thay you cant get output from at scale) for everything or just the log with the data you want.
+
 
 ## SWELF Design (After Central Configuration is Pushed)
 ![swelf design](https://user-images.githubusercontent.com/6934294/41071314-a6c5be2e-69bc-11e8-803a-03fcebab5981.PNG)
