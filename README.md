@@ -9,7 +9,9 @@ Having the to many log issue?!! Or maybe just cant find what you want from a log
 
 ## What can it do:
 -Read, search, and forward any live and Windows Eventlog and/or saved evtx file.
+
 -Read (and soon search) any local log file
+
 -Read, search, and forward any Powershell Plugin output (ie that script you like thay you cant get output from at scale)
 
 ## SWELF Design (After Central Configuration is Pushed)
