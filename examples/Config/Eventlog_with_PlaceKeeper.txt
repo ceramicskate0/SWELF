@@ -8,3 +8,7 @@ microsoft-windows-wmi-activity/operational=1
 microsoft-windows-bits-client/operational=1
 amsi/operational=1
 application=1
+Microsoft-Windows-Security-Mitigations/KernelMode=1
+Microsoft-Windows-PowerShell/Operational=1
+Microsoft-WindowsCodeIntegrity/Operational=1
+System=1
