@@ -86,6 +86,14 @@ windows defender antivirus configuration has changed.~microsoft-Windows-Windows 
 ~microsoft-Windows-Windows Defender/Operational~1123
 ~microsoft-Windows-Windows Defender/Operational~5007
 windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
+~microsoft-Windows-Windows Defender/Operational~1007
+~microsoft-Windows-Windows Defender/Operational~1008
+~microsoft-Windows-Windows Defender/Operational~1015
+~microsoft-Windows-Windows Defender/Operational~1116
+~microsoft-Windows-Windows Defender/Operational~1117
+~microsoft-Windows-Windows Defender/Operational~3007
+#~microsoft-Windows-Windows Defender/Operational~5001
+#~microsoft-Windows-Windows Defender/Operational~5007
 
 #DistributedCOM
 ~Microsoft-Windows-DistributedCOM~System~10016
