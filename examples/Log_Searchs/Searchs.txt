@@ -99,7 +99,14 @@ windows defender antivirus scanning for spyware and other potentially unwanted s
 ~Microsoft-Windows-DistributedCOM~System~10016
 
 #RemoteConnectionManager
-~Microsoft-Windows-TerminalServices-RemoteConnectionManager~System~1056
+~Microsoft-Windows-TerminalServices-RemoteConnectionManager~1056
+~Microsoft-Windows-TerminalServices-RemoteConnectionManager~1149
+
+#Microsoft-Windows-TerminalServices-LocalSessionManager
+#~Microsoft-Windows-TerminalServices-LocalSessionManager~21
+#~Microsoft-Windows-TerminalServices-LocalSessionManager~23
+#~Microsoft-Windows-TerminalServices-LocalSessionManager~24
+#~Microsoft-Windows-TerminalServices-LocalSessionManager~25
 
 #Microsoft-WindowsCodeIntegrity/Operational
 ~Microsoft-WindowsCodeIntegrity/Operational~3033
