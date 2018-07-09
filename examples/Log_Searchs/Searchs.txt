@@ -114,6 +114,8 @@ windows defender antivirus scanning for spyware and other potentially unwanted s
 #Security
 ~Security~1102 
 ~Security~7045 
+~Security~5140
+~Security~4672
 ~Security~4720 
 #~Security~4688
 Logon Type:		9~Security~4624 
@@ -122,6 +124,7 @@ Logon Type:		10~Security~4624
 
 #Microsoft-Windows-TaskScheduler/Operational
 ~Microsoft-Windows-TaskScheduler/Operational~106
+~Microsoft-Windows-TaskScheduler/Operational~141
 
 #DNS-Client
 ~Microsoft-Windows-DNS-Client~System~1014
