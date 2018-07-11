@@ -1,4 +1,5 @@
-#SearchTerm,EventLogName,EventID
+#Layout of Searchs.txt File for searching:
+#SearchTerm~EventLogName~EventID
 
 #windows-bits
 VsBitsDownloadJob~microsoft-windows-bits-client/operational~
