@@ -157,6 +157,11 @@ commandline_contains:sc create
 count:+:12
 count:&:10
 count:-split:3
+count:^:9
+count:`:9
+count:call:4
+count:set:5
+count:-join:5
 
 #KEYWORD SEARCHS to be run on all
 jscript.exe
