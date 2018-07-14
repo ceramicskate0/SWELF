@@ -89,7 +89,7 @@ namespace SWELF
             }
             else
             {
-                Errors.Log_Error("ERROR: ReadEventLog->Read_EventLog()", Eventlog_FullName+" EventLog does not exist.");
+                Errors.Log_Error("if (Settings.FIND_EventLog_Exsits(Eventlog_FullName))", Eventlog_FullName+" EventLog does not exist.",Errors.LogSeverity.Verbose);
             }
         }
 
@@ -108,7 +108,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Errors.Log_Error("ERROR: READ_Local_Log_Files() ", e.Message.ToString());
+                Errors.Log_Error("READ_Local_Log_Files() ", e.Message.ToString(),Errors.LogSeverity.Warning);
             }
         }
 
@@ -145,7 +145,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Errors.Log_Error("ERROR: READ_Local_Log_Dirs() ", e.Message.ToString());
+                Errors.Log_Error("READ_Local_Log_Dirs() ", e.Message.ToString(),Errors.LogSeverity.Warning);
             }
         }
 
@@ -170,6 +170,15 @@ namespace SWELF
                     }
                     EVTX_File_Logs.Enqueue(Eventlog);
                 }
+            }
+        }
+
+        public void READ_EVTX_Folder(string Folder_Path)
+        {
+            Settings.Evtx_Files = Directory.GetFiles(Folder_Path, "*.evtx").ToList();
+            for (int x=0;x< Settings.Evtx_Files.Count;++x)
+            {
+                READ_EVTX_File(Settings.Evtx_Files.ElementAt(x));
             }
         }
 
@@ -199,7 +208,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Errors.Log_Error("ERROR: READ_Local_Log_Dirs() ", e.Message.ToString());
+                Errors.Log_Error("READ_Local_Log_Dirs() ", e.Message.ToString(),Errors.LogSeverity.Warning);
             }
         }
 
@@ -210,8 +219,63 @@ namespace SWELF
            
             while (GET_EventLogEntry_From_API(EventLogtoReader) != null)
             {
-               INDEX_Record_FROM_API(EventLogFileName, Windows_EventLog_API, EventRecordID);
+                EventLogEntry Eventlog = new EventLogEntry();
+                try
+                {
+                    if (Windows_EventLog_API.RecordId.Value >= EventRecordID)
+                    {
+                        EventLogFileName.ID_EVENTLOG = Windows_EventLog_API.RecordId.Value;
+                        EventLogFileName.EventlogMissing = CHECK_If_EventLog_Missing(EventLogFileName, Eventlog);
+
+                        Eventlog.EventLog_Seq_num = Windows_EventLog_API.RecordId.Value;
+                        Eventlog.LogName = Windows_EventLog_API.LogName;
+                        Eventlog.ComputerName = Windows_EventLog_API.MachineName;
+                        Eventlog.EventID = Windows_EventLog_API.Id;
+                        Eventlog.CreatedTime = Windows_EventLog_API.TimeCreated.Value;
+                        try
+                        {
+                            Eventlog.Severity = Windows_EventLog_API.OpcodeDisplayName;
+                        }
+                        catch
+                        {
+                            Eventlog.Severity = Windows_EventLog_API.Level.Value.ToString();
+                        }
+                        try
+                        {
+                            Eventlog.TaskDisplayName = Windows_EventLog_API.TaskDisplayName;
+                        }
+                        catch
+                        {
+                            Eventlog.TaskDisplayName = Windows_EventLog_API.ProviderName;
+                        }
+                        try
+                        {
+                            Eventlog.EventData = Windows_EventLog_API.FormatDescription().ToLower().ToString();
+                            Eventlog.GET_FileHash();
+                            Eventlog.GET_IP_FromLogFile();
+                        }
+                        catch
+                        {
+                            Eventlog.GET_XML_of_Log = Windows_EventLog_API.ToXml();
+                            Eventlog.EventData = Windows_EventLog_API.ToXml(); 
+                        }
+                        EventLogFileName.Enqueue_Log(Eventlog);
+                    }
+                }
+                catch (Exception e)
+                {
+                   Errors.Log_Error("INDEX_Record_FROM_API()" +Eventlog_FullName +" removed", e.Message.ToString(), Errors.LogSeverity.Verbose);
+                    if (!MissingLogInFileDueToException)
+                    {
+                        Settings.GET_ErrorLog_Ready();
+                        //string Alert = "ALERT: Logs on " + Settings.ComputerName + " under Event Log name " + Eventlog.LogName + " near event id " + EventRecordID.ToString() + " found Eventlogs missing.";
+                        Errors.Log_Error("INDEX_Record_FROM_API() MissingLogInFileDueToException ", e.Message.ToString(), Errors.LogSeverity.Warning);
+                    }
+                    MissingLogInFileDueToException = true;
+                }
             }
+            Settings.IP_List_EVT_Logs = Settings.Hashs_From_EVT_Logs.Distinct().ToList();
+            Settings.Hashs_From_EVT_Logs = Settings.Hashs_From_EVT_Logs.Distinct().ToList();
             MissingLogInFileDueToException = false;
         }
 
@@ -220,49 +284,12 @@ namespace SWELF
             return Windows_EventLog_API = EventLogtoReader.ReadEvent();
         }
 
-        private static void INDEX_Record_FROM_API(EventLogFile EventLogFileName, EventRecord Windows_EventLog_API, long EventRecordID)
-        {
-            EventLogEntry Eventlog = new EventLogEntry();
-            try
-            {
-                if (Windows_EventLog_API.RecordId.Value >= EventRecordID)
-                {
-                    Eventlog.EventLog_Seq_num = Windows_EventLog_API.RecordId.Value;
-                    Eventlog.LogName = Windows_EventLog_API.LogName;
-                    Eventlog.Severity = Windows_EventLog_API.OpcodeDisplayName;
-                    Eventlog.TaskDisplayName = Windows_EventLog_API.TaskDisplayName;
-                    Eventlog.ComputerName = Windows_EventLog_API.MachineName;
-                    Eventlog.EventID = Windows_EventLog_API.Id;
-                    Eventlog.GET_XML_of_Log = Windows_EventLog_API.ToXml();
-                    Eventlog.CreatedTime = Windows_EventLog_API.TimeCreated.Value;
-                    EventLogFileName.EventlogMissing = CHECK_If_EventLog_Missing(EventLogFileName, Eventlog);
-                    EventLogFileName.ID_EVENTLOG = Windows_EventLog_API.RecordId.Value;
-                    Eventlog.EventData = Windows_EventLog_API.FormatDescription().ToLower().ToString();
-
-                    Eventlog.GET_FileHash();
-                    Eventlog.GET_IP_FromLogFile();
-                    EventLogFileName.Enqueue_Log(Eventlog);
-                }
-            }
-            catch (Exception e)
-            {
-                if (!MissingLogInFileDueToException)
-                {
-                    Settings.GET_ErrorLog_Ready();
-                    //string Alert = "ALERT: Logs on " + Settings.ComputerName + " under Event Log name " + Eventlog.LogName + " near event id " + EventRecordID.ToString() + " found Eventlogs missing.";
-                    Errors.Log_Error("ERROR: INDEX_Record_FROM_API() ", e.Message.ToString());
-                }
-                MissingLogInFileDueToException = true;
-            }
-        }
-
         private static bool CHECK_If_EventLog_Missing(EventLogFile ELF, EventLogEntry EVE)
         {
             if ((EVE.EventLog_Seq_num != ELF.ID_EVENTLOG + 1) && ELF.EventlogMissing == false && (ELF.ID_EVENTLOG != 0 && EVE.EventRecordID!=0))
             {
                 ELF.EventlogMissing = true;
-                Errors.WRITE_Errors_To_Log("ALERT:","Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.","Warning");
-                Settings.ADD_Eventlog_to_CriticalEvents("ALERT: Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.", "Missing Event Log","Warning");
+                Errors.WRITE_Errors_To_Log("CHECK_If_EventLog_Missing(EventLogFile ELF, EventLogEntry EVE)", "Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.",Errors.LogSeverity.Critical);
                 return true;
             }
             else

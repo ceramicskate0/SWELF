@@ -14,38 +14,63 @@ namespace SWELF
         private static List<string> ErrorsLog = new List<string>();
         private static DriveInfo Disk = new DriveInfo("C");
         private static long Drives_Available_Space = Disk.AvailableFreeSpace;
+        private static string[] Severity_Levels = { "verbose","infomrtaion","warning","critical"};
+        private static int Logging_Level_To_Report = 1;
 
-        public static void Log_Error(string CodeInfo, string msg)
+        public enum  LogSeverity : int
         {
-            string err = DateTime.Now + " : " + CodeInfo + " : " + msg + "\n";
-            ErrorsLog.Add(err);
+            Verbose=0,
+            Infomrtaion=1,
+            Warning=2,
+            Critical=3
+        };
 
-            if (ErrorsLog.Count>5)
+        public static void ErrorLogging_Level()
+        {
+            try
             {
-                WRITE_Errors();
+                Settings.Logging_Level_To_Report = Settings.AppConfig_File_Args["logging_level"].ToLower();
+                var index = Array.FindIndex(Severity_Levels, row => row == Settings.Logging_Level_To_Report);
+                Logging_Level_To_Report = Convert.ToInt32(index);
+            }
+            catch
+            {
+                Logging_Level_To_Report = 1;
             }
         }
 
-        public static void WRITE_Errors_To_Log(string CodeInfo, string msg, string Severity)
+        public static void Log_Error(string MethodNameInCode, string Message, LogSeverity LogSeverity)
         {
-            if (!CodeInfo.Contains(':'))
+            ErrorLogging_Level();
+            if (Logging_Level_To_Report >= (int)LogSeverity)
             {
-                CodeInfo += ':';
+                ErrorsLog.Add(DateTime.Now.ToShortDateString() + " : " + Settings.ComputerName + " : " + Severity_Levels[(int)LogSeverity] + " : " + MethodNameInCode + " : " + Message + "\n");
+                ErrorsLog = ErrorsLog.Distinct().ToList();
+                if (ErrorsLog.Count > 6)
+                {
+                    WRITE_Errors();
+                }
             }
-            string err = DateTime.Now + " : " + CodeInfo +  msg + '\n';
-            if (Settings.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
-            {
-              File.AppendAllText(Settings.GET_ErrorLog_Location, err);
-            }
-            else
-            {
-                File.Create(Settings.GET_ErrorLog_Location).Close();
-                File.AppendAllText(Settings.GET_ErrorLog_Location, err);
-            }
-            Settings.ADD_Eventlog_to_CriticalEvents(err, "SWELF App Error", Severity);
-            HostEventLogAgent_Eventlog.WRITE_Critical_EventLog(err+" SWELF App Error");
+        }
 
-            CHECK_Error_Log_Size();
+        public static void WRITE_Errors_To_Log(string MethodInCode, string msg, LogSeverity LogSeverity)
+        {
+            ErrorLogging_Level();
+            if (Logging_Level_To_Report >= (int)LogSeverity)
+            {
+                string err = DateTime.Now + " : " + Settings.ComputerName + " : " + Severity_Levels[(int)LogSeverity] + " : " + MethodInCode + " : " + msg + "\n";
+                if (Settings.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
+                {
+                    File.AppendAllText(Settings.GET_ErrorLog_Location, err);
+                }
+                else
+                {
+                    File.Create(Settings.GET_ErrorLog_Location).Close();
+                    File.AppendAllText(Settings.GET_ErrorLog_Location, err);
+                }
+                HostEventLogAgent_Eventlog.WRITE_Critical_EventLog("SWELF Immediate " + Severity_Levels[(int)LogSeverity] + " Notification: " + err + "\n");
+                CHECK_Error_Log_Size();
+            }
         }
 
         private static void CHECK_Error_Log_Size()
@@ -62,7 +87,7 @@ namespace SWELF
         {
             for (int x = 0; x < ErrorsLog.Count; ++x)
             {
-                WRITE_Errors_To_Log_BATCH(ErrorsLog.ElementAt(x) + '\n');
+                WRITE_Errors_To_Log_BATCH(ErrorsLog.ElementAt(x));
             }
             ErrorsLog.Clear();
         }
@@ -71,16 +96,14 @@ namespace SWELF
         {
             if (Settings.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
             {
-                File.AppendAllText(Settings.GET_ErrorLog_Location, msg + '\n');
+                File.AppendAllText(Settings.GET_ErrorLog_Location, msg);
             }
             else
             {
                 File.Create(Settings.GET_ErrorLog_Location).Close();
-                File.AppendAllText(Settings.GET_ErrorLog_Location, msg + '\n');
+                File.AppendAllText(Settings.GET_ErrorLog_Location, msg);
             }
-            Settings.ADD_Eventlog_to_CriticalEvents(msg, "SWELF App Error","Warning");
-            HostEventLogAgent_Eventlog.WRITE_Warning_EventLog(msg+" SWELF App Error");
-
+            HostEventLogAgent_Eventlog.WRITE_Warning_EventLog(msg);
             CHECK_Error_Log_Size();
         }
 

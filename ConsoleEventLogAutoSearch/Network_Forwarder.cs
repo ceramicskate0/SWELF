@@ -24,22 +24,29 @@ namespace SWELF
             {
                 for (int x = 0; x < IPAddr.Count; ++x)
                 {
-                    if (Settings.AppConfig_File_Args["output_format"] == "json")
+                    try
                     {
-                        SEND_Logs_JSON(IPAddr.ElementAt(x).MapToIPv4().ToString(),Data);
+                        if (Settings.AppConfig_File_Args["output_format"] == "json")
+                        {
+                            //SEND_Logs_JSON(IPAddr.ElementAt(x).MapToIPv4().ToString(),Data);
+                        }
+                        else
+                        {
+                            udpClient.Connect(IPAddr.ElementAt(x).MapToIPv4().ToString(), port);
+                            byte[] sendBytes = Encoding.ASCII.GetBytes(GET_Log_OutputFormat(Data));
+                            udpClient.Send(sendBytes, sendBytes.Length);
+                            udpClient.Close();
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        udpClient.Connect(IPAddr.ElementAt(x).MapToIPv4().ToString(), port);
-                        byte[] sendBytes = Encoding.ASCII.GetBytes(GET_Log_OutputFormat(Data));
-                        udpClient.Send(sendBytes, sendBytes.Length);
-                        udpClient.Close();
+                        Errors.Log_Error("SEND_Logs(EventLogEntry Data)","SWELF NETWORK ERROR: Check output command Syntax in consoleappconfig.conf. "+e.Message.ToString(),Errors.LogSeverity.Warning);
                     }
                 }
             }
             catch (Exception e)
             {
-                Errors.Log_Error("SWELF NETWORK ERROR: ", e.Message.ToString());
+                Errors.Log_Error("SEND_Logs(EventLogEntry Data)", "SWELF NETWORK ERROR: Nothing snet. " + e.Message.ToString(), Errors.LogSeverity.Warning);
             }
         }
 
@@ -60,7 +67,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Errors.Log_Error("SWELF NETWORK ERROR: ", e.Message.ToString());
+                Errors.Log_Error("SEND_Data_from_File(string Log_File_Data)", e.Message.ToString(),Errors.LogSeverity.Warning);
             }
         }
 
@@ -139,12 +146,6 @@ namespace SWELF
                 select p;
             int FirstFreeUDPPortInRange = range.Except(portsInUse).FirstOrDefault();
             return FirstFreeUDPPortInRange;
-        }
-
-        private static bool RUN_Security_Check_IP_Addrs()
-        {
-            //TODO:check if IP is on blacklist in host windows and on same domain
-            return true;
         }
     }
 }

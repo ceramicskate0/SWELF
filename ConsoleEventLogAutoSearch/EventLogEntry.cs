@@ -11,8 +11,6 @@ namespace SWELF
 {
     public class EventLogEntry
     {
-        private Regex IP_RegX = new Regex(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b");
-        private string[] splitter = { "\n", "\r", " ", "  " };
         public long EventLog_Seq_num = 0;
 
         public int EventRecordID { get; set; }
@@ -38,12 +36,12 @@ namespace SWELF
 
         public void GET_IP_FromLogFile()
         {
-            List<string> EventlogDataSegment = EventData.Split(splitter, StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<string> EventlogDataSegment = EventData.Split(Settings.EventLogEntry_splitter, StringSplitOptions.RemoveEmptyEntries).ToList();
             EventlogDataSegment = EventlogDataSegment.Distinct().ToList();
             EventlogDataSegment.Sort();
             foreach (string line in EventlogDataSegment)
             {
-                if (IP_RegX.IsMatch(line) && line.Contains('.') && line.Contains('\\') == false)
+                if (Settings.IP_RegX.IsMatch(line) && line.Contains('.') && line.Contains('\\') == false)
                 {
                     Settings.IP_List_EVT_Logs.Add(line);
                 }

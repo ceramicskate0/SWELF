@@ -8,6 +8,7 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Configuration.Install;
 using System.ComponentModel;
+using System.Net;
 
 namespace SWELF
 {
@@ -36,7 +37,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    Errors.Log_Error("ALERT: SWELF MAIN ERROR: ", e.Message.ToString() + ", Also the app halted.");
+                    Errors.Log_Error("Start_Live_Process() ", e.Message.ToString() + ", Also the app halted.", Errors.LogSeverity.Critical);
                     Start_Write_Errors();
                     Stop(2);
                 }
@@ -53,7 +54,14 @@ namespace SWELF
 
                 Queue<EventLogEntry> Matchs_in_EVTS_File = search_Obj.Search(Settings.CMDLine_EVTX_File);
 
-                Output_File.Write_Ouput_CSV(Settings.CMDLine_Output_CSV, Matchs_in_EVTS_File);
+                if (Settings.output_csv)
+                {
+                    Output_File.Write_Ouput_CSV(Settings.CMDLine_Output_CSV, Matchs_in_EVTS_File);
+                }
+                else
+                {
+                    Start_Write_To_SWELF_EventLogs();
+                }
 
                 if (Settings.CMDLine_Dissolve)
                 {
@@ -62,8 +70,8 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Errors.Log_Error("ALERT: SWELF EVTX_Process ERROR: ", "Start_EVTX_Process() " + e.Message.ToString());
-                HostEventLogAgent_Eventlog.WRITE_Critical_EventLog("ALERT: SWELF EVTX_Process ERROR: Start_EVTX_Process() " + e.Message.ToString());
+                Errors.Log_Error("Start_EVTX_Process() ", e.Message.ToString(),Errors.LogSeverity.Warning);
+                HostEventLogAgent_Eventlog.WRITE_Critical_EventLog("Start_EVTX_Process() " + e.Message.ToString());
                 Start_Write_Errors();
                 Stop(2);
             }
@@ -85,16 +93,18 @@ namespace SWELF
                 }
                 else
                 {
-                   Errors.Log_Error("ERROR: If (SWELFisAdmin)", Settings.ComputerName+" SWELF MAIN ERROR: APP not running as admin and was unable to read eventlogs.");
+                   Errors.Log_Error("ERROR: Settings.CHECK_If_Running_as_Admin()", Settings.ComputerName+" SWELF MAIN ERROR: APP not running as admin and was unable to read eventlogs.", Errors.LogSeverity.Warning);
                    Start_Write_Errors();
                 }
                 Start_ReadLocal_Logs();
+                GC.Collect();
                 Start_Send_File_Based_Logs();
+                GC.Collect();
                 Start_Write_Errors();
             }
             else
             {
-                Errors.Log_Error("ALERT: SWELF:","SECURITY CHECKS FAILED ON " + Environment.MachineName +". SWELF did not run due to possible tampering.");
+                Errors.Log_Error("ALERT: SWELF:","SECURITY CHECKS FAILED ON " + Environment.MachineName +". SWELF did not run due to possible tampering.", Errors.LogSeverity.Critical);
                 Start_Write_Errors();
             }
             if (Settings.CMDLine_Dissolve)
@@ -117,7 +127,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Errors.Log_Error("ALERT: SWELF MAIN ERROR: ", "Settings.InitializeAppSettings() " + e.Message.ToString());
+                Errors.Log_Error("Settings.InitializeAppSettings() ", e.Message.ToString(), Errors.LogSeverity.Warning);
                 HostEventLogAgent_Eventlog.WRITE_Critical_EventLog("ALERT: SWELF MAIN ERROR: Settings.InitializeAppSettings() " + e.Message.ToString());
                 Start_Write_Errors();
                 Stop(2);
@@ -134,10 +144,11 @@ namespace SWELF
                     PSLog.ComputerName = Settings.ComputerName;
                     PSLog.EventID = 3;
                     PSLog.LogName = "SWELF Powershell Plugin "+ Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandSplit)[0];
-                    PSLog.Severity = "Informational";
-                    PSLog.EventData=Powershell_Plugin.Run_PS_Script(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandSplit)[0], Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandSplit)[2]);
+                    PSLog.Severity = "Information";
+                    char spliter=Settings.SplitChar_SearchCommandSplit[0];
+                    PSLog.EventData=Powershell_Plugin.Run_PS_Script(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(spliter).ElementAt(0), Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(spliter).ElementAt(2));
 
-                    if (PSLog.EventData.Contains(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandSplit)[1]) || string.IsNullOrEmpty(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandSplit)[1]))
+                    if (PSLog.EventData.Contains(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(spliter).ElementAt(1)))
                     {
                         EvntLogSearch.EventLog_Log_API.EventLogs_From_WindowsAPI.Enqueue(PSLog);
                         try
@@ -153,15 +164,15 @@ namespace SWELF
                         }
                         catch (Exception e)
                         {
-                            Errors.Log_Error("ALERT: SWELF WRITE/SEND EVENT LOG ERROR: ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " HostEventLogAgent_Eventlog.WRITE_EventLog " + e.Message.ToString());
+                            Errors.Log_Error("Start_Run_Plugins()", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " HostEventLogAgent_Eventlog.WRITE_EventLog " + e.Message.ToString(), Errors.LogSeverity.Verbose);
                         }
                     }
                 }
             }
             catch (Exception e)
             {
-                Errors.Log_Error("SWELF PLUGIN ERROR: ", "Powershell_Plugin.Run_PS_Script() " + e.Message.ToString());
-                Network_Forwarder.SEND_Data_from_File("SWELF PLUGIN ERROR: Powershell_Plugin.Run_PS_Script() - " + e.Message.ToString());
+                Errors.Log_Error("Powershell_Plugin.Run_PS_Script() " , e.Message.ToString(), Errors.LogSeverity.Warning);
+                Network_Forwarder.SEND_Data_from_File("Powershell_Plugin.Run_PS_Script() - " + e.Message.ToString());
             }
         }
 
@@ -183,17 +194,21 @@ namespace SWELF
                     {
                         if (e.Message == "Object reference not set to an instance of an object.")
                         {
-                            Errors.Log_Error("ALERT: SWELF: ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " Event Log Empty.");
+                            Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs() ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " Event Log Empty.",Errors.LogSeverity.Verbose);
                         }
                         else
                         {
-                            Errors.Log_Error("ALERT: SWELF APP ERROR: ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " " + e.Message.ToString());
+                            Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " " + e.Message.ToString(),Errors.LogSeverity.Warning);
                         }
                     }
-                    Start_Write_To_SWELF_EventLogs(x);
+                    GC.Collect();
+                }
+                if (EvntLogSearch.EventLog_Log_API.EventLogs_From_WindowsAPI.Count > 0)
+                {
+                    Start_Write_To_SWELF_EventLogs();
                     try
                     {
-                        if (Program_Start_Args.Contains("-output_csv".ToLower()) && Program_Start_Args.Count == 3 && (Settings.GET_LogCollector_Location().Count < 1))
+                        if (Settings.output_csv && Program_Start_Args.Count == 3 && (Settings.GET_LogCollector_Location().Count < 1))
                         {
                             Output_File.Write_Ouput_CSV(Settings.CMDLine_Output_CSV, EvntLogSearch.EventLog_Log_API.EventLogs_From_WindowsAPI);
                         }
@@ -204,11 +219,12 @@ namespace SWELF
                     }
                     catch (Exception e)
                     {
-                        Errors.Log_Error("SWELF NETWORK ERROR: ", e.Message.ToString());
+                        Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", e.Message.ToString(), Errors.LogSeverity.Warning);
                     }
-                    EvntLogSearch.EventLog_Log_API.Clear();
-                    EvntLogSearch.Clear_EventLogFileName();
                 }
+                EvntLogSearch.EventLog_Log_API.Clear();
+                EvntLogSearch.Clear_EventLogFileName();
+                GC.Collect();
                 Settings.UPDATE_EventLog_w_PlaceKeeper_File();
             }
         }
@@ -219,7 +235,7 @@ namespace SWELF
             EvntLogSearch.READ_Local_Log_Dirs();
         }
 
-        private static void Start_Write_To_SWELF_EventLogs(int x)
+        private static void Start_Write_To_SWELF_EventLogs()
         {
             for (int z = 0; z < EvntLogSearch.EventLog_Log_API.EventLogs_From_WindowsAPI.Count; ++z)
             {
@@ -229,7 +245,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    Errors.Log_Error("ALERT: SWELF WRITE EVENT LOG ERROR: ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " HostEventLogAgent_Eventlog.WRITE_EventLog " + e.Message.ToString());
+                    Errors.Log_Error("Start_Write_To_SWELF_EventLogs()", EvntLogSearch.EventLog_Log_API.EventLogs_From_WindowsAPI.ElementAt(z) +" " + e.Message.ToString(),Errors.LogSeverity.Warning);
                 }
             }
         }
@@ -281,15 +297,33 @@ namespace SWELF
                             Settings.SHOW_Help_Menu();
                             break;
                         }
+                    case "-h":
+                        {
+                            Settings.SHOW_Help_Menu();
+                            break;
+                        }
+                    case "?":
+                        {
+                            Settings.SHOW_Help_Menu();
+                            break;
+                        }
                     case "-output_csv":
                         {
                             Settings.CMDLine_Output_CSV = Program_Start_Args.ElementAt(x + 1);
+                            Settings.output_csv = true;
                             break;
                         }
                     case "-evtx_file":
                         {
                             Settings.CMDLine_EVTX_File= Program_Start_Args.ElementAt(x + 1);
                             EvntLogSearch.READ_EVTX_File(Settings.CMDLine_EVTX_File);
+                            Settings.EVTX_Override = true;
+                            break;
+                        }
+                    case "-evtx_folder":
+                        {
+                            Settings.CMDLine_EVTX_File = Program_Start_Args.ElementAt(x + 1);
+                            EvntLogSearch.READ_EVTX_Folder(Settings.CMDLine_EVTX_File);
                             Settings.EVTX_Override = true;
                             break;
                         }

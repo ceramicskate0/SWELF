@@ -48,7 +48,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    Errors.WRITE_Errors_To_Log("Check_Reg_Keys()", "FAILED Security Check Check_Reg_Keys() "+e.Message.ToString(), "Critical");
+                    Errors.WRITE_Errors_To_Log("Check_Reg_Keys()", "FAILED Security Check Registry "+e.Message.ToString(), Errors.LogSeverity.Critical);
                   return false;
                 }
             }
