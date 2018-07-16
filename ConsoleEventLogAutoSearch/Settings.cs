@@ -685,8 +685,11 @@ namespace SWELF
             for (int x=0; x < MissingEventLogs.Count(); ++x)
             {
                 EventLog_w_PlaceKeeper_List.Add(MissingEventLogs.ElementAt(x));
+                EventLog_w_PlaceKeeper.Add(MissingEventLogs.ElementAt(x).ToLower(), 1);
+                EventLog_w_PlaceKeeper_List.Add(MissingEventLogs.ElementAt(x).ToLower());
             }
-            EventLog_w_PlaceKeeper_Backup = EventLog_w_PlaceKeeper_List;
+            EventLog_w_PlaceKeeper_List.Reverse();
+            EventLog_w_PlaceKeeper_Backup = EventLog_w_PlaceKeeper;
         }
 
 
