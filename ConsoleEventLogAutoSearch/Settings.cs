@@ -667,7 +667,7 @@ namespace SWELF
                                 {
                                     Searchs.Add(SearchsArgs[1]);
                                 }
-                                else if (SearchsArgs.Length>2 && (String.IsNullOrEmpty(SearchsArgs[2]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.FIND_EventLog_Exsits(SearchsArgs[2])))
+                                else if (SearchsArgs.Length > 2 && (String.IsNullOrEmpty(SearchsArgs[2]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.FIND_EventLog_Exsits(SearchsArgs[2])))
                                 {
                                     Searchs.Add(SearchsArgs[2]);
                                 }
@@ -686,7 +686,7 @@ namespace SWELF
             {
                 EventLog_w_PlaceKeeper_List.Add(MissingEventLogs.ElementAt(x));
             }
-            EventLog_w_PlaceKeeper_Backup = EventLog_w_PlaceKeeper;
+            EventLog_w_PlaceKeeper_Backup = EventLog_w_PlaceKeeper_List;
         }
 
 
