@@ -645,32 +645,51 @@ namespace SWELF
 
         private static void CHECK_if_all_Search_Terms_have_Indexed_LogsSources()
         {
+            List<string> Searchs = new List<string>();
+
             foreach (string SearchLogType in Search_Terms_Unparsed)//search terms
             {
-                string[] SearchsArgs = SearchLogType.Split(Settings.SplitChar_Search_Command_Parsers, StringSplitOptions.RemoveEmptyEntries).ToArray();
-                bool LogSoucreIsInToBeIndexQueue = false;
+                string[] SearchsArgs = SearchLogType.Split(Settings.SplitChar_SearchCommandSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
                 if (SearchsArgs.Length > 1)
                 {
                     if (String.IsNullOrEmpty(SearchsArgs[1]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false)
                     {
                         foreach (string LogSource in EventLog_w_PlaceKeeper_List)//eventlogs to index
                         {
-                            if (SearchsArgs[1].ToLower() == LogSource)
+                            try
                             {
-                                LogSoucreIsInToBeIndexQueue = true;
+                                if (Settings.FIND_EventLog_Exsits(SearchsArgs[0]))
+                                {
+                                    Searchs.Add(SearchsArgs[0]);
+                                }
+                                else if (SearchsArgs.Length > 1 && (String.IsNullOrEmpty(SearchsArgs[1]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.FIND_EventLog_Exsits(SearchsArgs[1])))
+                                {
+                                    Searchs.Add(SearchsArgs[1]);
+                                }
+                                else if (SearchsArgs.Length>2 && (String.IsNullOrEmpty(SearchsArgs[2]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.FIND_EventLog_Exsits(SearchsArgs[2])))
+                                {
+                                    Searchs.Add(SearchsArgs[2]);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Errors.Log_Error("CHECK_if_all_Search_Terms_have_Indexed_LogsSources()", e.Message.ToString(), Errors.LogSeverity.Warning);
                             }
                         }
                     }
-                    if (LogSoucreIsInToBeIndexQueue == false && String.IsNullOrEmpty(SearchsArgs[1]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.FIND_EventLog_Exsits(SearchsArgs[1]))
-                    {
-                        EventLog_w_PlaceKeeper.Add(SearchsArgs[1].ToLower(), 1);
-                        EventLog_w_PlaceKeeper_List.Add(SearchsArgs[1].ToLower());
-                        EventLog_w_PlaceKeeper_List.Reverse();
-                    }
                 }
+            }
+            List<string> MissingEventLogs = Searchs.Distinct().Except(EventLog_w_PlaceKeeper_List.Distinct()).ToList();
+
+            for (int x=0; x < MissingEventLogs.Count(); ++x)
+            {
+                EventLog_w_PlaceKeeper_List.Add(MissingEventLogs.ElementAt(x));
             }
             EventLog_w_PlaceKeeper_Backup = EventLog_w_PlaceKeeper;
         }
+
+
 
         public static bool FIND_EventLog_Exsits(string EventLog_ToFind)
         {

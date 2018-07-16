@@ -25,7 +25,7 @@ namespace SWELF
             {
                 Start_EVTX_Process();
             }
-            else if (Program_Start_Args.Count>1 && (Program_Start_Args.Contains("-dissolve".ToLower())==false))
+            else if (Program_Start_Args.Count<2 && Program_Start_Args.Count >1)
             {
                 Settings.SHOW_Help_Menu();
             }

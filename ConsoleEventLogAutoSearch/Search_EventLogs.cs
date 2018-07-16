@@ -98,7 +98,6 @@ namespace SWELF
 
         public Queue<EventLogEntry> Search(string Current_EventLog)
         {
-            CurrentEventLogBeingSearched = Current_EventLog;
             //Search LOGS
             int temp_int_stor = 0;
                 for (int x = 0; x < Settings.Search_Terms_Unparsed.Count; ++x)
