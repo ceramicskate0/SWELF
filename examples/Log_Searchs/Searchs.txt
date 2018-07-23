@@ -44,7 +44,7 @@ frombase64string~Microsoft-Windows-PowerShell/Operational~
 ~Application~1534
 
 #WMI~Application
-~Microsoft-Windows-WMI~Application~63
+
 
 #Windows-Sysmon/Operational
 ~Microsoft-Windows-Sysmon/Operational~2
