@@ -40,9 +40,8 @@ count:&:10~Microsoft-Windows-PowerShell/Operational~
 frombase64string~Microsoft-Windows-PowerShell/Operational~
 
 #Application
-has been restricted by your Administrator by location~Application~
-~Microsoft-Windows-SoftwareRestrictionPolicies~Application~866
-~Microsoft-Windows-User Profiles Service~Application~1534
+~Application~866
+~Application~1534
 
 #WMI~Application
 ~Microsoft-Windows-WMI~Application~63
