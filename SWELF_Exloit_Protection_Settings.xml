@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MitigationPolicy>
+  <SystemConfig>
+    <ASLR ForceRelocateImages="true" RequireInfo="false" HighEntropy="false" />
+    <Fonts DisableNonSystemFonts="true" AuditOnly="false" />
+  </SystemConfig>
+  <AppConfig Executable="AcroRd32.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="AcroRd32Info.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="certutil.exe">
+    <ChildProcess DisallowChildProcessCreation="true" Audit="false" />
+  </AppConfig>
+  <AppConfig Executable="chrome.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" BottomUp="true" HighEntropy="true" />
+    <SEHOP Enable="true" TelemetryOnly="false" />
+    <Heap TerminateOnError="true" />
+    <ChildProcess DisallowChildProcessCreation="false" Audit="true" />
+  </AppConfig>
+  <AppConfig Executable="clview.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="cnfnot32.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="excel.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+    <SystemCalls Audit="false" />
+    <Fonts Audit="false" />
+    <ImageLoad AuditRemoteImageLoads="false" />
+    <ChildProcess Audit="false" />
+  </AppConfig>
+  <AppConfig Executable="excelcnv.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="ExtExport.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="graph.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="ie4uinit.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="ieinstal.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="ielowutil.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="ieUnatt.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="iexplore.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="MiracastView.exe">
+    <ExtensionPoints DisableExtensionPoints="true" />
+  </AppConfig>
+  <AppConfig Executable="msaccess.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="mscorsvw.exe">
+    <ExtensionPoints DisableExtensionPoints="true" />
+  </AppConfig>
+  <AppConfig Executable="msfeedssync.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="mshta.exe">
+    <DEP Enable="true" EmulateAtlThunks="false" />
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+    <ChildProcess DisallowChildProcessCreation="true" Audit="false" />
+  </AppConfig>
+  <AppConfig Executable="msoadfsb.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="msoasb.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="msohtmed.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="msosrec.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="msosync.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="msoxmled.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="mspub.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="msqry32.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="ngen.exe">
+    <ExtensionPoints DisableExtensionPoints="true" />
+  </AppConfig>
+  <AppConfig Executable="ngentask.exe">
+    <ExtensionPoints DisableExtensionPoints="true" />
+  </AppConfig>
+  <AppConfig Executable="onenote.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+    <ChildProcess Audit="false" />
+  </AppConfig>
+  <AppConfig Executable="onenotem.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="orgchart.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="osfinstaller.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="outlook.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="powerpnt.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+    <ChildProcess Audit="false" />
+  </AppConfig>
+  <AppConfig Executable="PresentationHost.exe">
+    <DEP Enable="true" EmulateAtlThunks="false" />
+    <ASLR ForceRelocateImages="true" RequireInfo="false" BottomUp="true" HighEntropy="true" />
+    <SEHOP Enable="true" TelemetryOnly="false" />
+    <Heap TerminateOnError="true" />
+  </AppConfig>
+  <AppConfig Executable="PrintDialog.exe">
+    <ExtensionPoints DisableExtensionPoints="true" />
+  </AppConfig>
+  <AppConfig Executable="RdrCEF.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="RdrServicesUpdater.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="runtimebroker.exe">
+    <ExtensionPoints DisableExtensionPoints="true" />
+  </AppConfig>
+  <AppConfig Executable="scanost.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="scanpst.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="selfcert.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="setlang.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+  <AppConfig Executable="svchost.exe">
+    <DynamicCode Audit="true" />
+    <SignedBinaries Audit="true" AuditStoreSigned="false" />
+  </AppConfig>
+  <AppConfig Executable="C:\Users\Host\Documents\Visual Studio 2015\Projects\SWELF\SWELF\bin\Debug\SWELF.exe">
+    <DEP Enable="true" EmulateAtlThunks="false" />
+    <ASLR ForceRelocateImages="true" RequireInfo="false" BottomUp="true" HighEntropy="true" />
+    <StrictHandle Enable="false" />
+    <SystemCalls DisableWin32kSystemCalls="false" />
+    <ExtensionPoints DisableExtensionPoints="true" />
+    <ControlFlowGuard Enable="true" SuppressExports="false" />
+    <SignedBinaries MicrosoftSignedOnly="true" AllowStoreSignedBinaries="false" Audit="false" AuditStoreSigned="false" EnforceModuleDependencySigning="false" />
+    <Fonts DisableNonSystemFonts="true" AuditOnly="false" Audit="false" />
+    <ImageLoad BlockRemoteImageLoads="true" AuditRemoteImageLoads="false" BlockLowLabelImageLoads="true" AuditLowLabelImageLoads="false" />
+    <Payload EnableExportAddressFilter="false" EnableExportAddressFilterPlus="false" EnableImportAddressFilter="false" EnableRopStackPivot="false" EnableRopCallerCheck="false" EnableRopSimExec="false" />
+    <SEHOP Enable="true" TelemetryOnly="false" />
+    <Heap TerminateOnError="true" />
+    <ChildProcess DisallowChildProcessCreation="false" />
+  </AppConfig>
+  <AppConfig Executable="SystemSettings.exe">
+    <ExtensionPoints DisableExtensionPoints="true" />
+  </AppConfig>
+  <AppConfig Executable="winword.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+    <ImageLoad AuditRemoteImageLoads="false" />
+    <ChildProcess Audit="false" />
+  </AppConfig>
+  <AppConfig Executable="wordconv.exe">
+    <ASLR ForceRelocateImages="true" RequireInfo="false" />
+  </AppConfig>
+</MitigationPolicy>
