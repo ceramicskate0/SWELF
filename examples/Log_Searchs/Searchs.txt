@@ -120,7 +120,10 @@ windows defender antivirus scanning for spyware and other potentially unwanted s
 ~System~4719
 
 #Security
+~Security~1100
+~Security~1101
 ~Security~1102 
+~Security~1108
 ~Security~7045 
 ~Security~5140
 ~Security~4672
