@@ -3,14 +3,14 @@
   <AppConfig Executable="SWELF.exe">
     <DEP Enable="true" EmulateAtlThunks="false" />
     <ASLR ForceRelocateImages="true" RequireInfo="false" BottomUp="true" HighEntropy="true" />
-    <StrictHandle Enable="false" />
+    <StrictHandle Enable="true" />
     <SystemCalls DisableWin32kSystemCalls="false" />
     <ExtensionPoints DisableExtensionPoints="true" />
     <ControlFlowGuard Enable="true" SuppressExports="false" />
-    <SignedBinaries MicrosoftSignedOnly="true" AllowStoreSignedBinaries="false" Audit="false" AuditStoreSigned="false" EnforceModuleDependencySigning="false" />
+    <SignedBinaries MicrosoftSignedOnly="true" AllowStoreSignedBinaries="false" Audit="false" AuditStoreSigned="false" EnforceModuleDependencySigning="true" />
     <Fonts DisableNonSystemFonts="true" AuditOnly="false" Audit="false" />
     <ImageLoad BlockRemoteImageLoads="true" AuditRemoteImageLoads="false" BlockLowLabelImageLoads="true" AuditLowLabelImageLoads="false" />
-    <Payload EnableExportAddressFilter="false" EnableExportAddressFilterPlus="false" EnableImportAddressFilter="false" EnableRopStackPivot="false" EnableRopCallerCheck="false" EnableRopSimExec="false" />
+    <Payload EnableExportAddressFilter="true" AuditEnableExportAddressFilter="false" EnableExportAddressFilterPlus="true" AuditEnableExportAddressFilterPlus="false" EnableImportAddressFilter="true" AuditEnableImportAddressFilter="false" EnableRopStackPivot="true" AuditEnableRopStackPivot="false" EnableRopCallerCheck="true" AuditEnableRopCallerCheck="false" EnableRopSimExec="true" AuditEnableRopSimExec="false" />
     <SEHOP Enable="true" TelemetryOnly="false" />
     <Heap TerminateOnError="true" />
     <ChildProcess DisallowChildProcessCreation="false" />
