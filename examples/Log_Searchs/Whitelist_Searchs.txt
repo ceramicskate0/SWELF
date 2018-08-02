@@ -1,22 +1,22 @@
 #SearchTerm ~ EventLogName ~ EventID
-windows defender antivirus scan~microsoft-Windows-Windows Defender/Operational~
-commandline: "c:\program files (x86)\microsoft visual studio\2017\community\common7\ide\privateassemblies\scriptedsandbox64.exe"~microsoft-windows-sysmon/operational~
-commandline: c:\windows\microsoft.net\framework\v4.0.30319\mscorsvw.exe -startupevent~microsoft-windows-sysmon/operational~
-commandline: "c:\program files\nvidia corporation\display.nvcontainer\nvdisplay.container.exe" -f~microsoft-windows-sysmon/operational~
-parentcommandline: "c:\windows\microsoft.net\framework\v4.0.30319\ngen.exe" createpdb~microsoft-windows-sysmon/operational~
-image: c:\program files (x86)\microsoft visual studio\2017\community\common7\servicehub\hosts\servicehub.host.clr.x86\servicehub.vsdetouredhost.exe~microsoft-windows-sysmon/operational~
-transfer job that is associated with the https://aka.ms/vs/15/release/channel~Microsoft-Windows-Bits-Client/Operational
-windows defender antivirus has encountered an error trying to update signatures.~microsoft-Windows-Windows Defender/Operational~
-image: c:\program files (x86)\microsoft visual studio\2017\community\common7\servicehub\hosts\servicehub.host.clr.x86\servicehub.host.clr.x86.exe~microsoft-windows-sysmon/operational~
-hashes: sha256=393729c6f0e4d018039fc0c81c6b3740d43224b2f5889c2d3376c94ef0998574~microsoft-windows-sysmon/operational~
-commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=renderer~microsoft-windows-sysmon/operational~
-commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=ppapi-broker~microsoft-windows-sysmon/operational~
-commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=gpu-process~microsoft-windows-sysmon/operational~
-commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=crashpad-handler~microsoft-windows-sysmon/operational~
-parentcommandline: "c:\program files (x86)\google\chrome\application\chrome.exe" -- "http://www.msftconnecttest.com/redirect"~microsoft-windows-sysmon/operational~
-mscorsvw.exe~microsoft-windows-sysmon/operational~
-image: c:\program files (x86)\google\chrome\application\chrome.exe~Microsoft-Windows-Sysmon/Operational~
-mscorsvw.exe~microsoft-windows-sysmon/operational~
-parentcommandline: "c:\program files (x86)\google\chrome\application\chrome.exe"~Microsoft-Windows-Sysmon/Operational~
-runspace id: ~Microsoft-Windows-PowerShell/Operational~
-powershell console is~Microsoft-Windows-PowerShell/Operational~
+#windows defender antivirus scan~microsoft-Windows-Windows Defender/Operational~
+#commandline: "c:\program files (x86)\microsoft visual studio\2017\community\common7\ide\privateassemblies\scriptedsandbox64.exe"~microsoft-windows-sysmon/operational~
+#commandline: c:\windows\microsoft.net\framework\v4.0.30319\mscorsvw.exe -startupevent~microsoft-windows-sysmon/operational~
+#commandline: "c:\program files\nvidia corporation\display.nvcontainer\nvdisplay.container.exe" -f~microsoft-windows-sysmon/operational~
+#parentcommandline: "c:\windows\microsoft.net\framework\v4.0.30319\ngen.exe" createpdb~microsoft-windows-sysmon/operational~
+#image: c:\program files (x86)\microsoft visual studio\2017\community\common7\servicehub\hosts\servicehub.host.clr.x86\servicehub.vsdetouredhost.exe~microsoft-windows-sysmon/operational~
+#transfer job that is associated with the https://aka.ms/vs/15/release/channel~Microsoft-Windows-Bits-Client/Operational
+#windows defender antivirus has encountered an error trying to update signatures.~microsoft-Windows-Windows Defender/Operational~
+#image: c:\program files (x86)\microsoft visual studio\2017\community\common7\servicehub\hosts\servicehub.host.clr.x86\servicehub.host.clr.x86.exe~microsoft-windows-sysmon/operational~
+#hashes: sha256=393729c6f0e4d018039fc0c81c6b3740d43224b2f5889c2d3376c94ef0998574~microsoft-windows-sysmon/operational~
+#commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=renderer~microsoft-windows-sysmon/operational~
+#commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=ppapi-broker~microsoft-windows-sysmon/operational~
+#commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=gpu-process~microsoft-windows-sysmon/operational~
+#commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=crashpad-handler~microsoft-windows-sysmon/operational~
+#parentcommandline: "c:\program files (x86)\google\chrome\application\chrome.exe" -- "http://www.msftconnecttest.com/redirect"~microsoft-windows-sysmon/operational~
+#mscorsvw.exe~microsoft-windows-sysmon/operational~
+#image: c:\program files (x86)\google\chrome\application\chrome.exe~Microsoft-Windows-Sysmon/Operational~
+#mscorsvw.exe~microsoft-windows-sysmon/operational~
+#parentcommandline: "c:\program files (x86)\google\chrome\application\chrome.exe"~Microsoft-Windows-Sysmon/Operational~
+#runspace id: ~Microsoft-Windows-PowerShell/Operational~
+#powershell console is~Microsoft-Windows-PowerShell/Operational~
