@@ -168,6 +168,9 @@ count:`:9
 count:call:4
 count:set:5
 count:-join:5
+count:^:10
+count:;:50
+count:,:25
 
 #KEYWORD SEARCHS to be run on all
 jscript.exe
