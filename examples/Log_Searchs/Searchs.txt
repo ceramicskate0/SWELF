@@ -78,6 +78,8 @@ commandline_contains:regasm.exe /U~Microsoft-Windows-Sysmon/Operational~
 count:|:2~Microsoft-Windows-Sysmon/Operational~
 #commandline_contains:C:\Windows\System32\wmiprvse.exe -secured -Embedding~Microsoft-Windows-Sysmon/Operational~1
 #commandline_contains:==~Microsoft-Windows-Sysmon/Operational~1
+
+
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
 detection~microsoft-Windows-Windows Defender/Operational~ 
