@@ -14,10 +14,10 @@ namespace SWELF
 {
     class ReadEventLog
     {
-        private static EventRecord Windows_EventLog_API { get; set; }
+        private static EventRecord Windows_EventLog_from_API { get; set; }
+
         public string EvntLog_Name;
         public EventLogFile EventLog_Log_API;//windows live api read
-        public List<string> FileContents_From_FileReads;
         public static bool MissingLogInFileDueToException = false;
         public Queue<EventLogEntry> EVTX_File_Logs = new Queue<EventLogEntry>();
         private static EventLogFile EventLogFileName;
@@ -25,7 +25,6 @@ namespace SWELF
         public ReadEventLog()
         {
             EvntLog_Name = "";
-            FileContents_From_FileReads = new List<string>();
         }
 
         public void Clear_EventLogFileName()
@@ -38,7 +37,7 @@ namespace SWELF
             long EVTlog_PlaceHolder = PlaceKeeper_EventRecordID;
             try
             {
-                if (EVTlog_PlaceHolder == 1)
+                if (EVTlog_PlaceHolder <= 1)
                 {
                     EVTlog_PlaceHolder = Settings.EventLog_w_PlaceKeeper[Eventlog_FullName.ToLower()];
                 }
@@ -93,82 +92,57 @@ namespace SWELF
             }
         }
 
-        public void READ_Local_Log_Files()
-        {
-            try
-            {
-                List<string> FilePaths = File.ReadAllLines(Settings.GET_FilesToMonitor_Path()).ToList();
-
-                for (int z = 0; z < FilePaths.Count; ++z)
-                {
-                    string FileContent = File.ReadAllText(FilePaths.ElementAt(z));
-                    File.Delete(FilePaths.ElementAt(z));
-                    FileContents_From_FileReads.Add(FileContent);
-                }
-            }
-            catch (Exception e)
-            {
-                Errors.Log_Error("READ_Local_Log_Files() ", e.Message.ToString(),Errors.LogSeverity.Warning);
-            }
-        }
-
-        public void READ_Local_Log_Dirs()
-        {
-            try
-            {
-                List<string> DirPaths = File.ReadAllLines(Settings.GET_DirToMonitor_Path()).ToList();
-                for (int z = 0; z < DirPaths.Count; ++z)
-                {
-                    if (Directory.Exists(DirPaths.ElementAt(z)))
-                    {
-                        if (DirPaths.ElementAt(z).ToLower().Contains("powershell") || DirPaths.ElementAt(z).ToLower().Contains("iis"))
-                        {
-                            READ_Local_Log_Dirs_for_Powershell_or_IIS(DirPaths.ElementAt(z));
-                        }
-                        else
-                        {
-                            string[] FilePaths = Directory.GetFiles(DirPaths.ElementAt(z));
-
-                            for (int x = 0; x < FilePaths.Length - 1; ++x)
-                            {
-                                if (Settings.VERIFY_if_File_Exists(FilePaths.ElementAt(x)) && (FilePaths.ElementAt(x).Contains(".txt") || FilePaths.ElementAt(x).Contains(".log")))
-                                {
-                                    string FileContent = File.ReadAllText(FilePaths.ElementAt(x));
-                                    File.Delete(FilePaths.ElementAt(x));
-                                    FileContents_From_FileReads.Add(FileContent);
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-            catch (Exception e)
-            {
-                Errors.Log_Error("READ_Local_Log_Dirs() ", e.Message.ToString(),Errors.LogSeverity.Warning);
-            }
-        }
-
         public void READ_EVTX_File(string Path)
         {
             using (var reader = new EventLogReader(Path, PathType.FilePath))
             {
-                while ((Windows_EventLog_API = reader.ReadEvent()) != null)
+                while ((Windows_EventLog_from_API = reader.ReadEvent()) != null)
                 {
-                    EventLogEntry Eventlog = new EventLogEntry();
-                    using (Windows_EventLog_API)
+                    try
                     {
-                        Eventlog.EventLog_Seq_num = Windows_EventLog_API.RecordId.Value;
-                        Eventlog.LogName = Windows_EventLog_API.LogName;
-                        Eventlog.Severity = Windows_EventLog_API.OpcodeDisplayName;
-                        Eventlog.TaskDisplayName = Windows_EventLog_API.TaskDisplayName;
-                        Eventlog.ComputerName = Windows_EventLog_API.MachineName;
-                        Eventlog.EventID = Windows_EventLog_API.Id;
-                        Eventlog.GET_XML_of_Log = Windows_EventLog_API.ToXml();
-                        Eventlog.CreatedTime = Windows_EventLog_API.TimeCreated.Value;
-                        Eventlog.EventData = Windows_EventLog_API.FormatDescription().ToLower().ToString();
+                        EventLogEntry Eventlog = new EventLogEntry();
+                        using (Windows_EventLog_from_API)
+                        {
+                            Eventlog.EventLog_Seq_num = Windows_EventLog_from_API.RecordId.Value;
+                            Eventlog.LogName = Windows_EventLog_from_API.LogName;
+                            Eventlog.ComputerName = Windows_EventLog_from_API.MachineName;
+                            Eventlog.EventID = Windows_EventLog_from_API.Id;
+                            Eventlog.CreatedTime = Windows_EventLog_from_API.TimeCreated.Value;
+                            try
+                            {
+                                Eventlog.Severity = Windows_EventLog_from_API.OpcodeDisplayName;
+                            }
+                            catch
+                            {
+                                Eventlog.Severity = Windows_EventLog_from_API.Level.Value.ToString();
+                            }
+                            try
+                            {
+                                Eventlog.TaskDisplayName = Windows_EventLog_from_API.TaskDisplayName;
+                            }
+                            catch
+                            {
+                                Eventlog.TaskDisplayName = Windows_EventLog_from_API.ProviderName;
+                            }
+                            try
+                            {
+                                Eventlog.EventData = Windows_EventLog_from_API.FormatDescription().ToLower().ToString();
+                                Eventlog.GET_FileHash();
+                                Eventlog.GET_IP_FromLogFile();
+                            }
+                            catch
+                            {
+                                Eventlog.GET_XML_of_Log = Windows_EventLog_from_API.ToXml();
+                                Eventlog.EventData = Windows_EventLog_from_API.ToXml();
+                            }
+
+                        }
+                        EVTX_File_Logs.Enqueue(Eventlog);
                     }
-                    EVTX_File_Logs.Enqueue(Eventlog);
+                    catch (Exception e)
+                    {
+                        Errors.Log_Error("READ_EVTX_File(string Path)", e.Message.ToString(), Errors.LogSeverity.Informataion);
+                    }
                 }
             }
         }
@@ -182,36 +156,6 @@ namespace SWELF
             }
         }
 
-        private void READ_Local_Log_Dirs_for_Powershell_or_IIS(string directory)
-        {
-            try
-            {
-                    if (Directory.Exists(directory))
-                    {
-                        string[] SubDirs = Directory.GetDirectories(directory);
-
-                        for (int x = 0; x < SubDirs.Length; ++x)
-                        {
-                            string[] FilePaths = Directory.GetFiles(SubDirs[x]);
-
-                            for (int c = 0; c < FilePaths.Length; ++c)
-                            {
-                                if (FilePaths[c].Contains(".txt") && (FilePaths[c].ToLower().Contains("powershell_transcript.")|| FilePaths[c].ToLower().Contains("iis")))
-                                {
-                                    string FileContent = File.ReadAllText(FilePaths.ElementAt(c));
-                                    File.Delete(FilePaths.ElementAt(c));
-                                    FileContents_From_FileReads.Add(FileContent);
-                                }
-                            }
-                        }
-                    }
-            }
-            catch (Exception e)
-            {
-                Errors.Log_Error("READ_Local_Log_Dirs() ", e.Message.ToString(),Errors.LogSeverity.Warning);
-            }
-        }
-
         private static void READ_WindowsEventLog_API(string Eventlog_FullName, long EventRecordID, EventLogFile EventLogFileName)
         {
             EventLogQuery eventsQuery = new EventLogQuery(Eventlog_FullName, PathType.LogName);
@@ -222,42 +166,42 @@ namespace SWELF
                 EventLogEntry Eventlog = new EventLogEntry();
                 try
                 {
-                    if (Windows_EventLog_API.RecordId.Value >= EventRecordID)
+                    if (Windows_EventLog_from_API.RecordId.Value >= EventRecordID)
                     {
-                        EventLogFileName.ID_EVENTLOG = Windows_EventLog_API.RecordId.Value;
-                        EventLogFileName.EventlogMissing = CHECK_If_EventLog_Missing(EventLogFileName, Eventlog);
+                        EventLogFileName.ID_EVENTLOG = Windows_EventLog_from_API.RecordId.Value;
+                        EventLogFileName.EventlogMissing = Sec_Checks.CHECK_If_EventLog_Missing(EventLogFileName, Eventlog);
 
-                        Eventlog.EventLog_Seq_num = Windows_EventLog_API.RecordId.Value;
-                        Eventlog.LogName = Windows_EventLog_API.LogName;
-                        Eventlog.ComputerName = Windows_EventLog_API.MachineName;
-                        Eventlog.EventID = Windows_EventLog_API.Id;
-                        Eventlog.CreatedTime = Windows_EventLog_API.TimeCreated.Value;
+                        Eventlog.EventLog_Seq_num = Windows_EventLog_from_API.RecordId.Value;
+                        Eventlog.LogName = Windows_EventLog_from_API.LogName;
+                        Eventlog.ComputerName = Windows_EventLog_from_API.MachineName;
+                        Eventlog.EventID = Windows_EventLog_from_API.Id;
+                        Eventlog.CreatedTime = Windows_EventLog_from_API.TimeCreated.Value;
                         try
                         {
-                            Eventlog.Severity = Windows_EventLog_API.OpcodeDisplayName;
+                            Eventlog.Severity = Windows_EventLog_from_API.OpcodeDisplayName;
                         }
                         catch
                         {
-                            Eventlog.Severity = Windows_EventLog_API.Level.Value.ToString();
+                            Eventlog.Severity = Windows_EventLog_from_API.Level.Value.ToString();
                         }
                         try
                         {
-                            Eventlog.TaskDisplayName = Windows_EventLog_API.TaskDisplayName;
+                            Eventlog.TaskDisplayName = Windows_EventLog_from_API.TaskDisplayName;
                         }
                         catch
                         {
-                            Eventlog.TaskDisplayName = Windows_EventLog_API.ProviderName;
+                            Eventlog.TaskDisplayName = Windows_EventLog_from_API.ProviderName;
                         }
                         try
                         {
-                            Eventlog.EventData = Windows_EventLog_API.FormatDescription().ToLower().ToString();
+                            Eventlog.EventData = Windows_EventLog_from_API.FormatDescription().ToLower().ToString();
                             Eventlog.GET_FileHash();
                             Eventlog.GET_IP_FromLogFile();
                         }
                         catch
                         {
-                            Eventlog.GET_XML_of_Log = Windows_EventLog_API.ToXml();
-                            Eventlog.EventData = Windows_EventLog_API.ToXml(); 
+                            Eventlog.GET_XML_of_Log = Windows_EventLog_from_API.ToXml();
+                            Eventlog.EventData = Windows_EventLog_from_API.ToXml(); 
                         }
                         EventLogFileName.Enqueue_Log(Eventlog);
                     }
@@ -281,21 +225,9 @@ namespace SWELF
 
         private static EventRecord GET_EventLogEntry_From_API(EventLogReader EventLogtoReader)
         {
-            return Windows_EventLog_API = EventLogtoReader.ReadEvent();
+            return Windows_EventLog_from_API = EventLogtoReader.ReadEvent();
         }
 
-        private static bool CHECK_If_EventLog_Missing(EventLogFile ELF, EventLogEntry EVE)
-        {
-            if ((EVE.EventLog_Seq_num != ELF.ID_EVENTLOG + 1) && ELF.EventlogMissing == false && (ELF.ID_EVENTLOG != 0 && EVE.EventRecordID!=0))
-            {
-                ELF.EventlogMissing = true;
-                Errors.WRITE_Errors_To_Log("CHECK_If_EventLog_Missing(EventLogFile ELF, EventLogEntry EVE)", "Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.",Errors.LogSeverity.Critical);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+
     }
 }

@@ -14,15 +14,16 @@ namespace SWELF
         private static List<string> ErrorsLog = new List<string>();
         private static DriveInfo Disk = new DriveInfo("C");
         private static long Drives_Available_Space = Disk.AvailableFreeSpace;
-        private static string[] Severity_Levels = { "verbose","infomrtaion","warning","critical"};
+        private static string[] Severity_Levels = { "verbose","informataion","warning","critical","failureaudit"};
         private static int Logging_Level_To_Report = 1;
 
         public enum  LogSeverity : int
         {
             Verbose=0,
-            Infomrtaion=1,
+            Informataion=1,
             Warning=2,
-            Critical=3
+            Critical=3,
+            FailureAudit=16
         };
 
         public static void ErrorLogging_Level()
@@ -39,14 +40,14 @@ namespace SWELF
             }
         }
 
-        public static void Log_Error(string MethodNameInCode, string Message, LogSeverity LogSeverity)
+        public static void Log_Error(string MethodNameInCode, string Message, LogSeverity LogSeverity,bool LastLog=false)
         {
             ErrorLogging_Level();
-            if (Logging_Level_To_Report >= (int)LogSeverity)
+            if (Logging_Level_To_Report <= (int)LogSeverity)
             {
                 ErrorsLog.Add(DateTime.Now.ToShortDateString() + " : " + Settings.ComputerName + " : " + Severity_Levels[(int)LogSeverity] + " : " + MethodNameInCode + " : " + Message + "\n");
                 ErrorsLog = ErrorsLog.Distinct().ToList();
-                if (ErrorsLog.Count > 6)
+                if (ErrorsLog.Count > 6 || LastLog)
                 {
                     WRITE_Errors();
                 }

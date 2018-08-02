@@ -14,6 +14,10 @@ using System.Globalization;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Security.Policy;
+using System.Security.Permissions;
+using System.Reflection;
+using System.Runtime.Remoting;
 
 namespace SWELF
 {
@@ -168,5 +172,6 @@ namespace SWELF
                 Errors.Log_Error("WriteBatchFile()", e.Message.ToString(),Errors.LogSeverity.Warning);
             }
         }
+
     }
 }

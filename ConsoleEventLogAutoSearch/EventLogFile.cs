@@ -11,7 +11,8 @@ namespace SWELF
 {
     class EventLogFile
     {
-        public Queue<EventLogEntry> EventLogs_From_WindowsAPI;
+        public Queue<EventLogEntry> Contents_of_EventLog= new Queue<EventLogEntry> ();
+
         public string EventLogFileName = "";
         private long iD_EVENTLOG=0;
         public bool EventlogMissing = false;
@@ -21,7 +22,7 @@ namespace SWELF
         public EventLogFile(string Name,long ID_EVENTLOGRecordID=0)
         {
             EventLogFileName = Name;
-            EventLogs_From_WindowsAPI = new Queue<EventLogEntry>();
+            Contents_of_EventLog = new Queue<EventLogEntry>();
             iD_EVENTLOG = ID_EVENTLOGRecordID;
             GET_Last_EventRecordID_InLogFile(Name);
             GET_First_EventRecordID_InLogFile(Name);
@@ -29,7 +30,7 @@ namespace SWELF
 
         public void Clear()
         {
-            EventLogs_From_WindowsAPI.Clear();
+            Contents_of_EventLog.Clear();
         }
 
         public long ID_EVENTLOG
@@ -46,7 +47,7 @@ namespace SWELF
 
         public bool Check_if_EventLog_Empty()
         {
-            if (iD_EVENTLOG <= 1 || EventLogs_From_WindowsAPI.Count == 0)
+            if (iD_EVENTLOG <= 1 || Contents_of_EventLog.Count == 0)
             {
                 return true;
             }
@@ -56,12 +57,12 @@ namespace SWELF
 
         public void Enqueue_Log(EventLogEntry Eventlog)
         {
-            EventLogs_From_WindowsAPI.Enqueue(Eventlog);
+            Contents_of_EventLog.Enqueue(Eventlog);
         }
 
         public EventLogEntry Dequeue_Log()
         {
-            return EventLogs_From_WindowsAPI.Dequeue();
+            return Contents_of_EventLog.Dequeue();
         }
 
         private void GET_Last_EventRecordID_InLogFile(string Eventlog_FullName)
@@ -71,6 +72,7 @@ namespace SWELF
             EventLogtoReader.BatchSize = 100;
             EventRecord Windows_EventLog_API = EventLogtoReader.ReadEvent();
             EventLogEntry Eventlog = new EventLogEntry();
+
             First_EventLogID_From_Check = Windows_EventLog_API.RecordId.Value;
 
             while ((Windows_EventLog_API = EventLogtoReader.ReadEvent(Timeout)) != null)

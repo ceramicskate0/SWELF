@@ -51,7 +51,7 @@ namespace SWELF
         {
             using (EventLog myLogger = new EventLog(Settings.EvtLog.Source, Environment.MachineName, EvntLog.LogName))
             {
-                myLogger.WriteEntry(EvntLog.EventData, EventLogEntryType.Error, EvntLog.EventID);
+                myLogger.WriteEntry(EvntLog.EventData, EventLogEntryType.Warning, EvntLog.EventID);
             }
         }
     }

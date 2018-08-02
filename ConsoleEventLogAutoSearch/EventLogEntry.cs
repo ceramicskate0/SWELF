@@ -115,6 +115,22 @@ namespace SWELF
                     }
                 }
 
+                if (EventData.Contains("process command line: ") && LogName.ToLower().Equals("microsoft-windows-security-auditing") && EventID==4688)
+                {
+                    string data = EventData;
+                    string[] delm1 = { "process command line:  ", "token elevation type " };
+
+                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+                    if (!string.IsNullOrEmpty(datA[1]))
+                    {
+                        if (datA[1].Length > commandLine.Length)
+                        {
+                            commandLine = "process command line: " + datA[1];
+                        }
+                    }
+                }
+
                 if (commandLine.Length>1)
                 {
                     commandLine += "\nParent-CommandLine: " ;
