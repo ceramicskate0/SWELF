@@ -1,9 +1,7 @@
 # Simple-Windows-Event-Log-Forwarder (SWELF) 
 
-# ANNOUCNEMENTS:
-> - Major Bug FIx coming soon for issue #48 rendering all verison after 0.3.0.0 broken.
-
 Known Good Hash for the latest and current relase of SWELF.exe (SHA 256): 
+ed82f79f52b03a6bb6e6addf2d67f1b864e7ddf7919c8ceb0371f443c9baea4e
 
 ## Summary:
 
