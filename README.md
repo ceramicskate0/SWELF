@@ -7,6 +7,8 @@ ed82f79f52b03a6bb6e6addf2d67f1b864e7ddf7919c8ceb0371f443c9baea4e
 
 > Having the to many log issue?!! Or maybe just cant find what you want from a log forwarder? Want to quickly get the logs you want from local evtx files? Maybe the other log forwarders are just too complicated and you want something simple that can do it all? SWELF might help you. You tell it the log source and/or the event ID and/or the key words and/or the number of chars in log and/or the length of the commandline, and/or the length of the log itself and the SWELF app will send just that log to your Log Collection location from a windows machine. SWELF is designed to be all windows native very low on requirements and setup as well as powerful and useful. Also an interesting case has come up recently, that red team could use this to help simulate a SIEM on a VM testing endpoint. :)
 
+## [Want to know more or have Questions check out the WIKI:](https://github.com/ceramicskate0/SWELF/wiki)
+
 ## What can SWELF do:
 
 1. Read, search, and forward any live Windows Eventlog and/or saved evtx file for everything or just the log with the data you want.
@@ -26,8 +28,6 @@ Since SWELF is early release sofwtare this means there may be bugs that exist.
 > This app is a mainly a log forwarder with the ability to search, forward, and run your plugins. This means that you can tell your log forwarding agent (SWELF) exactly what logs to forward and it wont forward the rest (This will help with that pesky "to many logs", "we cant send those logs its to much noise", or "the SIEM cant handle all the logs" issues with SIEMs and IT Departments). ;D
 
 > For example, you want powershell logs (dont lie to yourself every security person does, or at least you better). You know what you want them to have in the log, or what they should looks like, or how long they are, or some keyword, then SWELF will forward in order just those logs.
-
-## [Want to know more or have Questions check out the WIKI:](https://github.com/ceramicskate0/SWELF/wiki)
 
 ## SWELF Design (After Central Configuration is Pushed)
 ![swelf design](https://user-images.githubusercontent.com/6934294/41071314-a6c5be2e-69bc-11e8-803a-03fcebab5981.PNG)
