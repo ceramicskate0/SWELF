@@ -13,7 +13,7 @@ namespace SWELF
     {
         private Queue<EventLogEntry> Read_In_EventLogs_From_WindowsAPI = new Queue<EventLogEntry>();
         private static List<EventLogEntry> Logs_That_Matched_Search_This_Event_Log = new List<EventLogEntry>();//The logs that matched this run,this log
-        private static List<EventLogEntry> ALL_Matched_Logs_This_SWELF_Run = new List<EventLogEntry>();//All the logs found that matched
+        //SEARCH COMMANDS are in settings
 
         private static string CurrentEventLogBeingSearched = "";
 
@@ -26,7 +26,6 @@ namespace SWELF
         {
             Read_In_EventLogs_From_WindowsAPI.Clear();
             Logs_That_Matched_Search_This_Event_Log.Clear();
-            ALL_Matched_Logs_This_SWELF_Run.Clear();
         }
 
         public Queue<EventLogEntry> Search(string Current_EventLog, Queue<EventLogEntry> All_the_logs_That_Matched_Search)
@@ -51,7 +50,7 @@ namespace SWELF
                         {
                             if ((Search_String_Parsed.Length > 1 && (string.IsNullOrEmpty(Search_String_Parsed[1]) == false) && Search_String_Parsed[1] == Current_EventLog) || Search_String_Parsed.Length == 1)
                             {
-                                SEARCH_Run_Commands(Settings.Search_Terms_Unparsed.ElementAt(x), Search_String_Parsed);
+                                SEARCH_Run_Commands(Settings.Search_Terms_Unparsed.ElementAt(x), Search_String_Parsed, Settings.Search_Terms_Unparsed.ElementAt(x));
                             }
                         }
                         else
@@ -235,7 +234,7 @@ namespace SWELF
             }
         }
 
-        private void SEARCH_Run_Commands(string SearchCommand,string[] Search_String_Parsed)
+        private void SEARCH_Run_Commands(string SearchCommand,string[] Search_String_Parsed,string Search_Terms_Unparsed)
         {
                 if (SearchCommand.Contains(Settings.SplitChar_Search_Command_Parsers[0]))
                 {
@@ -276,6 +275,17 @@ namespace SWELF
                         case "commandline_contains"://sysmon/powershell only
                             {
                                 Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Length_Sysmon_CMDLine_Args_Contains(Search_Command_Values[1]));
+                                break;
+                            }
+                        case "network_connect"://sysmon only
+                            {
+                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_Process_Port_Match(SearchCommand));
+                                break;
+                            }
+                        case "search_multiple":
+                            {
+                                string[] Search_Command_Values2 = SearchCommand.Split(Settings.SplitChar_SearchCommandSplit, StringSplitOptions.None).ToArray();
+                                SEARCH_CMD_Search_Multiple_SearchTerms(Search_Command_Values2[0], Search_Command_Values2[1], Search_Command_Values2[2]);
                                 break;
                             }
                         case "commandline_length"://sysmon/powershell only
@@ -336,7 +346,7 @@ namespace SWELF
 
         private List<EventLogEntry> SEARCH_EventLog_For_EventID(int EventID , string EventLogName)
         {
-            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventID.Equals(EventID) == true && s.LogName.ToLower() == EventLogName.ToLower()).ToList();
+            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventID.Equals(EventID) && s.LogName.ToLower().Equals(EventLogName.ToLower())).ToList();
             return results.ToList();
         }
 
@@ -603,6 +613,131 @@ namespace SWELF
             {
                 Errors.Log_Error("SEARCH_CMD_For_Level()", e.Message.ToString()+" The search term had bad input. Check search config format.", Errors.LogSeverity.Warning);
                 List<EventLogEntry> results = new List<EventLogEntry>();
+                return results.ToList();
+            }
+        }
+
+        private List<EventLogEntry> SEARCH_CMD_Search_Multiple_SearchTerms(string SearchTerm, string EventLogName="", string EventID="")
+        {
+            List<EventLogEntry> MultSearchList = new List<EventLogEntry>();
+            List<EventLogEntry> Read_In_EventLogs_From_WindowsAPI_Temp = Read_In_EventLogs_From_WindowsAPI.ToList(); 
+            List<EventLogEntry> results = new List<EventLogEntry>();
+            List<EventLogEntry> results_1 = new List<EventLogEntry>();
+
+            string[] SearchTerms = SearchTerm.Split(Settings.SplitChar_Search_Command_Parser_Multi_Search, StringSplitOptions.RemoveEmptyEntries).ToArray();
+            if (SearchTerms.Length < 20)
+            {
+
+                if (SearchTerms.Length > 1)
+                {
+                    for (int x = 0; x < SearchTerms.Length; ++x)
+                    {
+
+                        if (x == 0)
+                        {
+                            results_1 = SEARCH_Everything(SearchTerms[x]);
+                            Read_In_EventLogs_From_WindowsAPI_Temp = results_1;
+                            MultSearchList.AddRange(results_1);
+                        }
+                        else if (results_1.Count < 1)
+                        {
+                            return MultSearchList = new List<EventLogEntry>();
+                        }
+                        else
+                        {
+                            if (String.IsNullOrEmpty(SearchTerms[x]) == true && String.IsNullOrEmpty(EventLogName) == true && String.IsNullOrEmpty(EventID) == false)
+                            {
+                                results = Read_In_EventLogs_From_WindowsAPI_Temp.Where(s => s.EventID.ToString().Equals(EventID) == true).ToList();
+                            }
+                            else if (String.IsNullOrEmpty(SearchTerms[x]) == true && String.IsNullOrEmpty(EventLogName) == false && String.IsNullOrEmpty(EventID) == false)
+                            {
+                                results = Read_In_EventLogs_From_WindowsAPI_Temp.Where(s => s.EventID.ToString().Equals(EventID) == true && s.LogName.ToLower().Equals(EventLogName.ToLower())).ToList();
+                            }
+                            else if (String.IsNullOrEmpty(SearchTerms[x]) == false && String.IsNullOrEmpty(EventLogName) == false && String.IsNullOrEmpty(EventID) == true)
+                            {
+                                results = Read_In_EventLogs_From_WindowsAPI_Temp.Where(s => s.EventData.Contains(SearchTerms[x]) && s.LogName.ToLower().Equals(EventLogName.ToLower())).ToList();
+                            }
+                            else if (String.IsNullOrEmpty(SearchTerms[x]) == false && String.IsNullOrEmpty(EventLogName) == false && String.IsNullOrEmpty(EventID) == true)
+                            {
+                                results = Read_In_EventLogs_From_WindowsAPI_Temp.Where(s => s.EventData.Contains(SearchTerms[x]) && s.LogName.ToLower().Equals(EventLogName.ToLower())).ToList();
+                            }
+                            else if (String.IsNullOrEmpty(SearchTerms[x]) == false && String.IsNullOrEmpty(EventLogName) == false && String.IsNullOrEmpty(EventID) == true)
+                            {
+                                results = Read_In_EventLogs_From_WindowsAPI_Temp.Where(s => s.EventData.Contains(SearchTerms[x]) && s.LogName.ToLower().Equals(EventLogName.ToLower())).ToList();
+                            }
+                            else if (String.IsNullOrEmpty(SearchTerms[x]) == false && String.IsNullOrEmpty(EventLogName) == false && String.IsNullOrEmpty(EventID) == false)
+                            {
+                                results = Read_In_EventLogs_From_WindowsAPI_Temp.Where(s => s.EventID.ToString().Equals(EventID) == true && s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventData.Contains(SearchTerms[x])).ToList();
+                            }
+                            else
+                            {
+                                results = Read_In_EventLogs_From_WindowsAPI_Temp.Where(s => s.EventData.Contains(SearchTerms[x]) || s.EventID.ToString().Equals(SearchTerms[x])).ToList();
+                            }
+
+                            if (results.Count > 0)
+                            {
+                                MultSearchList = results;
+                            }
+                            else
+                            {
+                                return MultSearchList = new List<EventLogEntry>();
+                            }
+                            results.Clear();
+                        }
+                        GC.Collect();
+                    }
+                }
+                else
+                {
+                    if (SearchTerms.Length > 0)
+                    {
+                        MultSearchList = SEARCH_Everything(SearchTerms[0]);
+                    }
+                }
+
+                if (MultSearchList.Count > 1)
+                {
+                    return MultSearchList;
+                }
+                else
+                {
+                    return MultSearchList = new List<EventLogEntry>();
+                }
+            }
+            else
+            {
+                Errors.Log_Error("SEARCH_CMD_Search_Multiple_SearchTerms()", SearchTerm + " has to many things to search for per log. Limit is less than 20.", Errors.LogSeverity.Warning);
+                return MultSearchList;
+            }
+        }
+
+        private List<EventLogEntry> SEARCH_CMD_Process_Port_Match(string SearchTerm, string EventLogName = "microsoft-windows-sysmon/operational", string EventID = "3")
+        {
+            string[] SearchTerms = SearchTerm.Split(Settings.SplitChar_Search_Command_Parsers, StringSplitOptions.RemoveEmptyEntries).ToArray();
+            //[1]=port
+            //[2]=app
+            if (SearchTerms.Length == 3)
+            {
+                IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.ToString().Equals(EventID) && s.GET_Sysmon_Network_Calling_Process_Name.ToLower().Contains(SearchTerms[2].ToLower()) && s.GET_Sysmon_Netwrok_Calling_Process_Name_Dest_Port.Equals(SearchTerms[1])).ToList();
+                return results.ToList();
+            }
+            else if (SearchTerms.Length == 2)
+            {
+                try
+                {
+                    Convert.ToInt32(SearchTerms[1]);
+                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.ToString().Equals(EventID) && s.GET_Sysmon_Netwrok_Calling_Process_Name_Dest_Port.Equals(SearchTerms[1])).ToList();
+                    return results.ToList();
+                }
+                catch
+                {
+                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.ToString().Equals(EventID) && s.GET_Sysmon_Network_Calling_Process_Name.ToLower().Contains(SearchTerms[2].ToLower())).ToList();
+                    return results.ToList();
+                }
+            }
+            else
+            {
+                IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.ToString().Equals(EventID)).ToList();
                 return results.ToList();
             }
         }

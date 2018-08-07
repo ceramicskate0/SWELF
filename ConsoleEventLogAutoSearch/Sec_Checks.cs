@@ -9,6 +9,8 @@ using System.IO;
 using System.Diagnostics;
 using System.Management;
 using System.Diagnostics.Eventing.Reader;
+using System.Reflection;
+using System.Security.Policy;
 
 namespace SWELF
 {
@@ -28,9 +30,9 @@ namespace SWELF
         private static long Eventlog_Count_Before_Write = 0;
 
 
-
         public static bool Pre_Run_Sec_Checks()
         {
+            Settings.ThreadsCount = Process.GetCurrentProcess().Threads.Count;
             if (Check_EventLog_Service() && Check_Reg_Keys())//Event logs requirements in place
             {
                 return true;
@@ -43,8 +45,22 @@ namespace SWELF
             return false;
         }
 
+        public static void Pre_Live_Run_Sec_Checks()
+        {
+            Settings.ThreadsCount = Process.GetCurrentProcess().Threads.Count;
+            Settings.SWELF_PROC = Process.GetCurrentProcess();
+            Settings.SWELF_Starting_Dlls = Settings.SWELF_PROC.Modules.Count;
+            Settings.SWELF_Start_currentDomain = AppDomain.CurrentDomain;
+            Settings.SWELF_Start_asEvidence = Settings.SWELF_Start_currentDomain.Evidence;
+            Settings.SWELF_Start_Assemblys = Settings.SWELF_Start_currentDomain.GetAssemblies();
+        }
+
         public static bool Live_Run_Sec_Checks(string EVT_Log_Name)
         {
+            //Check_Loaded_DLLs_for_to_many();
+            Check_Loaded_Assembly_for_to_many();
+            //Check_Threads_for_to_many();
+
             if (Check_Event_Log_Is_Blank(EVT_Log_Name) && Check_Event_Log_Is_Blank(Settings.SWELF_EventLog_Name) && Check_Windows_Event_Log_Size(EVT_Log_Name) && Check_Windows_Event_Log_Retention_Policy(EVT_Log_Name) && Check_Event_Log_Has_Not_Recorded_Logs_In_X_Days(EVT_Log_Name))
             {
                 GET_EventLog_Count_Before_Write(EVT_Log_Name);
@@ -253,6 +269,46 @@ namespace SWELF
             Errors.Log_Error(Method, DataOnFail, LogSeverity);
             HostEventLogAgent_Eventlog.WRITE_Critical_EventLog(Method+ " : "+ DataOnFail);
             Errors.WRITE_Errors();
+        }
+
+        private static void Check_Loaded_DLLs_for_to_many()
+        {
+            Process SWELF_Now=Process.GetCurrentProcess();
+
+            if (SWELF_Now.Modules.Count!=40 && SWELF_Now.Modules.Count != 54)
+            {
+                foreach (var module in SWELF_Now.Modules)
+                {
+                    Errors.Log_Error("Sec_Check FAIL Check_Loaded_DLLs()",string.Format("SWELF Module (DLL): "+ module.ToString()),Errors.LogSeverity.Critical,true);
+                }
+            }
+        }
+
+        private static void Check_Loaded_Assembly_for_to_many()
+        {
+            AppDomain SWELF_Current_currentDomain = AppDomain.CurrentDomain;
+            Evidence SWELF_Current_asEvidence = SWELF_Current_currentDomain.Evidence;
+            Assembly[] SWELF_Current_Assemblys = SWELF_Current_currentDomain.GetAssemblies();
+
+            if (SWELF_Current_Assemblys.Length != 5)
+            {
+                foreach (Assembly assem in SWELF_Current_Assemblys)
+                {
+                 Errors.Log_Error("Sec_Check FAIL Check_Loaded_Assembly()", string.Format("SWELF loaded (assemsbley): "+ assem.FullName.ToString() +" "+assem.Location), Errors.LogSeverity.Critical, true);
+                }
+            }
+        }
+
+        private static void Check_Threads_for_to_many()
+        {
+            ProcessThreadCollection currentThreads = Process.GetCurrentProcess().Threads;
+            if (currentThreads.Count != Settings.ThreadsCount)
+            {
+                foreach (ProcessThread thread in currentThreads)
+                {
+                    Errors.Log_Error("Sec_Check FAIL Check_Threads()", string.Format("SWELF Running thread Info:"+ " "+  thread.Id.ToString() + " " + thread.PriorityLevel + " " + thread.StartTime + " " + thread.ThreadState+ " "+ thread.BasePriority), Errors.LogSeverity.Critical, true);
+                }
+            }
         }
     }
 }

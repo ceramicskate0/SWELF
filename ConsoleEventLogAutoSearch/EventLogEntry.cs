@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SWELF
 {
@@ -23,14 +24,34 @@ namespace SWELF
         public string Severity { get; set; }
         public string TaskDisplayName { get; set; }
         public DateTime CreatedTime { get; set; }
+
         public static int CommandLineArgLength { get; set; }
         public static string CommandLineArgs { get; set; }
+
+        public static string Sysmon_DST_Port { get; set; }
+        public static string Sysmon_Src_Process { get; set; }
 
         public string GET_Sysmon_CommandLine_Args
         {
             get
             {
                 return GET_CMDLineArgs();
+            }
+        }
+
+        public string GET_Sysmon_Netwrok_Calling_Process_Name_Dest_Port
+        {
+            get
+            {
+                return GET_Sysmon_Netwrok_Calling_Process_Name_Dst_Port();
+            }
+        }
+
+        public string GET_Sysmon_Network_Calling_Process_Name
+        {
+            get
+            {
+                return GET_Sysmon_Network_Process_Name();
             }
         }
 
@@ -142,6 +163,56 @@ namespace SWELF
             catch
             {
                 return commandLine;
+            }
+        }
+
+        private string GET_Sysmon_Netwrok_Calling_Process_Name_Dst_Port()
+        {
+            try
+            {               
+                if (EventData.Contains("destinationport: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID==3)
+                {
+                    string data = EventData;
+                    string[] delm1 = { "destinationport: ", "destinationportname: "};
+
+                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+                    if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
+                    {
+                        Sysmon_DST_Port = datA[1].Replace("\r\n","");
+                    }
+                }
+                return Sysmon_DST_Port;
+            }
+            catch
+            {
+                return Sysmon_DST_Port="";
+            }
+        }
+
+        private string GET_Sysmon_Network_Process_Name()
+        {
+            try
+            {
+
+                if (EventData.Contains("image: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 3)
+                {
+                    string data = EventData;
+                    string[] delm1 = { "image: ", "user: " };
+
+                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
+                    {
+                        string[] filepath = datA[1].Split('\\').ToArray();
+
+                        Sysmon_Src_Process = filepath[filepath.Length-1].Replace("\r\n", "");
+                    }
+                }
+                return Sysmon_Src_Process;
+            }
+            catch
+            {
+                return Sysmon_Src_Process = "";
             }
         }
     }
