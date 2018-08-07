@@ -1,2 +1,2 @@
 #File Path to Powershell Script~ SearchTerm~ Powershell Script Arguments
-
+#C:\Program Files\SWELF\Plugins\Scripts\InjectedThread\GITH.ps1~ProcessName               :~C:\Program Files\SWELF\Plugins\Scripts\InjectedThread\
