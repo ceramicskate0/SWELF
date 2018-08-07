@@ -57,9 +57,9 @@ namespace SWELF
 
         public static bool Live_Run_Sec_Checks(string EVT_Log_Name)
         {
-            Check_Loaded_DLLs_for_to_many();
+            //Check_Loaded_DLLs_for_to_many();
             Check_Loaded_Assembly_for_to_many();
-            Check_Threads_for_to_many();
+            //Check_Threads_for_to_many();
 
             if (Check_Event_Log_Is_Blank(EVT_Log_Name) && Check_Event_Log_Is_Blank(Settings.SWELF_EventLog_Name) && Check_Windows_Event_Log_Size(EVT_Log_Name) && Check_Windows_Event_Log_Retention_Policy(EVT_Log_Name) && Check_Event_Log_Has_Not_Recorded_Logs_In_X_Days(EVT_Log_Name))
             {
