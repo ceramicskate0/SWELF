@@ -158,6 +158,10 @@ commandline_contains:Scriptrunner.exe -appvscript
 commandline_contains:javascript
 commandline_contains:vbscript
 commandline_contains:sc create
+network_connect:443:powershell
+network_connect:80:powershell
+network_connect:443:cmd
+network_connect:80:cmd
 
 #Command COUNT to be run on all
 count:+:12
