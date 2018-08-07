@@ -188,10 +188,10 @@ network_connect:443:cmd
 network_connect:80:cmd
 
 #KEYWORD SEARCHS to be run on all
-jscript.exe
-cvtres.exe
-vbscript.exe
-csript.exe
+jscript
+cvtres
+vbscript
+csript
 cmstp.exe
 Iexpress.exe
 psr.exe
@@ -207,3 +207,4 @@ mshta
 rundll32.exe javascript:
 rundll32.exe http:
 .SettingContent-ms
+#regserv32
