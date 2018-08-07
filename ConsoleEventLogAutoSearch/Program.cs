@@ -172,6 +172,7 @@ namespace SWELF
         {
             if (Settings.EventLog_w_PlaceKeeper_List.Count > 0)
             {
+                Sec_Checks.Pre_Live_Run_Sec_Checks();
                 for (int x = 0; x < Settings.EventLog_w_PlaceKeeper_List.Count; ++x)//READ and Search
                 {
                     try
@@ -366,7 +367,7 @@ namespace SWELF
 
         private static void CHECK_Memory()
         {
-            if (Settings.CHECK_Total_Memory_Useage() <= Settings.SWELF_Memory__MIN_Threshold)
+            if (Settings.CHECK_Total_Memory_Useage() <= Settings.SWELF_Memory_MIN_Threshold)
             {
                 if (Settings.Current_Memory_Dump_Retry_Number >= Settings.Max_Memory_Dump_Retry_Number)
                 {

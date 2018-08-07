@@ -176,6 +176,7 @@ namespace SWELF
                         Eventlog.ComputerName = Windows_EventLog_from_API.MachineName;
                         Eventlog.EventID = Windows_EventLog_from_API.Id;
                         Eventlog.CreatedTime = Windows_EventLog_from_API.TimeCreated.Value;
+
                         try
                         {
                             Eventlog.Severity = Windows_EventLog_from_API.OpcodeDisplayName;

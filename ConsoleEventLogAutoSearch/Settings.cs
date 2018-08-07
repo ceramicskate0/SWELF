@@ -17,16 +17,16 @@ using System.Security.Principal;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.IO.Compression;
+using System.Reflection;
+using System.Security.Policy;
 
 namespace SWELF
 {
     public class Settings
     {
-        public static int Log_Forward_Location_Port = 514;
-
         public static Queue<EventLogEntry> SWELF_Events_Of_Interest_Matching_EventLogs = new Queue<EventLogEntry>();
 
-
+        //SWELF MEM Storage central for app
         public static List<string> EventLogs_List_Of_Avaliable = EventLogSession.GlobalSession.GetLogNames().ToList();
         public static Dictionary<string, long> EventLog_w_PlaceKeeper = new Dictionary<string, long>();
         public static List<string> EventLog_w_PlaceKeeper_List = new List<string>();//Tracks Eventlog reading
@@ -46,6 +46,13 @@ namespace SWELF
         public static List<string> Evtx_Files = new List<string>();
         public static bool output_csv = false;
 
+        //SWELF data settings
+        public static string CommentCharConfigs = "#";
+        public static string ComputerName = Environment.MachineName;
+        public static string SWELF_EventLog_Name = "SWELF_Events_of_Interest";
+        public static int Log_Forward_Location_Port = 514;
+
+        //file path info
         private static string Config_File_Location = Directory.GetCurrentDirectory() + "\\Config";
         private static string Search_File_Location = Directory.GetCurrentDirectory() + "\\Log_Searchs";
         private static string SWELF_Log_File_Location = Directory.GetCurrentDirectory() + "\\SWELF_Logs";
@@ -53,6 +60,7 @@ namespace SWELF
         private static string Plugin_Scripts_Location = Plugin_Files_Location + "\\Scripts";
         private static string Plugin_Search_Location = Plugin_Files_Location + "\\Plugin_Searchs";
 
+        //File name info
         private static string ErrorFile = "Error_Log.log";
         private static string AppConfigFile = "ConsoleAppConfig.conf";
         private static string EventLogID_PlaceHolder = "Eventlog_with_PlaceKeeper.txt";
@@ -61,26 +69,18 @@ namespace SWELF
         private static string DirectoriesToMonitor = "Directories_To_Monitor.conf";
         private static string Search_WhiteList = "WhiteList_Searchs.txt";
 
-        public static string CommentCharConfigs = "#";
+        //Search cmd info
+        public static string[] Search_Commands = { "count:", "eventdata_length:", "commandline_length:", "commandline_contains:", "commandline_count:", "regex:", "log_level:", "not_in_log:","search_multiple:" , "network_connect:" };
+        public static string[] EventLogEntry_splitter = { "\n", "\r", " ", "  " };
         public static char[] SplitChar_Regex = { '~' };
         public static char[] SplitChar_SearchCommandSplit = { '~' };
         public static char[] SplitChar_ConfigVariableEquals = { '=' };
         public static char[] SplitChar_UNCPath = { '\\' };
+        public static string[] SplitChar_Search_Command_Parser_Multi_Search = { "search_multiple:", "`"};
         public static char[] SplitChar_Search_Command_Parsers = { ':', '~' };
         public static Regex IP_RegX = new Regex(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b");
 
-        public static string[] Search_Commands = { "count:", "eventdata_length:", "commandline_length:", "commandline_contains:", "commandline_count:", "regex:", "log_level:", "not_in_log:" };
-        public static string[] EventLogEntry_splitter = { "\n", "\r", " ", "  " };
-
-        public static string ComputerName = Environment.MachineName;
-
-        public static string SWELF_EventLog_Name = "SWELF_Events_of_Interest";
-
-        private static string SWELF_Central_App_Config_Arg = "central_app_config";
-        public static string SWELF_Central_Search_Arg = "central_search_config";
-        public static string SWELF_Central_WhiteList_Search_Arg = "central_whitelist_config";
-        private static string SWELF_Central_Plugin_Search_Arg = "central_plugin_search_config";
-
+        //Central config info
         public static string CMDLine_EVTX_File = "";
         public static string CMDLine_Output_CSV = "SWELF_Events_Of_Interest_Output.csv";
         public static string CMDLine_Search_Terms = "";
@@ -89,6 +89,12 @@ namespace SWELF
         public static bool EVTX_Override = false;
         public static string Logging_Level_To_Report = "information";
         public static EventLog EvtLog = new EventLog();
+
+        //SWELF Central config commands
+        private static string SWELF_Central_App_Config_Arg = "central_app_config";
+        public static string SWELF_Central_Search_Arg = "central_search_config";
+        public static string SWELF_Central_WhiteList_Search_Arg = "central_whitelist_config";
+        private static string SWELF_Central_Plugin_Search_Arg = "central_plugin_search_config";
 
         //SWELF MEMORY USAGE INFO
         public static Int64 phav = System_Performance_Info.GetPhysicalAvailableMemoryInMiB();
@@ -101,8 +107,15 @@ namespace SWELF
         public static decimal Percent_Used = percentOccupied;
         public static int Current_Memory_Dump_Retry_Number = 0;
         public static int Max_Memory_Dump_Retry_Number = 5;
+        public static decimal SWELF_Memory_MIN_Threshold = 10;
 
-        public static decimal SWELF_Memory__MIN_Threshold = 10;
+        //SWELF Security Check Info
+        public static int ThreadsCount = Process.GetCurrentProcess().Threads.Count;
+        public static Process SWELF_PROC = Process.GetCurrentProcess();
+        public static int SWELF_Starting_Dlls = Settings.SWELF_PROC.Modules.Count;
+        public static AppDomain SWELF_Start_currentDomain = AppDomain.CurrentDomain;
+        public static Evidence SWELF_Start_asEvidence = SWELF_Start_currentDomain.Evidence;
+		public static Assembly[] SWELF_Start_Assemblys = SWELF_Start_currentDomain.GetAssemblies();
 
         public static string GET_ErrorLog_Location
         {
