@@ -134,12 +134,12 @@ namespace SWELF
                     EventLogEntry PSLog = new EventLogEntry();
                     PSLog.ComputerName = Settings.ComputerName;
                     PSLog.EventID = 3;
-                    PSLog.LogName = "SWELF Powershell Plugin "+ Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandSplit)[0];
+                    PSLog.LogName = "SWELF Powershell Plugin Output";
                     PSLog.Severity = "Information";
                     char spliter=Settings.SplitChar_SearchCommandSplit[0];
                     PSLog.EventData=Powershell_Plugin.Run_PS_Script(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(spliter).ElementAt(0), Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(spliter).ElementAt(2));
 
-                    if (PSLog.EventData.Contains(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(spliter).ElementAt(1)))
+                    if (PSLog.EventData.ToLower().Contains(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(spliter).ElementAt(1).ToLower()))
                     {
                         EvntLogSearch.EventLog_Log_API.Contents_of_EventLog.Enqueue(PSLog);
                         try

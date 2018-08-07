@@ -66,7 +66,7 @@ namespace SWELF
                 powershellSciptArgs = PowershellSciptArgs;
 
                 WriteBatchFile(PSScript1LinerArg());
-                ProcessStartInfo startInfo = new ProcessStartInfo("powershell", ".\\"+ Path.GetFileName(PowershellSciptLocation));
+                ProcessStartInfo startInfo = new ProcessStartInfo("powershell", "-ExecutionPolicy Bypass .\\" + Path.GetFileName(PowershellSciptLocation));
                 startInfo.WorkingDirectory = Path.GetDirectoryName(PowershellSciptLocation);
                 startInfo.RedirectStandardOutput = true;
                 startInfo.RedirectStandardError = true;
