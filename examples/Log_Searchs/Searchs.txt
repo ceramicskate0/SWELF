@@ -141,7 +141,7 @@ Logon Type:		10~Security~4624
 ~Microsoft-Windows-TaskScheduler/Operational~141
 
 #DNS-Client
-System~Microsoft-Windows-DNS-Client~1014
+System~Microsoft-Windows-DNS-Client/Operational~1014
 
 #Commands COMMANDLINES to be run on all
 commandline_length:300
