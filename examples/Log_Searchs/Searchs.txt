@@ -57,6 +57,18 @@ frombase64string~Microsoft-Windows-PowerShell/Operational~
 ~Microsoft-Windows-Sysmon/Operational~19
 ~Microsoft-Windows-Sysmon/Operational~20
 ~Microsoft-Windows-Sysmon/Operational~21
+search_multiple:winword`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:winword`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:excel`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:excel`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:POWERPNT`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:POWERPNT`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:iexplorer`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:chrome`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:chrome`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:firefox`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:firefox`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:iexplorer`powershell~Microsoft-Windows-Sysmon/Operational~1
 mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 mshta vbscript:~Microsoft-Windows-Sysmon/Operational~
 regsvr32.exe /s /u /i:~Microsoft-Windows-Sysmon/Operational~
@@ -78,7 +90,6 @@ commandline_contains:regasm.exe /U~Microsoft-Windows-Sysmon/Operational~
 count:|:2~Microsoft-Windows-Sysmon/Operational~
 #commandline_contains:C:\Windows\System32\wmiprvse.exe -secured -Embedding~Microsoft-Windows-Sysmon/Operational~1
 #commandline_contains:==~Microsoft-Windows-Sysmon/Operational~1
-
 
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
