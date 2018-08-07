@@ -99,7 +99,7 @@ windows defender antivirus scanning for spyware and other potentially unwanted s
 #~microsoft-Windows-Windows Defender/Operational~5007
 
 #DistributedCOM
-Microsoft-Windows-DistributedCOM~System~10016
+~System~Microsoft-Windows-DistributedCOM~10016
 
 #RemoteConnectionManager/Operational
 ~Microsoft-Windows-TerminalServices-RemoteConnectionManager~1056
@@ -141,7 +141,7 @@ Logon Type:		10~Security~4624
 ~Microsoft-Windows-TaskScheduler/Operational~141
 
 #DNS-Client
-~Microsoft-Windows-DNS-Client~System~1014
+System~Microsoft-Windows-DNS-Client~1014
 
 #Commands COMMANDLINES to be run on all
 commandline_length:300
@@ -158,10 +158,6 @@ commandline_contains:Scriptrunner.exe -appvscript
 commandline_contains:javascript
 commandline_contains:vbscript
 commandline_contains:sc create
-network_connect:443:powershell
-network_connect:80:powershell
-network_connect:443:cmd
-network_connect:80:cmd
 
 #Command COUNT to be run on all
 count:+:12
@@ -175,6 +171,10 @@ count:-join:5
 count:^:10
 count:;:50
 count:,:25
+network_connect:443:powershell
+network_connect:80:powershell
+network_connect:443:cmd
+network_connect:80:cmd
 
 #KEYWORD SEARCHS to be run on all
 jscript.exe
