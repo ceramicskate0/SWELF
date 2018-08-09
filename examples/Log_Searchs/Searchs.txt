@@ -113,7 +113,7 @@ windows defender antivirus scanning for spyware and other potentially unwanted s
 #~microsoft-Windows-Windows Defender/Operational~5007
 
 #DistributedCOM
-~System~Microsoft-Windows-DistributedCOM~10016
+System~Microsoft-Windows-DistributedCOM~10016
 
 #RemoteConnectionManager/Operational
 ~Microsoft-Windows-TerminalServices-RemoteConnectionManager~1056
