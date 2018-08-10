@@ -57,6 +57,21 @@ frombase64string~Microsoft-Windows-PowerShell/Operational~
 ~Microsoft-Windows-Sysmon/Operational~19
 ~Microsoft-Windows-Sysmon/Operational~20
 ~Microsoft-Windows-Sysmon/Operational~21
+search_multiple:winword`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:winword`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:excel`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:excel`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:POWERPNT`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:POWERPNT`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:iexplorer`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:iexplorer`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:chrome`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:chrome`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:firefox`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:firefox`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:mshta`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:mshta`jscript~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:mshta`powershell~Microsoft-Windows-Sysmon/Operational~1
 mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 mshta vbscript:~Microsoft-Windows-Sysmon/Operational~
 regsvr32.exe /s /u /i:~Microsoft-Windows-Sysmon/Operational~
@@ -79,7 +94,6 @@ count:|:2~Microsoft-Windows-Sysmon/Operational~
 #commandline_contains:C:\Windows\System32\wmiprvse.exe -secured -Embedding~Microsoft-Windows-Sysmon/Operational~1
 #commandline_contains:==~Microsoft-Windows-Sysmon/Operational~1
 
-
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
 detection~microsoft-Windows-Windows Defender/Operational~ 
@@ -99,7 +113,7 @@ windows defender antivirus scanning for spyware and other potentially unwanted s
 #~microsoft-Windows-Windows Defender/Operational~5007
 
 #DistributedCOM
-~System~Microsoft-Windows-DistributedCOM~10016
+System~Microsoft-Windows-DistributedCOM~10016
 
 #RemoteConnectionManager/Operational
 ~Microsoft-Windows-TerminalServices-RemoteConnectionManager~1056
@@ -141,7 +155,7 @@ Logon Type:		10~Security~4624
 ~Microsoft-Windows-TaskScheduler/Operational~141
 
 #DNS-Client
-System~Microsoft-Windows-DNS-Client~1014
+System~Microsoft-Windows-DNS-Client/Operational~1014
 
 #Commands COMMANDLINES to be run on all
 commandline_length:300
@@ -177,10 +191,10 @@ network_connect:443:cmd
 network_connect:80:cmd
 
 #KEYWORD SEARCHS to be run on all
-jscript.exe
-cvtres.exe
-vbscript.exe
-csript.exe
+jscript
+cvtres
+vbscript
+csript
 cmstp.exe
 Iexpress.exe
 psr.exe
@@ -196,3 +210,4 @@ mshta
 rundll32.exe javascript:
 rundll32.exe http:
 .SettingContent-ms
+#regserv32
