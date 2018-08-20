@@ -1,7 +1,7 @@
 # Simple-Windows-Event-Log-Forwarder (SWELF) 
 
 Known Good Hash for the latest and current relase of SWELF.exe (SHA 256): 
-334ecdd7d268d786009c5cf153d9ce136cc93b44e7996734b7961913b9e25b31
+ec497a25d6b829a227a243ce3331bb1b3d9ddc932e42876880bd11c775fd8ba6
 
 ## Summary:
 
