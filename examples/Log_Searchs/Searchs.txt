@@ -57,6 +57,15 @@ frombase64string~Microsoft-Windows-PowerShell/Operational~
 ~Microsoft-Windows-Sysmon/Operational~19
 ~Microsoft-Windows-Sysmon/Operational~20
 ~Microsoft-Windows-Sysmon/Operational~21
+search_multiple:cmd`sc.exe~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:cmd`wscript~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:cmd`cscript~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:powershell`csc~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:powershell`wscript~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:acrord32.exe`powershell.exe~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:winrar.exe`wscript.exe~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:powershell`sc.exe~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:powershell`rundll32~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:winword`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:winword`cmd~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:excel`powershell~Microsoft-Windows-Sysmon/Operational~1
@@ -64,6 +73,7 @@ search_multiple:excel`cmd~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:POWERPNT`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:POWERPNT`cmd~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:iexplorer`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:iexplorer`svchost~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:iexplorer`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:chrome`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:chrome`cmd~Microsoft-Windows-Sysmon/Operational~1
@@ -72,6 +82,7 @@ search_multiple:firefox`cmd~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:mshta`cmd~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:mshta`jscript~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:mshta`powershell~Microsoft-Windows-Sysmon/Operational~1
+#search_multiple:conhost`powershell~Microsoft-Windows-Sysmon/Operational~1
 mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 mshta vbscript:~Microsoft-Windows-Sysmon/Operational~
 regsvr32.exe /s /u /i:~Microsoft-Windows-Sysmon/Operational~
@@ -81,6 +92,9 @@ rundll32.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 count:;:2~Microsoft-Windows-Sysmon/Operational~
 Signed: false~Microsoft-Windows-Sysmon/Operational~6
 commandline_contains:msiexec /q /i~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:-nop~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:hidden~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:-windowstyle~Microsoft-Windows-Sysmon/Operational~
 commandline_contains:msiexec /quiet /i~Microsoft-Windows-Sysmon/Operational~
 commandline_contains:mshta -Enbedding~Microsoft-Windows-Sysmon/Operational~
 commandline_contains:mshta javascript~Microsoft-Windows-Sysmon/Operational~
@@ -211,3 +225,4 @@ rundll32.exe javascript:
 rundll32.exe http:
 .SettingContent-ms
 #regserv32
+attrib.exe
