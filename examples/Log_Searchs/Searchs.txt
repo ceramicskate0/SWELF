@@ -204,6 +204,8 @@ network_connect:443:powershell
 network_connect:80:powershell
 network_connect:443:cmd
 network_connect:80:cmd
+network_connect:80:javaw
+network_connect:443:javaw
 
 #KEYWORD SEARCHS to be run on all
 jscript
