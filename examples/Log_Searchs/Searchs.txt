@@ -52,6 +52,7 @@ frombase64string~Microsoft-Windows-PowerShell/Operational~
 ~Microsoft-Windows-Sysmon/Operational~9
 ~Microsoft-Windows-Sysmon/Operational~10
 ~Microsoft-Windows-Sysmon/Operational~12
+~Microsoft-Windows-Sysmon/Operational~16
 ~Microsoft-Windows-Sysmon/Operational~17
 ~Microsoft-Windows-Sysmon/Operational~18
 ~Microsoft-Windows-Sysmon/Operational~19
