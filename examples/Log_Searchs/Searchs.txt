@@ -38,6 +38,7 @@ base64decode~Microsoft-Windows-PowerShell/Operational~
 |iex~Microsoft-Windows-PowerShell/Operational~
 count:&:10~Microsoft-Windows-PowerShell/Operational~
 frombase64string~Microsoft-Windows-PowerShell/Operational~
+[System.Reflection.Assembly]::Load~Microsoft-Windows-PowerShell/Operational~
 
 #Application
 ~Application~866
