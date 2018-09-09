@@ -226,9 +226,11 @@ makecab.exe
 extrac.exe
 ftp.exe
 mshta
+#regedit
 .bgi
 rundll32.exe javascript:
 rundll32.exe http:
 .SettingContent-ms
 #regserv32
+#msbuild
 attrib.exe
