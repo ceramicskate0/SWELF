@@ -2,22 +2,20 @@
 //Copyright 2018
 using System;
 using System.Linq;
-using System.Text;
 using System.Collections.Generic;
-using System.Collections;
 using System.Text.RegularExpressions;
 
 namespace SWELF
 {
     class Search_EventLogs
     {
-        private Queue<EventLogEntry> Read_In_EventLogs_From_WindowsAPI = new Queue<EventLogEntry>();
-        private static List<EventLogEntry> Logs_That_Matched_Search_This_Event_Log = new List<EventLogEntry>();//The logs that matched this run,this log
-        //SEARCH COMMANDS are in settings
+        private Queue<EventLog_Entry> Read_In_EventLogs_From_WindowsAPI = new Queue<EventLog_Entry>();
+        private static List<EventLog_Entry> ALL_Logs_That_Matched_Search_This_Event_Log = new List<EventLog_Entry>();//The logs that matched this run,this log
+        private List<EventLog_Entry> Filtered_Matched_Logs_This_SWELF_Run = new List<EventLog_Entry>();//All the logs found that matched
 
         private static string CurrentEventLogBeingSearched = "";
 
-        public Search_EventLogs(Queue<EventLogEntry> Contents_of_EventLog)
+        public Search_EventLogs(Queue<EventLog_Entry> Contents_of_EventLog)
         {
             Read_In_EventLogs_From_WindowsAPI = Contents_of_EventLog;
         }
@@ -25,15 +23,12 @@ namespace SWELF
         public void Clear_Search()
         {
             Read_In_EventLogs_From_WindowsAPI.Clear();
-            Logs_That_Matched_Search_This_Event_Log.Clear();
+            ALL_Logs_That_Matched_Search_This_Event_Log.Clear();
         }
 
-        public Queue<EventLogEntry> Search(string Current_EventLog, Queue<EventLogEntry> All_the_logs_That_Matched_Search)
+        public Queue<EventLog_Entry> Search(string Current_EventLog)
         {
-
-         List<EventLogEntry> ALL_Matched_Logs_This_SWELF_Run = new List<EventLogEntry>();//All the logs found that matched
-
-         int temp_int_stor_for_Errors = 0;
+            int temp_int_stor_for_Errors = 0;
             for (int x = 0; x < Settings.Search_Terms_Unparsed.Count; ++x)
             {
                 try
@@ -67,14 +62,14 @@ namespace SWELF
                     Errors.Log_Error("Search() Value=" + Settings.Search_Terms_Unparsed.ElementAt(temp_int_stor_for_Errors), e.Message.ToString() + ". Check syntax and data input names.", Errors.LogSeverity.Informataion);
                 }
             }
-            if (Logs_That_Matched_Search_This_Event_Log.Count > 0)
+            Filtered_Matched_Logs_This_SWELF_Run.AddRange(ALL_Logs_That_Matched_Search_This_Event_Log.Distinct().OrderBy(x => x.CreatedTime).ToList());
+            if (ALL_Logs_That_Matched_Search_This_Event_Log.Count > 0)
             {
-                ALL_Matched_Logs_This_SWELF_Run.AddRange(Logs_That_Matched_Search_This_Event_Log.Distinct().OrderBy(x => x.CreatedTime).ToList());
                 Remove_Whitelisted_Logs();
             }
 
-            var queue = new Queue<EventLogEntry>(ALL_Matched_Logs_This_SWELF_Run);
-                
+            var queue = new Queue<EventLog_Entry>(Filtered_Matched_Logs_This_SWELF_Run);
+            Filtered_Matched_Logs_This_SWELF_Run.Clear();
             return queue;
         }
 
@@ -116,15 +111,15 @@ namespace SWELF
         {
             if (EventID > 0)
             {
-                Logs_That_Matched_Search_This_Event_Log.RemoveAll(s => s.EventData.Contains(SearchTerm) && s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.Equals(EventID));
+                Filtered_Matched_Logs_This_SWELF_Run.RemoveAll(s => s.EventData.Contains(SearchTerm) && s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.Equals(EventID));
             }
             else if (!string.IsNullOrEmpty(SearchTerm) && !string.IsNullOrEmpty(EventLogName))
             {
-                Logs_That_Matched_Search_This_Event_Log.RemoveAll(s => s.EventData.Contains(SearchTerm) && s.LogName.ToLower().Equals(EventLogName.ToLower()));
+                Filtered_Matched_Logs_This_SWELF_Run.RemoveAll(s => s.EventData.Contains(SearchTerm) && s.LogName.ToLower().Equals(EventLogName.ToLower()));
             }
             else
             {
-                Logs_That_Matched_Search_This_Event_Log.RemoveAll(s => s.EventData.Contains(SearchTerm));
+                Filtered_Matched_Logs_This_SWELF_Run.RemoveAll(s => s.EventData.Contains(SearchTerm));
             }
         }
 
@@ -140,19 +135,19 @@ namespace SWELF
                         {
                             if (string.IsNullOrEmpty(Search_String_Parsed[0]) && string.IsNullOrEmpty(Search_String_Parsed[1]) == false)
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_Return_All(Search_String_Parsed[1]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_Return_All(Search_String_Parsed[1]));
                             }
                             else if (string.IsNullOrEmpty(Search_String_Parsed[0])==true && string.IsNullOrEmpty(Search_String_Parsed[1]) == true)
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventID(Convert.ToInt32(Search_String_Parsed[2])));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventID(Convert.ToInt32(Search_String_Parsed[2])));
                             }
                             else if (string.IsNullOrEmpty(Search_String_Parsed[0]) == true && string.IsNullOrEmpty(Search_String_Parsed[2]) == true)
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_Return_All(Search_String_Parsed[1]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_Return_All(Search_String_Parsed[1]));
                             }
                             else
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Everything(SearchsArgs[0]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Everything(SearchsArgs[0]));
                             }
                         }
                         break;
@@ -163,27 +158,27 @@ namespace SWELF
                         {
                             if (string.IsNullOrEmpty(Search_String_Parsed[0]) == true && string.IsNullOrEmpty(Search_String_Parsed[1]) == false && string.IsNullOrEmpty(Search_String_Parsed[2]) == true)
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_Return_All(SearchsArgs[0]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_Return_All(SearchsArgs[0]));
                             }
                             else if (string.IsNullOrEmpty(Search_String_Parsed[0]) == true && string.IsNullOrEmpty(Search_String_Parsed[1]) == true && string.IsNullOrEmpty(Search_String_Parsed[2]) == false)
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_For_EventID(Convert.ToInt32(SearchsArgs[2]), SearchsArgs[1]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_For_EventID(Convert.ToInt32(SearchsArgs[2]), SearchsArgs[1]));
                             }
                             else if (string.IsNullOrEmpty(Search_String_Parsed[0]) == false && string.IsNullOrEmpty(Search_String_Parsed[1]) == true && string.IsNullOrEmpty(Search_String_Parsed[2]) == true)
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Everything(SearchsArgs[0]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Everything(SearchsArgs[0]));
                             }
                             else if (string.IsNullOrEmpty(Search_String_Parsed[0]) == false && string.IsNullOrEmpty(Search_String_Parsed[1]) == false && string.IsNullOrEmpty(Search_String_Parsed[2]) == true)
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Eventlog_For_SearchTerm(SearchsArgs[0], SearchsArgs[1]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Eventlog_For_SearchTerm(SearchsArgs[0], SearchsArgs[1]));
                             }
                             else if (string.IsNullOrEmpty(Search_String_Parsed[0]) == true && string.IsNullOrEmpty(Search_String_Parsed[1]) == false && string.IsNullOrEmpty(Search_String_Parsed[2]) == false)
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_For_EventID(Convert.ToInt32(SearchsArgs[1]), SearchsArgs[0]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_For_EventID(Convert.ToInt32(SearchsArgs[1]), SearchsArgs[0]));
                             }
                             else
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Everything(SearchsArgs[0]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Everything(SearchsArgs[0]));
                             }
                         }
                         break;
@@ -194,31 +189,31 @@ namespace SWELF
                         {
                             if (String.IsNullOrEmpty(SearchsArgs[0]) == true && String.IsNullOrEmpty(SearchsArgs[1]) == true && String.IsNullOrEmpty(SearchsArgs[2]) == false)//Search only event id all others blank
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventID(Convert.ToInt32(SearchsArgs[2])));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventID(Convert.ToInt32(SearchsArgs[2])));
                             }
                             else if (String.IsNullOrEmpty(SearchsArgs[0]) == true && String.IsNullOrEmpty(SearchsArgs[1]) == false && String.IsNullOrEmpty(SearchsArgs[2]) == false)//search event log for only ID
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_For_EventID(Convert.ToInt32(SearchsArgs[2]), SearchsArgs[1]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_For_EventID(Convert.ToInt32(SearchsArgs[2]), SearchsArgs[1]));
                             }
                             else if ((String.IsNullOrEmpty(SearchsArgs[0]) == false && String.IsNullOrEmpty(SearchsArgs[1]) == false && String.IsNullOrEmpty(SearchsArgs[2]) == true) && SearchsArgs[1].ToLower() == CurrentEventLogBeingSearched.ToLower())
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Everything(SearchsArgs[0]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Everything(SearchsArgs[0]));
                             }
                             else if ((String.IsNullOrEmpty(SearchsArgs[0]) == false && String.IsNullOrEmpty(SearchsArgs[1]) == false && String.IsNullOrEmpty(SearchsArgs[2]) == true) && SearchsArgs[1].ToLower() != CurrentEventLogBeingSearched.ToLower())
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Eventlog_For_SearchTerm(SearchsArgs[0], SearchsArgs[1]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Eventlog_For_SearchTerm(SearchsArgs[0], SearchsArgs[1]));
                             }
                             else if ((String.IsNullOrEmpty(SearchsArgs[0]) == false && String.IsNullOrEmpty(SearchsArgs[1]) == false && String.IsNullOrWhiteSpace(SearchsArgs[2]) == true) && SearchsArgs[1].ToLower() != CurrentEventLogBeingSearched.ToLower())
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Eventlog_For_SearchTerm(SearchsArgs[0], SearchsArgs[1]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Eventlog_For_SearchTerm(SearchsArgs[0], SearchsArgs[1]));
                             }
                             else if ((String.IsNullOrEmpty(SearchsArgs[0]) == false && String.IsNullOrEmpty(SearchsArgs[1]) == false && String.IsNullOrWhiteSpace(SearchsArgs[2]) == false) && SearchsArgs[1].ToLower() != CurrentEventLogBeingSearched.ToLower())
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_For_SearchTerm_LogName_EventID(SearchsArgs[0], SearchsArgs[1], Convert.ToInt32(SearchsArgs[2])));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_EventLog_For_SearchTerm_LogName_EventID(SearchsArgs[0], SearchsArgs[1], Convert.ToInt32(SearchsArgs[2])));
                             }
                             else //Gave 3 step search and somehow got here
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Everything(SearchsArgs[0]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Everything(SearchsArgs[0]));
                             }
                         }
                         break;
@@ -227,7 +222,7 @@ namespace SWELF
                     {
                         foreach (string Search in SearchsArgs)
                         {
-                            Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Everything(Search));
+                            ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Everything(Search));
                         }
                         break;
                     }
@@ -244,42 +239,42 @@ namespace SWELF
                     {
                         case "count":
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_Counts_in_Log(Search_Command_Values[1].ToString(), Convert.ToInt32(Search_Command_Values[2]), Search_Command_Values));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_Counts_in_Log(Search_Command_Values[1].ToString(), Convert.ToInt32(Search_Command_Values[2]), Search_Command_Values));
                                 break;
                             }
                         case "log_level":
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_For_Severity_EVTX_Level(Search_Command_Values[1].ToString().ToLower(), Search_Command_Values, SearchCommand));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_For_Severity_EVTX_Level(Search_Command_Values[1].ToString().ToLower(), Search_Command_Values, SearchCommand));
                                 break;
                             }
                         case "eventdata_length":
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_Length_of_LogData(Convert.ToInt32(Search_Command_Values[1]), Search_Command_Values, SearchCommand));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_Length_of_LogData(Convert.ToInt32(Search_Command_Values[1]), Search_Command_Values, SearchCommand));
                                 break;
                             }
                         case "regex":
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_For_Regex_in_Log(Search_Command_Values[1].ToString().ToLower(), Search_Command_Values, SearchCommand));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_For_Regex_in_Log(Search_Command_Values[1].ToString().ToLower(), Search_Command_Values, SearchCommand));
                                 break;
                             }
                         case "not_in_log":
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_NOT_IN_EVENT(Search_Command_Values[1].ToString(), Search_Command_Values[2], Convert.ToInt32(Search_Command_Values[3])));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_NOT_IN_EVENT(Search_Command_Values[1].ToString(), Search_Command_Values[2], Convert.ToInt32(Search_Command_Values[3])));
                                 break;
                             }
                         case "commandline_count"://sysmon/powershell only
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Counts_in_CMDLine(Search_Command_Values[1].ToString(), Convert.ToInt32(Search_Command_Values[2])));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Counts_in_CMDLine(Search_Command_Values[1].ToString(), Convert.ToInt32(Search_Command_Values[2])));
                                 break;
                             }
                         case "commandline_contains"://sysmon/powershell only
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Length_Sysmon_CMDLine_Args_Contains(Search_Command_Values[1]));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Length_Sysmon_CMDLine_Args_Contains(Search_Command_Values[1]));
                                 break;
                             }
                         case "network_connect"://sysmon only
                             {
-                                Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_Process_Port_Match(SearchCommand));
+                                ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_Process_Port_Match(SearchCommand));
                                 break;
                             }
                         case "search_multiple":
@@ -295,7 +290,7 @@ namespace SWELF
                                     int Max_Length = -1;
                                     if (int.TryParse(Search_Command_Values[1], out Max_Length) && Max_Length != -1)
                                     {
-                                        Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Length_Sysmon_CMDLine_Args_Length(Max_Length));
+                                        ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_Length_Sysmon_CMDLine_Args_Length(Max_Length));
                                     }
                                 }
                                 catch (Exception e)
@@ -314,83 +309,83 @@ namespace SWELF
 
 
 
-        private List<EventLogEntry> SEARCH_EventID_and_Data(int EventID , string SearchTerm)
+        private List<EventLog_Entry> SEARCH_EventID_and_Data(int EventID , string SearchTerm)
         {
-            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventID.Equals(EventID) == true && s.EventData.Contains(SearchTerm)).ToList();
+            IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventID.Equals(EventID) == true && s.EventData.Contains(SearchTerm)).ToList();
             return results.ToList();
         }
 
-        private List<EventLogEntry> SEARCH_EventID(int EventID)
+        private List<EventLog_Entry> SEARCH_EventID(int EventID)
         {
-            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventID.Equals(EventID)==true).ToList();
+            IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventID.Equals(EventID)==true).ToList();
             return results.ToList();
         }
 
-        private List<EventLogEntry> SEARCH_Everything(string SearchTerm)
+        private List<EventLog_Entry> SEARCH_Everything(string SearchTerm)
         {
-           IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Contains(SearchTerm) || s.EventID.ToString().Equals(SearchTerm)).ToList();
+           IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Contains(SearchTerm) || s.EventID.ToString().Equals(SearchTerm)).ToList();
            return results.ToList();
         }
 
-        private List<EventLogEntry> SEARCH_EventLog_Return_All(string LogName)
+        private List<EventLog_Entry> SEARCH_EventLog_Return_All(string LogName)
         {
-            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(LogName.ToLower())).ToList();
+            IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(LogName.ToLower())).ToList();
             return results.ToList();
         }
 
-        private List<EventLogEntry> SEARCH_Eventlog_For_SearchTerm(string SearchTerm, string EventLogName)
+        private List<EventLog_Entry> SEARCH_Eventlog_For_SearchTerm(string SearchTerm, string EventLogName)
         {
-            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Contains(SearchTerm) && s.LogName.ToLower().Equals(EventLogName.ToLower())).ToList();
+            IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Contains(SearchTerm) && s.LogName.ToLower().Equals(EventLogName.ToLower())).ToList();
             return results.ToList();
         }
 
-        private List<EventLogEntry> SEARCH_EventLog_For_EventID(int EventID , string EventLogName)
+        private List<EventLog_Entry> SEARCH_EventLog_For_EventID(int EventID , string EventLogName)
         {
-            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventID.Equals(EventID) && s.LogName.ToLower().Equals(EventLogName.ToLower())).ToList();
+            IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventID.Equals(EventID) && s.LogName.ToLower().Equals(EventLogName.ToLower())).ToList();
             return results.ToList();
         }
 
-        private List<EventLogEntry> SEARCH_EventLog_For_SearchTerm_LogName_EventID(string SearchTerm,string EventLogName, int EventID)
+        private List<EventLog_Entry> SEARCH_EventLog_For_SearchTerm_LogName_EventID(string SearchTerm,string EventLogName, int EventID)
         {
-            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventID.Equals(EventID) == true && s.LogName.ToLower() == EventLogName.ToLower() && s.EventData.Contains(SearchTerm)).ToList();
+            IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventID.Equals(EventID) == true && s.LogName.ToLower() == EventLogName.ToLower() && s.EventData.Contains(SearchTerm)).ToList();
             return results.ToList();
         }
 
 
 
-        private List<EventLogEntry> SEARCH_Length_Sysmon_CMDLine_Args_Length(int Max_Length)
+        private List<EventLog_Entry> SEARCH_Length_Sysmon_CMDLine_Args_Length(int Max_Length)
         {
-            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.GET_Sysmon_CommandLine_Args.ToCharArray().Length >= Max_Length).ToList();
+            IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.GET_Sysmon_CommandLine_Args.ToCharArray().Length >= Max_Length).ToList();
             return results.ToList();
         }
 
-        private List<EventLogEntry> SEARCH_Length_Sysmon_CMDLine_Args_Contains(string SearchTerm)
+        private List<EventLog_Entry> SEARCH_Length_Sysmon_CMDLine_Args_Contains(string SearchTerm)
         {
-            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.GET_Sysmon_CommandLine_Args.Contains(SearchTerm)).ToList();
+            IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.GET_Sysmon_CommandLine_Args.Contains(SearchTerm)).ToList();
             return results.ToList();
         }
 
-        private List<EventLogEntry> SEARCH_Counts_in_CMDLine(string SearchTerm, int Max_Num_Of_Occurances)
+        private List<EventLog_Entry> SEARCH_Counts_in_CMDLine(string SearchTerm, int Max_Num_Of_Occurances)
         {
-            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.GET_Sysmon_CommandLine_Args.Count(f => f == Convert.ToChar(SearchTerm)) >= Max_Num_Of_Occurances).ToList();
+            IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.GET_Sysmon_CommandLine_Args.Count(f => f == Convert.ToChar(SearchTerm)) >= Max_Num_Of_Occurances).ToList();
             return results.ToList();
         }
 
-        private List<EventLogEntry> SEARCH_CMD_NOT_IN_EVENT(string SearchTerm, string EventLogName, int EventID=-1)
+        private List<EventLog_Entry> SEARCH_CMD_NOT_IN_EVENT(string SearchTerm, string EventLogName, int EventID=-1)
         {
             if (EventID!=-1)
             {
-                IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => !s.EventData.Contains(SearchTerm) || s.GET_XML_of_Log.Contains(SearchTerm) && s.LogName.ToLower() == EventLogName.ToLower()).ToList();
+                IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => !s.EventData.Contains(SearchTerm) || s.GET_XML_of_Log.Contains(SearchTerm) && s.LogName.ToLower() == EventLogName.ToLower()).ToList();
                 return results.ToList();
             }
             else
             {
-                IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => !s.EventData.Contains(SearchTerm) || s.GET_XML_of_Log.Contains(SearchTerm) && s.LogName.ToLower() == EventLogName.ToLower() && s.EventID== EventID).ToList();
+                IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => !s.EventData.Contains(SearchTerm) || s.GET_XML_of_Log.Contains(SearchTerm) && s.LogName.ToLower() == EventLogName.ToLower() && s.EventID== EventID).ToList();
                 return results.ToList();
             }
         }
 
-        private List<EventLogEntry> SEARCH_CMD_Counts_in_Log(string SearchTerm , int Min_Num_Of_Occurances, string[] Search_Command)
+        private List<EventLog_Entry> SEARCH_CMD_Counts_in_Log(string SearchTerm , int Min_Num_Of_Occurances, string[] Search_Command)
         {
             string[] Split_Search_Command = { SearchTerm };
 
@@ -400,25 +395,25 @@ namespace SWELF
                 {
                     if ((Search_Command.Length == 3) || (Settings.EVTX_Override && Search_Command.Length == 3))
                     {
-                        IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Split(Split_Search_Command, StringSplitOptions.RemoveEmptyEntries).ToList().Count - 1 >= Min_Num_Of_Occurances).ToList();
+                        IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Split(Split_Search_Command, StringSplitOptions.RemoveEmptyEntries).ToList().Count - 1 >= Min_Num_Of_Occurances).ToList();
                         return results.ToList();
                     }
                     else if ((Settings.EVTX_Override && Search_Command.Length == 4) || (Search_Command.Length == 4 && (Settings.FIND_EventLog_Exsits(Search_Command[3]))))
                     {
-                        IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Split(Split_Search_Command, StringSplitOptions.RemoveEmptyEntries).ToList().Count - 1 >= Min_Num_Of_Occurances && s.LogName.ToLower() == Search_Command[3].ToLower()).ToList();
+                        IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Split(Split_Search_Command, StringSplitOptions.RemoveEmptyEntries).ToList().Count - 1 >= Min_Num_Of_Occurances && s.LogName.ToLower() == Search_Command[3].ToLower()).ToList();
                         return results.ToList();
                     }
                     else if ((Settings.EVTX_Override && Search_Command.Length == 5) || (Search_Command.Length == 5 && (Settings.FIND_EventLog_Exsits(Search_Command[3]))))
                     {
                         if (int.TryParse(Search_Command[4], out int EventID))
                         {
-                            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Split(Split_Search_Command, StringSplitOptions.RemoveEmptyEntries).ToList().Count - 1 >= Min_Num_Of_Occurances && s.LogName.ToLower() == Search_Command[3].ToLower() && s.EventID == EventID).ToList();
+                            IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Split(Split_Search_Command, StringSplitOptions.RemoveEmptyEntries).ToList().Count - 1 >= Min_Num_Of_Occurances && s.LogName.ToLower() == Search_Command[3].ToLower() && s.EventID == EventID).ToList();
                             return results.ToList();
                         }
                         else
                         {
                             Errors.Log_Error("SEARCH_CMD_Counts_in_Log()", "The search term had bad input. Event ID not a number. Check search config format.", Errors.LogSeverity.Warning);
-                            List<EventLogEntry> results = new List<EventLogEntry>();
+                            List<EventLog_Entry> results = new List<EventLog_Entry>();
                             return results.ToList();
                         }
                     }
@@ -427,13 +422,13 @@ namespace SWELF
                         if ((Settings.FIND_EventLog_Exsits(Search_Command[2])) || Settings.EVTX_Override)
                         {
                             Errors.Log_Error("SEARCH_CMD_Counts_in_Log()", "The search term had bad input it was to long " + Settings.SplitChar_Search_Command_Parsers[0] + ". Check search config format.", Errors.LogSeverity.Warning);
-                            IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Split(Split_Search_Command, StringSplitOptions.RemoveEmptyEntries).ToList().Count - 1 >= Min_Num_Of_Occurances).ToList();
+                            IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Split(Split_Search_Command, StringSplitOptions.RemoveEmptyEntries).ToList().Count - 1 >= Min_Num_Of_Occurances).ToList();
                             return results.ToList();
                         }
                         else
                         {
                             Errors.Log_Error("SEARCH_CMD_Counts_in_Log()", "The search term had bad input Eventlog did not exist " + Settings.SplitChar_Search_Command_Parsers[0] + ". Check search config format.", Errors.LogSeverity.Warning);
-                            List<EventLogEntry> results = new List<EventLogEntry>();
+                            List<EventLog_Entry> results = new List<EventLog_Entry>();
                             return results.ToList();
 
                         }
@@ -442,62 +437,62 @@ namespace SWELF
                 catch (Exception e)
                 {
                     Errors.Log_Error("SEARCH_CMD_Counts_in_Log()", "The search term had bad input. Check search config format. " + e.Message.ToString(), Errors.LogSeverity.Warning);
-                    List<EventLogEntry> results = new List<EventLogEntry>();
+                    List<EventLog_Entry> results = new List<EventLog_Entry>();
                     return results.ToList();
                 }
             }
-            return new List<EventLogEntry>();
+            return new List<EventLog_Entry>();
         }
 
-        private List<EventLogEntry> SEARCH_CMD_Length_of_LogData(int Max_Length, string[] SearchResults, string SearchCommand)
+        private List<EventLog_Entry> SEARCH_CMD_Length_of_LogData(int Max_Length, string[] SearchResults, string SearchCommand)
         {
             try
             {
                 if (SearchResults.Length == 2 || (Settings.EVTX_Override && SearchResults.Length == 2))
                 {
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length).ToList();
                     return results.ToList();
                 }
                 else if ((Settings.EVTX_Override && SearchResults.Length == 3) || (SearchResults.Length == 3 && (Settings.FIND_EventLog_Exsits(SearchResults[2]))))
                 {
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length && f.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length && f.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
                     return results.ToList();
                 }
                 else if ((Settings.EVTX_Override && SearchResults.Length == 4) || (SearchResults.Length == 4 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length == 3))
                 {
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length && f.LogName.ToLower().Equals(SearchResults[2].ToLower())).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length && f.LogName.ToLower().Equals(SearchResults[2].ToLower())).ToList();
                     return results.ToList();
                 }
                 else if ((Settings.EVTX_Override && SearchResults.Length == 4) || (SearchResults.Length == 4 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length == 4))
                 {
                     if (int.TryParse(SearchResults[3], out int EventID))
                     {
-                        IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length && f.LogName.ToLower() == SearchResults[2].ToLower() && f.EventID == EventID).ToList();
+                        IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length && f.LogName.ToLower() == SearchResults[2].ToLower() && f.EventID == EventID).ToList();
                         return results.ToList();
                     }
                     else
                     {
                         Errors.Log_Error("SEARCH_CMD_Length_of_LogData()", "The search term had bad input. Event ID not a number. Check search config format.", Errors.LogSeverity.Warning);
-                        List<EventLogEntry> results = new List<EventLogEntry>();
+                        List<EventLog_Entry> results = new List<EventLog_Entry>();
                         return results.ToList();
                     }
                 }
                 else
                 {
                     Errors.Log_Error("SEARCH_CMD_Length_of_LogData()", "The search term had bad input it was to long " + Settings.SplitChar_Search_Command_Parsers[0] + ". Check search config format.", Errors.LogSeverity.Warning);
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.EventData.ToCharArray().Length >= Max_Length).ToList();
                     return results.ToList();
                 }
             }
             catch
             {
                 Errors.Log_Error("SEARCH_CMD_Length_of_LogData()", "The search term had bad input. Check search config format.", Errors.LogSeverity.Warning);
-                List<EventLogEntry> results = new List<EventLogEntry>();
+                List<EventLog_Entry> results = new List<EventLog_Entry>();
                 return results.ToList();
             }
         }
 
-        private List<EventLogEntry> SEARCH_CMD_For_Regex_in_Log(string Regex_SearchString, string[] SearchResults,string SearchCommand)
+        private List<EventLog_Entry> SEARCH_CMD_For_Regex_in_Log(string Regex_SearchString, string[] SearchResults,string SearchCommand)
         {
             try
             {
@@ -506,17 +501,17 @@ namespace SWELF
 
                 if (Number_of_Parsers == 1)
                 {
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => RegX.IsMatch(f.EventData)).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => RegX.IsMatch(f.EventData)).ToList();
                     return results.ToList();
                 }
                 else if (Number_of_Parsers == 2 && (Settings.FIND_EventLog_Exsits(SearchResults[2])))
                 {
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => RegX.IsMatch(f.EventData) && f.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => RegX.IsMatch(f.EventData) && f.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
                     return results.ToList();
                 }
                 else if (Number_of_Parsers == 3 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length==3)
                 {
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => RegX.IsMatch(f.EventData) && f.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => RegX.IsMatch(f.EventData) && f.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
                     return results.ToList();
                 }
                 else if (Number_of_Parsers == 3 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length == 4)
@@ -524,13 +519,13 @@ namespace SWELF
                     bool testEventID = int.TryParse(SearchResults[3], out int EventID);
                     if (testEventID)
                     {
-                        IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => RegX.IsMatch(f.EventData) && f.LogName.ToLower() == SearchResults[2].ToLower() && f.EventID == EventID).ToList();
+                        IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => RegX.IsMatch(f.EventData) && f.LogName.ToLower() == SearchResults[2].ToLower() && f.EventID == EventID).ToList();
                         return results.ToList();
                     }
                     else
                     {
                         Errors.Log_Error("SEARCH_CMD_For_Regex_in_Log()", "The search term had bad input. Event ID not a number. Check search config format.", Errors.LogSeverity.Warning);
-                        List<EventLogEntry> results = new List<EventLogEntry>();
+                        List<EventLog_Entry> results = new List<EventLog_Entry>();
                         return results.ToList();
                     }
                 }
@@ -538,19 +533,19 @@ namespace SWELF
                 {
                     Errors.Log_Error("SEARCH_CMD_For_Regex_in_Log()", "The search term had bad input it was to long " + Settings.SplitChar_Search_Command_Parsers[0] + ". Check search config format.", Errors.LogSeverity.Warning);
 
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => RegX.IsMatch(f.EventData)).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => RegX.IsMatch(f.EventData)).ToList();
                     return results.ToList();
                 }
             }
             catch
             {
                 Errors.Log_Error("SEARCH_CMD_For_Regex_in_Log()", "The search term had bad input. Check search config format.", Errors.LogSeverity.Warning);
-                List<EventLogEntry> results = new List<EventLogEntry>();
+                List<EventLog_Entry> results = new List<EventLog_Entry>();
                 return results.ToList();
             }
         }
 
-        private List<EventLogEntry> SEARCH_CMD_For_Severity_EVTX_Level(string Severity_level, string[] SearchResults, string SearchCommand)
+        private List<EventLog_Entry> SEARCH_CMD_For_Severity_EVTX_Level(string Severity_level, string[] SearchResults, string SearchCommand)
         {
             if (Severity_level.ToLower() == "critical")
             {
@@ -574,17 +569,17 @@ namespace SWELF
 
                 if (Number_of_Parsers == 1)
                 {
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.Severity.Equals(Severity_level)).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.Severity.Equals(Severity_level)).ToList();
                     return results.ToList();
                 }
                 else if (Number_of_Parsers == 2 && (Settings.FIND_EventLog_Exsits(SearchResults[2])))
                 {
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.Severity.Equals(Severity_level) && f.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.Severity.Equals(Severity_level) && f.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
                     return results.ToList();
                 }
                 else if (Number_of_Parsers == 3 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length == 3)
                 {
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.Severity.Equals(Severity_level) && f.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.Severity.Equals(Severity_level) && f.LogName.ToLower() == SearchResults[2].ToLower()).ToList();
                     return results.ToList();
                 }
                 else if (Number_of_Parsers == 3 && (Settings.FIND_EventLog_Exsits(SearchResults[2])) && SearchResults.Length == 4)
@@ -592,37 +587,37 @@ namespace SWELF
                     bool testEventID = int.TryParse(SearchResults[3], out int EventID);
                     if (testEventID)
                     {
-                        IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.Severity.Equals(Severity_level) && f.LogName.ToLower() == SearchResults[2].ToLower() && f.EventID == EventID).ToList();
+                        IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.Severity.Equals(Severity_level) && f.LogName.ToLower() == SearchResults[2].ToLower() && f.EventID == EventID).ToList();
                         return results.ToList();
                     }
                     else
                     {
                         Errors.Log_Error("SEARCH_CMD_For_Level()", "The search term had bad input. Event ID not a number. Check search config format.", Errors.LogSeverity.Warning);
-                        List<EventLogEntry> results = new List<EventLogEntry>();
+                        List<EventLog_Entry> results = new List<EventLog_Entry>();
                         return results.ToList();
                     }
                 }
                 else
                 {
                     Errors.Log_Error("SEARCH_CMD_For_Level()", "The search term had bad input it was to long " + Settings.SplitChar_Search_Command_Parsers[0] + ". Check search config format.", Errors.LogSeverity.Warning);
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.Severity.Equals(Severity_level)).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(f => f.Severity.Equals(Severity_level)).ToList();
                     return results.ToList();
                 }
             }
             catch (Exception e)
             {
                 Errors.Log_Error("SEARCH_CMD_For_Level()", e.Message.ToString()+" The search term had bad input. Check search config format.", Errors.LogSeverity.Warning);
-                List<EventLogEntry> results = new List<EventLogEntry>();
+                List<EventLog_Entry> results = new List<EventLog_Entry>();
                 return results.ToList();
             }
         }
 
-        private List<EventLogEntry> SEARCH_CMD_Search_Multiple_SearchTerms(string SearchTerm, string EventLogName="", string EventID="")
+        private List<EventLog_Entry> SEARCH_CMD_Search_Multiple_SearchTerms(string SearchTerm, string EventLogName="", string EventID="")
         {
-            List<EventLogEntry> MultSearchList = new List<EventLogEntry>();
-            List<EventLogEntry> Read_In_EventLogs_From_WindowsAPI_Temp = Read_In_EventLogs_From_WindowsAPI.ToList(); 
-            List<EventLogEntry> results = new List<EventLogEntry>();
-            List<EventLogEntry> results_1 = new List<EventLogEntry>();
+            List<EventLog_Entry> MultSearchList = new List<EventLog_Entry>();
+            List<EventLog_Entry> Read_In_EventLogs_From_WindowsAPI_Temp = Read_In_EventLogs_From_WindowsAPI.ToList(); 
+            List<EventLog_Entry> results = new List<EventLog_Entry>();
+            List<EventLog_Entry> results_1 = new List<EventLog_Entry>();
 
             string[] SearchTerms = SearchTerm.Split(Settings.SplitChar_Search_Command_Parser_Multi_Search, StringSplitOptions.RemoveEmptyEntries).ToArray();
             if (SearchTerms.Length < 20)
@@ -641,7 +636,7 @@ namespace SWELF
                         }
                         else if (results_1.Count < 1)
                         {
-                            return MultSearchList = new List<EventLogEntry>();
+                            return MultSearchList = new List<EventLog_Entry>();
                         }
                         else
                         {
@@ -680,7 +675,7 @@ namespace SWELF
                             }
                             else
                             {
-                                return MultSearchList = new List<EventLogEntry>();
+                                return MultSearchList = new List<EventLog_Entry>();
                             }
                             results.Clear();
                         }
@@ -701,7 +696,7 @@ namespace SWELF
                 }
                 else
                 {
-                    return MultSearchList = new List<EventLogEntry>();
+                    return MultSearchList = new List<EventLog_Entry>();
                 }
             }
             else
@@ -711,14 +706,14 @@ namespace SWELF
             }
         }
 
-        private List<EventLogEntry> SEARCH_CMD_Process_Port_Match(string SearchTerm, string EventLogName = "microsoft-windows-sysmon/operational", string EventID = "3")
+        private List<EventLog_Entry> SEARCH_CMD_Process_Port_Match(string SearchTerm, string EventLogName = "microsoft-windows-sysmon/operational", string EventID = "3")
         {
             string[] SearchTerms = SearchTerm.Split(Settings.SplitChar_Search_Command_Parsers, StringSplitOptions.RemoveEmptyEntries).ToArray();
             //[1]=port
             //[2]=app
             if (SearchTerms.Length == 3)
             {
-                IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.ToString().Equals(EventID) && s.GET_Sysmon_Network_Calling_Process_Name.ToLower().Contains(SearchTerms[2].ToLower()) && s.GET_Sysmon_Netwrok_Calling_Process_Name_Dest_Port.Equals(SearchTerms[1])).ToList();
+                IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.ToString().Equals(EventID) && s.GET_Sysmon_Network_Calling_Process_Name.ToLower().Contains(SearchTerms[2].ToLower()) && s.GET_Sysmon_Netwrok_Calling_Process_Name_Dest_Port.Equals(SearchTerms[1])).ToList();
                 return results.ToList();
             }
             else if (SearchTerms.Length == 2)
@@ -726,18 +721,18 @@ namespace SWELF
                 try
                 {
                     Convert.ToInt32(SearchTerms[1]);
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.ToString().Equals(EventID) && s.GET_Sysmon_Netwrok_Calling_Process_Name_Dest_Port.Equals(SearchTerms[1])).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.ToString().Equals(EventID) && s.GET_Sysmon_Netwrok_Calling_Process_Name_Dest_Port.Equals(SearchTerms[1])).ToList();
                     return results.ToList();
                 }
                 catch
                 {
-                    IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.ToString().Equals(EventID) && s.GET_Sysmon_Network_Calling_Process_Name.ToLower().Contains(SearchTerms[2].ToLower())).ToList();
+                    IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.ToString().Equals(EventID) && s.GET_Sysmon_Network_Calling_Process_Name.ToLower().Contains(SearchTerms[2].ToLower())).ToList();
                     return results.ToList();
                 }
             }
             else
             {
-                IList<EventLogEntry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.ToString().Equals(EventID)).ToList();
+                IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.LogName.ToLower().Equals(EventLogName.ToLower()) && s.EventID.ToString().Equals(EventID)).ToList();
                 return results.ToList();
             }
         }

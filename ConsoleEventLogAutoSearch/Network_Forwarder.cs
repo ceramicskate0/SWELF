@@ -4,22 +4,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
-using System.Web;
 using System.IO;
 
 namespace SWELF
 {
     class Network_Forwarder
     {
-        private static List<IPAddress> IPAddr = Settings.GET_LogCollector_Location();
-        private static int port = Settings.Log_Forward_Location_Port;
+        private static List<string> IPAddr = Settings.GET_LogCollector_Location();
+        private static int Dst_port = Settings.Log_Forward_Location_Port;
 
-        public static void SEND_Logs(EventLogEntry Data)
+        public static void SEND_Logs(EventLog_Entry Data)
         {
-            UdpClient udpClient = new UdpClient(FIND_Open_SourcePort());
+            UdpClient udpClient = new UdpClient(Dst_port);
             try
             {
                 for (int x = 0; x < IPAddr.Count; ++x)
@@ -32,38 +30,46 @@ namespace SWELF
                         }
                         else
                         {
-                            udpClient.Connect(IPAddr.ElementAt(x).MapToIPv4().ToString(), port);
+                            udpClient.Connect(Get_IP_from_Socket(IPAddr.ElementAt(x)), Get_Port_from_Socket(IPAddr.ElementAt(x).ToString()));
                             byte[] sendBytes = Encoding.ASCII.GetBytes(GET_Log_OutputFormat(Data));
                             udpClient.Send(sendBytes, sendBytes.Length);
-                            udpClient.Close();
                         }
                     }
                     catch (Exception e)
                     {
-                        Errors.Log_Error("SEND_Logs(EventLogEntry Data)","SWELF NETWORK ERROR: Check output command Syntax in consoleappconfig.conf. "+e.Message.ToString(),Errors.LogSeverity.Warning);
+                        Errors.Log_Error("SEND_Logs(EventLogEntry Data)","SWELF NETWORK ERROR: "+e.Message.ToString(),Errors.LogSeverity.Warning);
                     }
                 }
+                udpClient.Close();
             }
             catch (Exception e)
             {
-                Errors.Log_Error("SEND_Logs(EventLogEntry Data)", "SWELF NETWORK ERROR: Nothing snet. " + e.Message.ToString(), Errors.LogSeverity.Warning);
+                Errors.Log_Error("SEND_Data_from_File(Log_File_Data)", "SWELF NETWORK ERROR: Check output command Syntax in consoleappconfig.conf. " + e.Message.ToString(), Errors.LogSeverity.Warning);
             }
         }
 
         public static void SEND_Data_from_File(string Log_File_Data)
         {
-            UdpClient udpClient = new UdpClient(FIND_Open_SourcePort());
+            UdpClient udpClient = new UdpClient(Dst_port);
             try
             {
                 for (int x = 0; x < IPAddr.Count; ++x)
                 {
-                    //TODO: SEND IN JSON FORMAT
-                    udpClient.Connect(IPAddr.ElementAt(x).MapToIPv4().ToString(), port);
-                    byte[] sendBytes = Encoding.ASCII.GetBytes(Log_File_Data);
-                    udpClient.Send(sendBytes, sendBytes.Length);
-                    IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                    udpClient.Close();
+                    try
+                    {
+                        //TODO: SEND IN JSON FORMAT
+                        udpClient.Connect(Get_IP_from_Socket(IPAddr.ElementAt(x)), Get_Port_from_Socket(IPAddr.ElementAt(x).ToString()));
+                        byte[] sendBytes = Encoding.ASCII.GetBytes(Log_File_Data);
+                        udpClient.Send(sendBytes, sendBytes.Length);
+                        IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    }
+                    catch (Exception e)
+                    {
+                        Errors.Log_Error("SEND_Data_from_File(Log_File_Data)", "SWELF NETWORK ERROR: " + e.Message.ToString(), Errors.LogSeverity.Warning);
+                    }
                 }
+                udpClient.Close();
+
             }
             catch (Exception e)
             {
@@ -71,7 +77,7 @@ namespace SWELF
             }
         }
 
-        private static void SEND_Logs_JSON(string WebLocation, EventLogEntry Data)
+        private static void SEND_Logs_JSON(string WebLocation, EventLog_Entry Data)
         {
             //TODO: Deal with unknown file format local log file reads
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://" + WebLocation);
@@ -97,7 +103,7 @@ namespace SWELF
             }*/
         }
 
-        private static string GET_Log_OutputFormat(EventLogEntry data)
+        private static string GET_Log_OutputFormat(EventLog_Entry data)
         {
             string format=Settings.AppConfig_File_Args["output_format"];
             string Data;
@@ -125,9 +131,14 @@ namespace SWELF
                         Data = data.GET_XML_of_Log;
                         break;
                     }
+                case "keyvalue":
+                    {
+                        Data = "CreatedTime=\"" + data.CreatedTime + "\""+"   " + "ComputerName =\"" + Settings.ComputerName + "\"" + "   " + "EventID =\"" + data.EventID.ToString() + "\"" + "   " + "EventLogName=\"" + data.LogName + "\"" + "   " + "EventRecordID=\"" + data.EventRecordID + "\"" + "   " + "DisplayName=\"" + data.TaskDisplayName + "\"" + "   " + "Severity=\"" + data.Severity + "\"" + "   " + "UserID=\"" + data.UserID + "\"" + "   " + "ComputerName=\"" + data.ComputerName + "\"" + "   " + "EventData=\"" + data.EventData+"\"";
+                        break;
+                    }
                 default:
                     {
-                        Data = data.EventData;
+                        Data = data.GET_XML_of_Log;
                         break;
                     }
             }
@@ -146,6 +157,46 @@ namespace SWELF
                 select p;
             int FirstFreeUDPPortInRange = range.Except(portsInUse).FirstOrDefault();
             return FirstFreeUDPPortInRange;
+        }
+
+        private static int Get_Port_from_Socket(string IPAddr)
+        {
+            if (IPAddr.ToString().Contains(':'))
+            {
+                List<string> Sockets = IPAddr.Split(':').ToList();
+                try
+                {
+                    return Dst_port = Convert.ToInt32(Sockets.ElementAt(Sockets.Count - 1));
+                }
+                catch
+                {
+                    return Dst_port = Settings.Log_Forward_Location_Port;
+                }
+            }
+            else
+            {
+                return Dst_port = Settings.Log_Forward_Location_Port;
+            }
+        }
+
+        private static IPAddress Get_IP_from_Socket(string IPAddr)
+        {
+            if (IPAddr.ToString().Contains(':'))
+            {
+                List<string> Sockets = IPAddr.Split(':').ToList();
+                try
+                {
+                    return IPAddress.Parse((Sockets.ElementAt(0)));
+                }
+                catch
+                {
+                    return IPAddress.Parse("127.0.0.1");
+                }
+            }
+            else
+            {
+                return IPAddress.Parse((IPAddr));
+            }
         }
     }
 }

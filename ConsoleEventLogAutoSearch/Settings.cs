@@ -8,36 +8,31 @@ using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Net;
-using System.Web;
 using System.Text.RegularExpressions;
-using System.DirectoryServices;
 using System.Security.Cryptography;
-using System.Threading;
-using System.Security.Principal;
-using System.Management;
-using System.Runtime.InteropServices;
-using System.IO.Compression;
 using System.Reflection;
 using System.Security.Policy;
+
 
 namespace SWELF
 {
     public class Settings
     {
-        public static Queue<EventLogEntry> SWELF_Events_Of_Interest_Matching_EventLogs = new Queue<EventLogEntry>();
+        public static Queue<EventLog_Entry> SWELF_Events_Of_Interest_Matching_EventLogs = new Queue<EventLog_Entry>();
 
         //SWELF MEM Storage central for app
         public static List<string> EventLogs_List_Of_Avaliable = EventLogSession.GlobalSession.GetLogNames().ToList();
         public static Dictionary<string, long> EventLog_w_PlaceKeeper = new Dictionary<string, long>();
         public static List<string> EventLog_w_PlaceKeeper_List = new List<string>();//Tracks Eventlog reading
-        public static Dictionary<string, string> AppConfig_File_Args = new Dictionary<string, string>();//program config arguements
+        public static Dictionary<string, string> AppConfig_File_Args = new Dictionary<string, string>();//program config arguements from file
+        public static Dictionary<string, string> AppConfig_App_Args = new Dictionary<string, string>();//app config from appconfig.conf
+
         public static Dictionary<string, string> Backup_Config_File_Args;//program config arguements
         public static string[] Backup_Config_File_Args_Array;//program config arguements
         public static List<string> Search_Terms_Unparsed = new List<string>();//search.txt file line by lone reads
         public static List<string> WhiteList_Search_Terms_Unparsed = new List<string>();//search.txt file line by lone reads
-        public static List<string> Plugin_Search_Terms_Unparsed = new List<string>();
-        public static List<string> Plugin_Scripts_to_Run = new List<string>();
-        public static Queue<EventLogEntry> CriticalEvents = new Queue<EventLogEntry>();//APP events that must be logged
+        public static List<string> Plugin_Search_Terms_Unparsed = new List<string>();//Powershell plugins filepath list
+        public static Queue<EventLog_Entry> CriticalEvents = new Queue<EventLog_Entry>();//APP events that must be logged
         private static Dictionary<string, long> EventLog_w_PlaceKeeper_Backup = new Dictionary<string, long>();
         private static WebClient Wclient = new WebClient();//.net webclient to pull down central config file
         public static List<string> Config_Files_on_the_Web_Server = new List<string>();
@@ -51,23 +46,28 @@ namespace SWELF
         public static string ComputerName = Environment.MachineName;
         public static string SWELF_EventLog_Name = "SWELF_Events_of_Interest";
         public static int Log_Forward_Location_Port = 514;
+        public static List<string> Log_Forwarders_HostNames = new List<string>();
+
+        //Hashs and ips files
+        public static string Hashs_File = Directory.GetCurrentDirectory() + "\\" + "hashs.txt";
+        public static string IPs_File = Directory.GetCurrentDirectory() + "\\" + "ips.txt";
 
         //file path info
-        private static string Config_File_Location = Directory.GetCurrentDirectory() + "\\Config";
-        private static string Search_File_Location = Directory.GetCurrentDirectory() + "\\Log_Searchs";
-        private static string SWELF_Log_File_Location = Directory.GetCurrentDirectory() + "\\SWELF_Logs";
-        private static string Plugin_Files_Location = Directory.GetCurrentDirectory() + "\\Plugins";
-        private static string Plugin_Scripts_Location = Plugin_Files_Location + "\\Scripts";
-        private static string Plugin_Search_Location = Plugin_Files_Location + "\\Plugin_Searchs";
+        public static string Config_File_Location = Directory.GetCurrentDirectory() + "\\Config";
+        public static string Search_File_Location = Directory.GetCurrentDirectory() + "\\Log_Searchs";
+        public static string SWELF_Log_File_Location = Directory.GetCurrentDirectory() + "\\SWELF_Logs";
+        public static string Plugin_Files_Location = Directory.GetCurrentDirectory() + "\\Plugins";
+        public static string Plugin_Scripts_Location = Plugin_Files_Location + "\\Scripts";
+        public static string Plugin_Search_Location = Plugin_Files_Location + "\\Plugin_Searchs";
 
         //File name info
-        private static string ErrorFile = "Error_Log.log";
-        private static string AppConfigFile = "ConsoleAppConfig.conf";
-        private static string EventLogID_PlaceHolder = "Eventlog_with_PlaceKeeper.txt";
-        private static string SearchTermsFileName = "Searchs.txt";
-        private static string FilesToMonitor = "Files_To_Monitor.conf";
-        private static string DirectoriesToMonitor = "Directories_To_Monitor.conf";
-        private static string Search_WhiteList = "WhiteList_Searchs.txt";
+        public static string ErrorFile = "Error_Log.log";
+        public static string AppConfigFile = "ConsoleAppConfig.conf";
+        public static string EventLogID_PlaceHolder = "Eventlog_with_PlaceKeeper.txt";
+        public static string SearchTermsFileName = "Searchs.txt";
+        public static string FilesToMonitor = "Files_To_Monitor.conf";
+        public static string DirectoriesToMonitor = "Directories_To_Monitor.conf";
+        public static string Search_WhiteList = "WhiteList_Searchs.txt";
 
         //Search cmd info
         public static string[] Search_Commands = { "count:", "eventdata_length:", "commandline_length:", "commandline_contains:", "commandline_count:", "regex:", "log_level:", "not_in_log:","search_multiple:" , "network_connect:" };
@@ -79,6 +79,8 @@ namespace SWELF
         public static string[] SplitChar_Search_Command_Parser_Multi_Search = { "search_multiple:", "`"};
         public static char[] SplitChar_Search_Command_Parsers = { ':', '~' };
         public static Regex IP_RegX = new Regex(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b");
+        public static Regex Hostname_RegX = new Regex(@"^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$");
+        public static Regex SHA256_RegX = new Regex(@"\b[A-Fa-f0-9]{64}\b");
 
         //Central config info
         public static string CMDLine_EVTX_File = "";
@@ -95,19 +97,6 @@ namespace SWELF
         public static string SWELF_Central_Search_Arg = "central_search_config";
         public static string SWELF_Central_WhiteList_Search_Arg = "central_whitelist_config";
         private static string SWELF_Central_Plugin_Search_Arg = "central_plugin_search_config";
-
-        //SWELF MEMORY USAGE INFO
-        public static Int64 phav = System_Performance_Info.GetPhysicalAvailableMemoryInMiB();
-        public static Int64 tot = System_Performance_Info.GetTotalMemoryInMiB();
-        public static decimal percentFree = ((decimal)phav / (decimal)tot) * 100;
-        public static decimal percentOccupied = 100 - percentFree;
-        public static decimal Available_Physical_Memory = phav;
-        public static decimal Total_Memory = tot;
-        public static decimal Percent_Free = percentFree;
-        public static decimal Percent_Used = percentOccupied;
-        public static int Current_Memory_Dump_Retry_Number = 0;
-        public static int Max_Memory_Dump_Retry_Number = 5;
-        public static decimal SWELF_Memory_MIN_Threshold = 10;
 
         //SWELF Security Check Info
         public static int ThreadsCount = Process.GetCurrentProcess().Threads.Count;
@@ -191,14 +180,14 @@ namespace SWELF
 
         public static void InitializeAppSettings()
         {
-            GET_ErrorLog_Ready();
+            File_Operation.GET_ErrorLog_Ready();
             SET_WindowsEventLog_Loc();
             READ_App_Config_File();
             READ_EventLogID_Placeholders();
             READ_Search_Terms_File();
             READ_WhiteList_Search_Terms_File();
             READ_Powershell_SearchTerms();
-            GET_Plugin_Scripts_Ready();
+            File_Operation.GET_Plugin_Scripts_Ready();
 
             if (AppConfig_File_Args.ContainsKey(SWELF_Central_App_Config_Arg))//central config for all the files in Config Dir
             {
@@ -223,7 +212,6 @@ namespace SWELF
                 Array.Clear(Backup_Config_File_Args_Array, 0, Backup_Config_File_Args_Array.Length);
                 READ_Powershell_SearchTerms();
             }
-            READ_All_Plugin_Scripts_To_Run();
             CHECK_if_all_Search_Terms_have_Indexed_LogsSources();
         }
 
@@ -231,7 +219,7 @@ namespace SWELF
         {
             try
             {
-                if (VERIFY_if_File_Exists(GET_AppConfigFile) && VERIFY_if_File_Exists(GET_DirectoriesToMonitor) && VERIFY_if_File_Exists(GET_EventLogID_PlaceHolder) && VERIFY_if_File_Exists(GET_FilesToMonitor))
+                if (File_Operation.VERIFY_if_File_Exists(GET_AppConfigFile) && File_Operation.VERIFY_if_File_Exists(GET_DirectoriesToMonitor) && File_Operation.VERIFY_if_File_Exists(GET_EventLogID_PlaceHolder) && File_Operation.VERIFY_if_File_Exists(GET_FilesToMonitor))
                 {
                     return true;
                 }
@@ -250,7 +238,7 @@ namespace SWELF
         {
             try
             {
-                if (VERIFY_if_File_Exists(GET_SearchTermsFile))
+                if (File_Operation.VERIFY_if_File_Exists(GET_SearchTermsFile))
                 {
                     return true;
                 }
@@ -269,14 +257,15 @@ namespace SWELF
         {
             try
             {
+                Encryptions.UnLock_File(GET_AppConfigFile);
                 string[] ConfgiFilelines = File.ReadAllLines(GET_AppConfigFile);
                 List<string> methods_args = new List<string>();
 
                 foreach (string ConfigFileline in ConfgiFilelines)
                 {
-                    if (!ConfigFileline.Contains(Settings.CommentCharConfigs) && ConfigFileline.Contains(SplitChar_ConfigVariableEquals[0]))
+                    if (!ConfigFileline.Contains(CommentCharConfigs) && ConfigFileline.Contains(SplitChar_ConfigVariableEquals[0]))
                     {
-                        methods_args = ConfigFileline.Split(Settings.SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToList();
+                        methods_args = ConfigFileline.Split(SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToList();
                         if (methods_args.ElementAt(0).ToLower().Contains("central") == false)
                         {
                             AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1).ToLower());
@@ -288,12 +277,13 @@ namespace SWELF
                         methods_args.Clear();
                     }
                 }
+                Encryptions.Lock_File(GET_AppConfigFile);
             }
             catch (Exception e)
             {
                 AppConfig_File_Args = Backup_Config_File_Args;
                 Errors.WRITE_Errors_To_Log("READ_App_Config_File()", e.Message.ToString(), Errors.LogSeverity.Informataion);
-                CREATE_NEW_Files_And_Dirs(Config_File_Location, AppConfigFile, WRITE_Default_ConsoleAppConfig_File());
+                File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, AppConfigFile, File_Operation.WRITE_Default_ConsoleAppConfig_File());
             }
         }
 
@@ -334,7 +324,7 @@ namespace SWELF
                 AppConfig_File_Args = Backup_Config_File_Args;
                 READ_App_Config_File();
                 Errors.Log_Error("READ_CENTRAL_APP_Config_File() ", e.Message.ToString(), Errors.LogSeverity.Critical);
-                HostEventLogAgent_Eventlog.WRITE_Critical_EventLog("ALERT: READ_CENTRAL_App_Config_File: READ_CENTRAL_APP_Config_File() " + e.Message.ToString());
+                EventLog_SWELF.WRITE_Critical_EventLog("ALERT: READ_CENTRAL_App_Config_File: READ_CENTRAL_APP_Config_File() " + e.Message.ToString());
                 Errors.WRITE_Errors();
                 Errors.SEND_Errors_To_Central_Location();
             }
@@ -366,7 +356,7 @@ namespace SWELF
             {
                 File.WriteAllLines(GET_SearchTermsFile_PLUGIN, Backup_Config_File_Args_Array);
                 Errors.Log_Error("READ_CENTRAL_PLUGINS_Folders() ", e.Message.ToString(), Errors.LogSeverity.Warning);
-                HostEventLogAgent_Eventlog.WRITE_Critical_EventLog("READ_CENTRAL_PLUGINS_Folders() " + e.Message.ToString());
+                EventLog_SWELF.WRITE_Critical_EventLog("READ_CENTRAL_PLUGINS_Folders() " + e.Message.ToString());
                 Errors.WRITE_Errors();
                 Errors.SEND_Errors_To_Central_Location();
             }
@@ -405,7 +395,7 @@ namespace SWELF
             {
                 File.WriteAllLines(GET_SearchTermsFile, Backup_Config_File_Args_Array);
                 Errors.Log_Error("READ_CENTRAL_SEARCH_Config_File() ", e.Message.ToString(), Errors.LogSeverity.Warning);
-                HostEventLogAgent_Eventlog.WRITE_Critical_EventLog("READ_CENTRAL_SEARCH_Config_File() " + e.Message.ToString());
+                EventLog_SWELF.WRITE_Critical_EventLog("READ_CENTRAL_SEARCH_Config_File() " + e.Message.ToString());
                 Errors.WRITE_Errors();
                 Errors.SEND_Errors_To_Central_Location();
             }
@@ -445,17 +435,10 @@ namespace SWELF
             {
                 File.WriteAllLines(GET_WhiteList_SearchTermsFile, Backup_Config_File_Args_Array);
                 Errors.Log_Error("READ_CENTRAL_SEARCH_Config_File() ", e.Message.ToString(), Errors.LogSeverity.Warning);
-                HostEventLogAgent_Eventlog.WRITE_Critical_EventLog("ALERT: READ_CENTRAL_SEARCH_Config_File: READ_CENTRAL_SEARCH_Config_File() " + e.Message.ToString());
+                EventLog_SWELF.WRITE_Critical_EventLog("ALERT: READ_CENTRAL_SEARCH_Config_File: READ_CENTRAL_SEARCH_Config_File() " + e.Message.ToString());
                 Errors.WRITE_Errors();
                 Errors.SEND_Errors_To_Central_Location();
             }
-        }
-
-        private static void GET_Central_Config_File(string WebPath, string LocalPath, string FileName)
-        {
-            File.Delete(LocalPath);//remove old config file
-            Wclient.DownloadFile(WebPath, LocalPath); //if match read local files
-            Errors.WRITE_Errors_To_Log("GET_Central_Config_File(string WebPath,string LocalPath,string FileName)", "Updated " + FileName + " from " + WebPath + ". It was downloaded to " + LocalPath, Errors.LogSeverity.Verbose);//log change
         }
 
         public static void READ_Search_Terms_File()
@@ -463,7 +446,7 @@ namespace SWELF
             try
             {
                 string line;
-
+                Encryptions.UnLock_File(GET_SearchTermsFile);
                 StreamReader file = new StreamReader(GET_SearchTermsFile);
                 while ((line = file.ReadLine()) != null)
                 {
@@ -474,10 +457,11 @@ namespace SWELF
                 }
                 file.Close();
                 Search_Terms_Unparsed = Search_Terms_Unparsed.Distinct().ToList();
+                Encryptions.Lock_File(GET_SearchTermsFile);
             }
             catch
             {
-                CREATE_NEW_Files_And_Dirs(Search_File_Location, SearchTermsFileName, WRITE_Default_Logs_Search_File());
+                File_Operation.CREATE_NEW_Files_And_Dirs(Search_File_Location, SearchTermsFileName, File_Operation.WRITE_Default_Logs_Search_File());
             }
         }
 
@@ -486,7 +470,7 @@ namespace SWELF
             try
             {
                 string line;
-
+                Encryptions.UnLock_File(GET_WhiteList_SearchTermsFile);
                 StreamReader file = new StreamReader(GET_WhiteList_SearchTermsFile);
                 while ((line = file.ReadLine()) != null)
                 {
@@ -496,10 +480,11 @@ namespace SWELF
                     }
                 }
                 file.Close();
+                Encryptions.Lock_File(GET_WhiteList_SearchTermsFile);
             }
             catch
             {
-                CREATE_NEW_Files_And_Dirs(Search_File_Location, Search_WhiteList, WRITE_Default_Logs_WhiteList_Search_File());
+                File_Operation.CREATE_NEW_Files_And_Dirs(Search_File_Location, Search_WhiteList, File_Operation.WRITE_Default_Logs_WhiteList_Search_File());
             }
         }
 
@@ -509,30 +494,34 @@ namespace SWELF
             {
                 try
                 {
+                    Encryptions.UnLock_File(GET_EventLogID_PlaceHolder);
                     EventLog_w_PlaceKeeper.Clear();
                     EventLog_w_PlaceKeeper_List.Clear();
                     string line;
                     StreamReader file = new StreamReader(GET_EventLogID_PlaceHolder);
                     while ((line = file.ReadLine()) != null)
                     {
-                        if (!line.Contains(Settings.CommentCharConfigs))
+                        if (!line.Contains(CommentCharConfigs))
                         {
-                            string[] lines = line.Split(Settings.SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                            string[] lines = line.Split(SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToArray();
                             EventLog_w_PlaceKeeper.Add(lines[0].ToLower(), 1);
                             EventLog_w_PlaceKeeper_List.Add(lines[0].ToLower());
+                            AppConfig.ADD_UPDATE_App_Config_Setting(lines[0].ToLower(), lines[1].ToLower());
                         }
                     }
                     file.Close();
+                    Encryptions.Lock_File(GET_EventLogID_PlaceHolder);
                 }
                 catch
                 {
-                    CREATE_NEW_Files_And_Dirs(Config_File_Location, EventLogID_PlaceHolder, WRITE_Default_Eventlog_with_PlaceKeeper_File());
+                    File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, EventLogID_PlaceHolder, File_Operation.WRITE_Default_Eventlog_with_PlaceKeeper_File());
                 }
             }
             else//reading local file not central config
             {
                 try
                 {
+                    Encryptions.UnLock_File(GET_EventLogID_PlaceHolder);
                     string line;
                     StreamReader file = new StreamReader(GET_EventLogID_PlaceHolder);
                     while ((line = file.ReadLine()) != null)
@@ -542,13 +531,15 @@ namespace SWELF
                             string[] lines = line.Split(Settings.SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToArray();
                             EventLog_w_PlaceKeeper.Add(lines[0].ToLower(), Convert.ToInt64(lines[1]));
                             EventLog_w_PlaceKeeper_List.Add(lines[0].ToLower());
+                            AppConfig.ADD_UPDATE_App_Config_Setting(lines[0].ToLower(), lines[1].ToLower());
                         }
                     }
                     file.Close();
+                    Encryptions.Lock_File(GET_EventLogID_PlaceHolder);
                 }
                 catch
                 {
-                    CREATE_NEW_Files_And_Dirs(Config_File_Location, EventLogID_PlaceHolder, WRITE_Default_Eventlog_with_PlaceKeeper_File());
+                    File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, EventLogID_PlaceHolder, File_Operation.WRITE_Default_Eventlog_with_PlaceKeeper_File());
                 }
             }
         }
@@ -558,6 +549,7 @@ namespace SWELF
             try
             {
                 string line;
+                Encryptions.UnLock_File(Plugin_Search_Location + "\\" + SearchTermsFileName);
                 StreamReader file = new StreamReader(Plugin_Search_Location + "\\" + SearchTermsFileName);
                 while ((line = file.ReadLine()) != null)
                 {
@@ -567,16 +559,19 @@ namespace SWELF
                     }
                 }
                 file.Close();
+                Encryptions.Lock_File(Plugin_Search_Location + "\\" + SearchTermsFileName);
             }
             catch
             {
-                CREATE_NEW_Files_And_Dirs(Plugin_Search_Location, SearchTermsFileName, WRITE_Default_Powershell_Search_File());
+                File_Operation.CREATE_NEW_Files_And_Dirs(Plugin_Search_Location, SearchTermsFileName, File_Operation.WRITE_Default_Powershell_Search_File());
             }
         }
 
-        private static void READ_All_Plugin_Scripts_To_Run()
+        private static void GET_Central_Config_File(string WebPath, string LocalPath, string FileName)
         {
-            Plugin_Scripts_to_Run = Directory.GetFiles(Plugin_Scripts_Location, "*.ps1", SearchOption.TopDirectoryOnly).ToList();
+            File.Delete(LocalPath);//remove old config file
+            Wclient.DownloadFile(WebPath, LocalPath); //if match read local files
+            Errors.WRITE_Errors_To_Log("GET_Central_Config_File(string WebPath,string LocalPath,string FileName)", "Updated " + FileName + " from " + WebPath + ". It was downloaded to " + LocalPath, Errors.LogSeverity.Verbose);//log change
         }
 
         public static bool VERIFY_Central_File_Config_Hash(string HTTP_File_Path, string Local_File_Path)
@@ -610,67 +605,97 @@ namespace SWELF
             }
         }
 
-        public static void GET_ErrorLog_Ready()
+        public static List<string> GET_LogCollector_Location()
         {
-            CREATE_NEW_Files_And_Dirs(SWELF_Log_File_Location, ErrorFile);
-        }
-
-        private static void GET_Plugin_Scripts_Ready()
-        {
-            if (!Directory.Exists(Plugin_Files_Location))
-            {
-                Directory.CreateDirectory(Plugin_Files_Location);
-            }
-            if (!Directory.Exists(Plugin_Scripts_Location))
-            {
-                Directory.CreateDirectory(Plugin_Scripts_Location);
-            }
-        }
-
-        public static string GET_FilesToMonitor_Path()
-        {
-            CREATE_NEW_Files_And_Dirs(Config_File_Location, FilesToMonitor);
-            return GET_FilesToMonitor;
-        }
-
-        public static string GET_DirToMonitor_Path()
-        {
-            CREATE_NEW_Files_And_Dirs(Config_File_Location, DirectoriesToMonitor);
-            return GET_DirectoriesToMonitor;
-        }
-
-        public static List<IPAddress> GET_LogCollector_Location()
-        {
-            List<IPAddress> IPAddr = new List<IPAddress>();
+            List<string> IPAddr = new List<string>();
 
             if (AppConfig_File_Args.ContainsKey("log_collector") == true && !String.IsNullOrEmpty(AppConfig_File_Args["log_collector"]))
             {
-                IPAddr.Add(IPAddress.Parse(AppConfig_File_Args["log_collector"]));
+                IPAddr.Add(AppConfig_File_Args["log_collector"]);
+                try
+                {
+                    Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector"]));
+                    AppConfig.ADD_UPDATE_App_Config_Setting("log_collector", GET_HostName(AppConfig_File_Args["log_collector"]));
+                }
+                catch
+                {
+                    Log_Forwarders_HostNames.Add(AppConfig_File_Args["log_collector"]);
+                }
             }
             if (AppConfig_File_Args.ContainsKey("log_collector1") == true && !String.IsNullOrEmpty(AppConfig_File_Args["log_collector1"]))
             {
-                IPAddr.Add(IPAddress.Parse(AppConfig_File_Args["log_collector1"]));
+                IPAddr.Add(AppConfig_File_Args["log_collector1"]);
+                try
+                {
+                    Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector1"]));
+                    AppConfig.ADD_UPDATE_App_Config_Setting("log_collector1", GET_HostName(AppConfig_File_Args["log_collector1"]));
+
+                }
+                catch
+                {
+                    Log_Forwarders_HostNames.Add(AppConfig_File_Args["log_collector"]);
+                }
             }
             if (AppConfig_File_Args.ContainsKey("log_collector2") == true && !String.IsNullOrEmpty(AppConfig_File_Args["log_collector2"]))
             {
-                IPAddr.Add(IPAddress.Parse(AppConfig_File_Args["log_collector2"]));
+                IPAddr.Add(AppConfig_File_Args["log_collector2"]);
+                try
+                {
+                    Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector2"]));
+                    AppConfig.ADD_UPDATE_App_Config_Setting("log_collector2", GET_HostName(AppConfig_File_Args["log_collector2"]));
+
+                }
+                catch
+                {
+                    Log_Forwarders_HostNames.Add(AppConfig_File_Args["log_collector2"]);
+                }
             }
             if (AppConfig_File_Args.ContainsKey("log_collector3") == true && !String.IsNullOrEmpty(AppConfig_File_Args["log_collector3"]))
             {
-                IPAddr.Add(IPAddress.Parse(AppConfig_File_Args["log_collector3"]));
+                IPAddr.Add(AppConfig_File_Args["log_collector3"]);
+                try
+                {
+                    Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector3"]));
+                    AppConfig.ADD_UPDATE_App_Config_Setting("log_collector3", GET_HostName(AppConfig_File_Args["log_collector3"]));
+
+                }
+                catch
+                {
+                    Log_Forwarders_HostNames.Add(AppConfig_File_Args["log_collector3"]);
+                }
             }
             if (AppConfig_File_Args.ContainsKey("log_collector4") == true && !String.IsNullOrEmpty(AppConfig_File_Args["log_collector4"]))
             {
-                IPAddr.Add(IPAddress.Parse(AppConfig_File_Args["log_collector4"]));
+                IPAddr.Add(AppConfig_File_Args["log_collector4"]);
+                try
+                {
+                    Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector4"]));
+                    AppConfig.ADD_UPDATE_App_Config_Setting("log_collector4", GET_HostName(AppConfig_File_Args["log_collector4"]));
+
+                }
+                catch
+                {
+                    Log_Forwarders_HostNames.Add(AppConfig_File_Args["log_collector4"]);
+                }
             }
             if (AppConfig_File_Args.ContainsKey("log_collector5") == true && !String.IsNullOrEmpty(AppConfig_File_Args["log_collector5"]))
             {
-                IPAddr.Add(IPAddress.Parse(AppConfig_File_Args["log_collector5"]));
+                IPAddr.Add(AppConfig_File_Args["log_collector5"]);
+                try
+                {
+                    Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector5"]));
+                    AppConfig.ADD_UPDATE_App_Config_Setting("log_collector5", GET_HostName(AppConfig_File_Args["log_collector5"]));
+
+                }
+                catch
+                {
+                    Log_Forwarders_HostNames.Add(AppConfig_File_Args["log_collector5"]);
+                }
             }
 
             if (IPAddr.Count <= 0)
             {
-                IPAddr.Add(IPAddress.Parse("127.0.0.1"));
+                IPAddr.Add("127.0.0.1");
             }
 
             IPAddr = IPAddr.Distinct().ToList();
@@ -758,179 +783,10 @@ namespace SWELF
             }
         }
 
-        public static void UPDATE_EventLog_w_PlaceKeeper_File()
-        {
-            DELETE_AND_CREATE_File(GET_EventLogID_PlaceHolder);
-            for (int x = 0; x < EventLog_w_PlaceKeeper.Count; ++x)
-            {
-                File.AppendAllText(GET_EventLogID_PlaceHolder, EventLog_w_PlaceKeeper_List.ElementAt(x) + SplitChar_ConfigVariableEquals[0] + EventLog_w_PlaceKeeper[EventLog_w_PlaceKeeper_List.ElementAt(x)] + "\n");
-            }
-        }
-
-        public static void WRITE_EventLogID_Placeholders()
-        {
-            ;
-            File.Delete(GET_EventLogID_PlaceHolder);
-            for (int x = 0; x > EventLog_w_PlaceKeeper.Count; ++x)
-            {
-                File.AppendAllText(GET_EventLogID_PlaceHolder, EventLog_w_PlaceKeeper.ElementAt(x).Key + SplitChar_ConfigVariableEquals[0] + EventLog_w_PlaceKeeper.ElementAt(x).Value.ToString() + "\n");
-            }
-        }
-
-        private static string WRITE_Default_ConsoleAppConfig_File()
-        {
-            string log = @"" + CommentCharConfigs + @"Must Be IPV4 
-log_collector" + SplitChar_ConfigVariableEquals[0] + @"127.0.0.1
-" + CommentCharConfigs + @"syslogxml,syslog,xml,data
-output_format" + SplitChar_ConfigVariableEquals[0] + @"syslog";
-            return log;
-        }
-
-        private static string WRITE_Default_Eventlog_with_PlaceKeeper_File()
-        {
-            string log = @"" + CommentCharConfigs + @"LOG NAME, START AT INDEX(1 if unknown)
-application=1
-security=1
-system=1
-windows powershell=1
-#amsi/operational=1
-#microsoft-windows-sysmon/operational=1
-#microsoft-windows-windows defender/operational=1
-#microsoft-windows-powershell/operational=1
-#microsoft-windows-deviceguard/operational=1
-microsoft-windows-wmi-activity/operational=1
-microsoft-windows-bits-client/operational=1
-Microsoft-Windows-Security-Mitigations/KernelMode=1
-Microsoft-WindowsCodeIntegrity/Operational=1
-";
-            return log;
-        }
-
-        private static string WRITE_Default_Logs_WhiteList_Search_File()
-        {
-            return @"" + CommentCharConfigs + @"SearchTerm " + SplitChar_SearchCommandSplit[0] + @" EventLogName " + SplitChar_SearchCommandSplit[0] + @" EventID";
-        }
-
-        private static string WRITE_Default_Logs_Search_File()
-        {
-            string log = @"" + CommentCharConfigs + @"SearchTerm/ or Search CMD " + SplitChar_SearchCommandSplit[0] + @" EventLogName " + SplitChar_SearchCommandSplit[0] + @" EventID
-#Default SWELF Config
-#Most Up to date list at https://github.com/ceramicskate0/SWELF/examples/Log_Searchs/Searchs.txt
-#Layout of Searchs.txt File for searching:
-#SearchTerm~EventLogName~EventID
-commandline_length:500
-~System~104
-~System~7045
-~System~7040
-~System~7022
-~System~4719
-~system~104
-~security~1102
-~security~517
-~Security~7045 
-~Security~4720 
-#~Security~4688
-Logon Type:		9~Security~4624 
-Logon Type:		3~Security~4624 
-Logon Type:		10~Security~4624
-~Microsoft-Windows-CodeIntegrity/Operational~3004
-~Microsoft-Windows-CodeIntegrity/Operational~3033
-~Application~866
-~Application~1534
-webclient~windows powershell~
-hidden~windows powershell~
-download~windows powershell~
-nowindows~windows powershell~
--nop~windows powershell~
-noprofile~windows powershell~
-#count:+:5~windows powershell~
-#count:-join:2~windows powershell~
-#count:|:2~windows powershell~
-#~Microsoft-Windows-SoftwareRestrictionPolicies~Application~866
-#eventdata_length:10000~Microsoft-Windows-PowerShell/Operational~
-#count:-join:2~Microsoft-Windows-PowerShell/Operational~
-#count:':30~Microsoft-Windows-PowerShell/Operational~
-#count:+:5~Microsoft-Windows-PowerShell/Operational~
-#count:;:12~Microsoft-Windows-PowerShell/Operational~
-#count:|:2~Microsoft-Windows-PowerShell/Operational~
-#base64decode~Microsoft-Windows-PowerShell/Operational~
-#webclient~Microsoft-Windows-PowerShell/Operational~
-#hidden~Microsoft-Windows-PowerShell/Operational~
-#-nop~Microsoft-Windows-PowerShell/Operational~
-#~AMSI/Operational~
-#~microsoft-Windows-Windows Defender/Operational~1123
-#~microsoft-Windows-Windows Defender/Operational~5007
-#~microsoft-Windows-Windows Defender/Operational~1007
-#~microsoft-Windows-Windows Defender/Operational~1008
-#~microsoft-Windows-Windows Defender/Operational~1015
-#~microsoft-Windows-Windows Defender/Operational~1116
-#~microsoft-Windows-Windows Defender/Operational~1117
-#~microsoft-Windows-Windows Defender/Operational~3007
-#~microsoft-Windows-Windows Defender/Operational~5001
-#~microsoft-Windows-Windows Defender/Operational~5007
-#~Microsoft-Windows-Sysmon/Operational~2
-#~Microsoft-Windows-Sysmon/Operational~8
-#~Microsoft-Windows-Sysmon/Operational~9
-#~Microsoft-Windows-Sysmon/Operational~10
-#~Microsoft-Windows-Sysmon/Operational~12
-#~Microsoft-Windows-Sysmon/Operational~17
-#~Microsoft-Windows-Sysmon/Operational~18
-#~Microsoft-Windows-Sysmon/Operational~19
-#~Microsoft-Windows-Sysmon/Operational~20
-#~Microsoft-Windows-Sysmon/Operational~21
-#~Microsoft-Windows-Security-Mitigations/KernelMode~3
-#~Microsoft-Windows-Security-Mitigations/KernelMode~10
-";
-            return log;
-        }
-
-        private static string WRITE_Default_Powershell_Search_File()
-        {
-            string log = "" + CommentCharConfigs + @"#File Path to Powershell Script ~ SearchTerm ~ Powershell Script Arguments";
-            return log;
-        }
-
-        public static void ADD_Eventlog_to_CriticalEvents(string EventData, string EventName, string Severity)
-        {
-            EventLogEntry Eventlog = new EventLogEntry();
-            Eventlog.LogName = SWELF_EventLog_Name;
-            Eventlog.Severity = Severity;
-            Eventlog.TaskDisplayName = EventName;
-            Eventlog.ComputerName = Settings.ComputerName;
-            Eventlog.UserID = Environment.UserName;
-            Eventlog.EventData = EventData;
-            Eventlog.EventID = 1;
-            Eventlog.CreatedTime = DateTime.Now;
-
-            CriticalEvents.Enqueue(Eventlog);
-        }
-
         public static void Log_Storage_Location_Unavailable(string e)
         {
             EventLog_w_PlaceKeeper = EventLog_w_PlaceKeeper_Backup;
             Errors.WRITE_Errors_To_Log("Log_Storage_Location_Unavailable(string e)", e + " Access to log storage location may not be available.", Errors.LogSeverity.Warning);
-        }
-
-        public static void DELETE_AND_CREATE_File(string Filepath)
-        {
-            File.Delete(Filepath);
-            File.Create(Filepath).Close();
-        }
-
-        public static void CREATE_NEW_Files_And_Dirs(string Dir, string FileName, string FileData = "")
-        {
-            if (Directory.Exists(Dir) == false)
-            {
-                Directory.CreateDirectory(Dir);
-            }
-            if (VERIFY_if_File_Exists(Dir + "\\" + FileName) == false)
-            {
-                File.Create(Dir + "\\" + FileName).Close();
-                if (string.IsNullOrEmpty(FileData) == false)
-                {
-                    File.AppendAllText(Dir + "\\" + FileName, FileData);
-                }
-            }
         }
 
         private static void GET_All_Files_HTTP(string Web_Config_URL)
@@ -973,7 +829,7 @@ noprofile~windows powershell~
                 {
                     READ_App_Config_File();
                     Errors.Log_Error("GET_All_HTTP_Files()", "HTTP status code was not 200 ok. It was" + response.StatusCode.ToString(), Errors.LogSeverity.Warning);
-                    HostEventLogAgent_Eventlog.WRITE_Critical_EventLog("ALERT: GET_All_Files_HTTP: GET_All_HTTP_Files status code was not 200. It was" + response.StatusCode.ToString());
+                    EventLog_SWELF.WRITE_Critical_EventLog("ALERT: GET_All_Files_HTTP: GET_All_HTTP_Files status code was not 200. It was" + response.StatusCode.ToString());
                     Errors.WRITE_Errors();
                 }
             }
@@ -988,21 +844,6 @@ noprofile~windows powershell~
             throw new NotSupportedException();
         }
 
-        public static bool CHECK_If_Running_as_Admin()
-        {
-            if (new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
-            {
-                return true;
-            }
-            else
-            {
-                Errors.Log_Error("ERROR: Settings.CHECK_If_Running_as_Admin()", Settings.ComputerName + " SWELF MAIN ERROR: APP not running as admin and was unable to read eventlogs.", Errors.LogSeverity.Critical);
-                Errors.WRITE_Errors();
-                Errors.SEND_Errors_To_Central_Location();
-                return false;
-            }
-        }
-
         public static void SHOW_Help_Menu()
         {
             Process.Start("powershell", @"-NoExit -Command ""Write-Host 'Simmple Windows EventLog Forwarder (SWELF)
@@ -1011,7 +852,7 @@ This is the SWELF Help Menu if you are using commandline operations the the bina
 The app must be setup properly to do that and doesnt take commandline input when it does it.
 Commands do not care about case. 
 If your unsure of how this appeared never fear SWELF stopped itself (due to cmdline input error and only showed this help menu :) check you local eventlogs for more details.
-
+Manual Located At:https://github.com/ceramicskate0/SWELF/wiki/CommandLine-Inputs-Args-for-local-usage
 -------------------------------------------------------------
                  |Commands Menu:|
 -------------------------------------------------------------
@@ -1065,85 +906,15 @@ SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV Findin
             Environment.Exit(0);
         }
 
-        public static bool VERIFY_if_File_Exists(string FilePath)
+        public static string GET_HostName(string IP)
         {
-            return File.Exists(FilePath);
-        }
-
-        public static long Get_Allocated_Memory()
-        {
-            return Process.GetCurrentProcess().WorkingSet64 / 1000000;
-        }
-
-        public static decimal CHECK_Total_Memory_Useage()
-        {
-            Int64 phav = System_Performance_Info.GetPhysicalAvailableMemoryInMiB();
-            Int64 tot = System_Performance_Info.GetTotalMemoryInMiB();
-            percentFree = ((decimal)phav / (decimal)tot) * 100;
-            percentOccupied = 100 - percentFree;
-            Available_Physical_Memory = phav;
-            Total_Memory = tot;
-            Percent_Free = percentFree;
-            Percent_Used = percentOccupied;
-
-            if (phav < 0 || tot < 0 || Available_Physical_Memory < 0)
+            try
             {
-                return -1;
+                return Dns.GetHostEntry(IPAddress.Parse(IP)).HostName.ToString();
             }
-            return percentFree;
-        }
-
-        public static class System_Performance_Info
-        {
-            [DllImport("psapi.dll", SetLastError = true)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            public static extern bool GetPerformanceInfo([Out] out PerformanceInformation PerformanceInformation, [In] int Size);
-
-            [StructLayout(LayoutKind.Sequential)]
-            public struct PerformanceInformation
+            catch
             {
-                public int Size;
-                public IntPtr CommitTotal;
-                public IntPtr CommitLimit;
-                public IntPtr CommitPeak;
-                public IntPtr PhysicalTotal;
-                public IntPtr PhysicalAvailable;
-                public IntPtr SystemCache;
-                public IntPtr KernelTotal;
-                public IntPtr KernelPaged;
-                public IntPtr KernelNonPaged;
-                public IntPtr PageSize;
-                public int HandlesCount;
-                public int ProcessCount;
-                public int ThreadCount;
-            }
-
-            public static Int64 GetPhysicalAvailableMemoryInMiB()
-            {
-                PerformanceInformation pi = new PerformanceInformation();
-                if (GetPerformanceInfo(out pi, Marshal.SizeOf(pi)))
-                {
-                    return Convert.ToInt64((pi.PhysicalAvailable.ToInt64() * pi.PageSize.ToInt64() / 1048576));
-                }
-                else
-                {
-                    return -1;
-                }
-
-            }
-
-            public static Int64 GetTotalMemoryInMiB()
-            {
-                PerformanceInformation pi = new PerformanceInformation();
-                if (GetPerformanceInfo(out pi, Marshal.SizeOf(pi)))
-                {
-                    return Convert.ToInt64((pi.PhysicalTotal.ToInt64() * pi.PageSize.ToInt64() / 1048576));
-                }
-                else
-                {
-                    return -1;
-                }
-
+                return IPAddress.Parse(IP).ToString();
             }
         }
     }

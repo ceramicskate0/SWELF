@@ -3,8 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace SWELF
@@ -45,7 +43,7 @@ namespace SWELF
             ErrorLogging_Level();
             if (Logging_Level_To_Report <= (int)LogSeverity)
             {
-                ErrorsLog.Add(DateTime.Now.ToShortDateString() + " : " + Settings.ComputerName + " : " + Severity_Levels[(int)LogSeverity] + " : " + MethodNameInCode + " : " + Message + "\n");
+                ErrorsLog.Add("Date=" + DateTime.Now.ToShortDateString() + "   SourceComputer=" + Settings.ComputerName + "   LogSeverity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n");
                 ErrorsLog = ErrorsLog.Distinct().ToList();
                 if (ErrorsLog.Count > 6 || LastLog)
                 {
@@ -59,8 +57,8 @@ namespace SWELF
             ErrorLogging_Level();
             if (Logging_Level_To_Report >= (int)LogSeverity)
             {
-                string err = DateTime.Now + " : " + Settings.ComputerName + " : " + Severity_Levels[(int)LogSeverity] + " : " + MethodInCode + " : " + msg + "\n";
-                if (Settings.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
+                string err = "Date="+DateTime.Now + "   SourceComputer=" + Settings.ComputerName + "   LogSeverity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodInCode + "   Message=" + msg + "\n";
+                if (File_Operation.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
                 {
                     File.AppendAllText(Settings.GET_ErrorLog_Location, err);
                 }
@@ -69,7 +67,7 @@ namespace SWELF
                     File.Create(Settings.GET_ErrorLog_Location).Close();
                     File.AppendAllText(Settings.GET_ErrorLog_Location, err);
                 }
-                HostEventLogAgent_Eventlog.WRITE_Critical_EventLog("SWELF Immediate " + Severity_Levels[(int)LogSeverity] + " Notification: " + err + "\n");
+                EventLog_SWELF.WRITE_Critical_EventLog("SWELF Immediate" + "   LogSeverity=" + Severity_Levels[(int)LogSeverity] + "   Message=" + err + "\n");
                 CHECK_Error_Log_Size();
             }
         }
@@ -80,7 +78,7 @@ namespace SWELF
 
             if (Log_App_Log_File.Length > Drives_Available_Space * .0001)
             {
-                Settings.DELETE_AND_CREATE_File(Settings.GET_ErrorLog_Location);
+                File_Operation.DELETE_AND_CREATE_File(Settings.GET_ErrorLog_Location);
             }
         }
 
@@ -95,7 +93,7 @@ namespace SWELF
 
         private  static void WRITE_Errors_To_Log_BATCH(string msg)
         {
-            if (Settings.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
+            if (File_Operation.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
             {
                 File.AppendAllText(Settings.GET_ErrorLog_Location, msg);
             }
@@ -104,7 +102,7 @@ namespace SWELF
                 File.Create(Settings.GET_ErrorLog_Location).Close();
                 File.AppendAllText(Settings.GET_ErrorLog_Location, msg);
             }
-            HostEventLogAgent_Eventlog.WRITE_Warning_EventLog(msg);
+            EventLog_SWELF.WRITE_Warning_EventLog(msg);
             CHECK_Error_Log_Size();
         }
 

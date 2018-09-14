@@ -1,23 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
-using System.Security;
-using System.Management.Automation;
-using System.Management.Automation.Host;
-using System.Management.Automation.Runspaces;
-using System.Globalization;
-using System.Collections.ObjectModel;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Security.Policy;
-using System.Security.Permissions;
-using System.Reflection;
-using System.Runtime.Remoting;
+
 
 namespace SWELF
 {
@@ -27,45 +13,17 @@ namespace SWELF
         private static string powershellSciptLocation = "";
         private static string powershellSciptArgs = "";
         private static string CurrentWorkingDir = Directory.GetCurrentDirectory() + "\\";
-        private static string Run_Plugin_BatchFile = CurrentWorkingDir + "SWELF_PS_Plugin.bat";
         public static string ScriptContents = "";
-
-        [DllImport("amsi.dll", EntryPoint = "AmsiInitialize", CallingConvention = CallingConvention.StdCall)]
-        public static extern int AmsiInitialize([MarshalAs(UnmanagedType.LPWStr)]string appName, out IntPtr amsiContext);
-
-        [DllImport("amsi.dll", EntryPoint = "AmsiUninitialize", CallingConvention = CallingConvention.StdCall)]
-        public static extern void AmsiUninitialize(IntPtr amsiContext);
-
-        [DllImport("amsi.dll", EntryPoint = "AmsiOpenSession", CallingConvention = CallingConvention.StdCall)]
-        public static extern int AmsiOpenSession(IntPtr amsiContext, out IntPtr session);
-
-        [DllImport("amsi.dll", EntryPoint = "AmsiCloseSession", CallingConvention = CallingConvention.StdCall)]
-        public static extern void AmsiCloseSession(IntPtr amsiContext, IntPtr session);
-
-        [DllImport("amsi.dll", EntryPoint = "AmsiScanString", CallingConvention = CallingConvention.StdCall)]
-        public static extern int AmsiScanString(IntPtr amsiContext, [InAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)]string @string, [InAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)]string contentName, IntPtr session, out AMSI_RESULT result);
-
-        [DllImport("amsi.dll", EntryPoint = "AmsiScanBuffer", CallingConvention = CallingConvention.StdCall)]
-        public static extern int AmsiScanBuffer(IntPtr amsiContext, [In] [MarshalAs(UnmanagedType.LPArray)] byte[] buffer, ulong length, [In()] [MarshalAs(UnmanagedType.LPWStr)] string contentName, IntPtr session, out AMSI_RESULT result);
-
-        [DllImport("amsi.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
-        public static extern bool AmsiResultIsMalware(AMSI_RESULT result);
-
-        public enum AMSI_RESULT
-        {
-            AMSI_RESULT_CLEAN = 0,
-            AMSI_RESULT_NOT_DETECTED = 1,
-            AMSI_RESULT_DETECTED = 32768
-        }
 
         public static string Run_PS_Script(String PowershellSciptLocation, string PowershellSciptArgs = "")
         {
-            if (CallAntimalwareScanInterface(GetMD5(PowershellSciptLocation), ScriptContents) != 32768)
+            ScriptContents = File.ReadAllText(PowershellSciptLocation);
+            
+            if (CallAntimalwareScanInterface(Get_SHA256(PowershellSciptLocation), ScriptContents) <= 32768)
             {
                 powershellSciptLocation = PowershellSciptLocation;
                 powershellSciptArgs = PowershellSciptArgs;
 
-                WriteBatchFile(PSScript1LinerArg());
                 ProcessStartInfo startInfo = new ProcessStartInfo("powershell", "-ExecutionPolicy Bypass .\\" + Path.GetFileName(PowershellSciptLocation));
                 startInfo.WorkingDirectory = Path.GetDirectoryName(PowershellSciptLocation);
                 startInfo.RedirectStandardOutput = true;
@@ -87,8 +45,8 @@ namespace SWELF
             }
             else
             {
-                Errors.Log_Error("MALWARE DETECTED", "Script located at " + powershellSciptLocation + " MD5=" + GetMD5(PowershellSciptLocation) + ". Script is Malware according to AMSI. Script Base64 Contents = " + Base64Encode(ScriptContents),Errors.LogSeverity.Critical);
-                return ("MALWARE DETECTED - Script located at " + powershellSciptLocation + " MD5=" + GetMD5(PowershellSciptLocation) + ". Script is Malware according to AMSI. Script Base64 Contents = " + Base64Encode(ScriptContents));
+                Errors.Log_Error("POSSIBLE MALWARE DETECTED", "Script located at " + powershellSciptLocation + " SHA256=" + Get_SHA256(PowershellSciptLocation) + ". Script is Malware according to AMSI. Script Base64 Contents = " + Base64Encode(ScriptContents),Errors.LogSeverity.Critical);
+                return ("POSSIBLE MALWARE DETECTED - Script located at " + powershellSciptLocation + " SHA256=" + Get_SHA256(PowershellSciptLocation) + ". Script is Malware according to AMSI. Script Base64 Contents = " + Base64Encode(ScriptContents));
             }
         }
 
@@ -124,13 +82,13 @@ namespace SWELF
             }
         }
 
-        private static string GetMD5(string PowershellSciptLocation)
+        private static string Get_SHA256(string PowershellSciptLocation)
         {
-            using (var md5 = MD5.Create())
+            using (var sha256 = SHA256.Create())
             {
                 using (var stream = File.OpenRead(PowershellSciptLocation))
                 {
-                    return md5.ComputeHash(stream).ToString();
+                    return sha256.ComputeHash(stream).ToString();
                 }
             }
         }
@@ -141,12 +99,14 @@ namespace SWELF
             IntPtr session;
             AMSI_RESULT result = 0;
             int returnValue;
-
-            returnValue = AmsiInitialize(PluginName, out amsiContext);
-            returnValue = AmsiOpenSession(amsiContext, out session);
-            returnValue = AmsiScanString(amsiContext, PluginContents, PluginName, session, out result);
-            AmsiCloseSession(amsiContext, session);
-            AmsiUninitialize(amsiContext);
+            //AMSI_RESULT_CLEAN = 0,
+            //AMSI_RESULT_NOT_DETECTED = 1,
+           // AMSI_RESULT_MALWARE_DETECTED = 32768
+            returnValue = AMSI.AmsiInitialize(PluginName, out amsiContext);
+            returnValue = AMSI.AmsiOpenSession(amsiContext, out session);
+            returnValue = AMSI.AmsiScanString(amsiContext, PluginContents, PluginName, session, out result);
+            AMSI.AmsiCloseSession(amsiContext, session);
+            AMSI.AmsiUninitialize(amsiContext);
             return returnValue;
         }
 
@@ -155,23 +115,5 @@ namespace SWELF
             byte[] plainTextBytes = System.Text.Encoding.ASCII.GetBytes(plainText.ToCharArray());
             return System.Convert.ToBase64String(plainTextBytes, Base64FormattingOptions.None);
         }
-
-        private static void WriteBatchFile(string cmdToWrite)
-        {
-            try
-            {
-                if (Settings.VERIFY_if_File_Exists(Run_Plugin_BatchFile))
-                {
-                    File.Delete(Run_Plugin_BatchFile);
-                }
-                File.Create(Run_Plugin_BatchFile).Close();
-                File.WriteAllText(Run_Plugin_BatchFile, cmdToWrite);
-            }
-            catch (Exception e)
-            {
-                Errors.Log_Error("WriteBatchFile()", e.Message.ToString(),Errors.LogSeverity.Warning);
-            }
-        }
-
     }
 }
