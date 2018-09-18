@@ -40,6 +40,10 @@ count:&:10~Microsoft-Windows-PowerShell/Operational~
 frombase64string~Microsoft-Windows-PowerShell/Operational~
 [System.Reflection.Assembly]::Load~Microsoft-Windows-PowerShell/Operational~
 Invoke-Item~Microsoft-Windows-PowerShell/Operational~
+Gzipstream~Microsoft-Windows-PowerShell/Operational~
+-nop~Microsoft-Windows-PowerShell/Operational~
+encodedcommand~Microsoft-Windows-PowerShell/Operational~
+noprofile~Microsoft-Windows-PowerShell/Operational~
 
 #Application
 ~Application~866
