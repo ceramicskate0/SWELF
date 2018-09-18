@@ -234,3 +234,5 @@ rundll32.exe http:
 #regserv32
 #msbuild
 attrib.exe
+vbc.exe
+vbc
