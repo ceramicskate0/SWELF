@@ -27,6 +27,8 @@ namespace SWELF
 
         public static void Write_Hash_Output(List<string> Hashs)
         {
+            File.Delete(Settings.Hashs_File);
+            File.Create(Settings.Hashs_File).Close();
             for (int x = 0; x < Hashs.Count; ++x)
             {
                 try
@@ -35,13 +37,15 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-
+                    Errors.WRITE_Errors_To_Log("Write_Hash_Output()", e.Message.ToString(), Errors.LogSeverity.Informataion);
                 }
             }
         }
 
         public static void Write_IP_Output(List<string> IPs)
         {
+            File.Delete(Settings.IPs_File);
+            File.Create(Settings.IPs_File).Close();
             for (int x = 0; x < IPs.Count; ++x)
             {
                 try
@@ -50,7 +54,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    //File.AppendAllText(Settings.IPs_File, IPs.ElementAt(x) + "()"+"\n");
+                    Errors.WRITE_Errors_To_Log("Write_IP_Output()", e.Message.ToString(), Errors.LogSeverity.Informataion);
                 }
             }
         }
@@ -222,17 +226,25 @@ noprofile~windows powershell~
 
         public static void CREATE_NEW_Files_And_Dirs(string Dir, string FileName, string FileData = "")
         {
-            if (Directory.Exists(Dir) == false)
+            try
             {
-                Directory.CreateDirectory(Dir);
-            }
-            if (VERIFY_if_File_Exists(Dir + "\\" + FileName) == false)
-            {
-                File.Create(Dir + "\\" + FileName).Close();
-                if (string.IsNullOrEmpty(FileData) == false)
+                if (Directory.Exists(Dir) == false)
                 {
-                    File.AppendAllText(Dir + "\\" + FileName, FileData);
+                    Directory.CreateDirectory(Dir);
                 }
+                if (VERIFY_if_File_Exists(Dir + "\\" + FileName) == false)
+                {
+                    File.Create(Dir + "\\" + FileName).Close();
+                    if (string.IsNullOrEmpty(FileData) == false)
+                    {
+                        File.AppendAllText(Dir + "\\" + FileName, FileData);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Errors.WRITE_Errors_To_Log("CREATE_NEW_Files_And_Dirs() check IO restrictions on machine for app.", e.Message.ToString(), Errors.LogSeverity.Informataion);
+                Settings.Stop(1265);
             }
         }
 

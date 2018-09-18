@@ -28,17 +28,16 @@ namespace SWELF
 
         public static bool Pre_Run_Sec_Checks()
         {
-            Settings.ThreadsCount = Process.GetCurrentProcess().Threads.Count;
             if (Check_EventLog_Service() && Check_Reg_Keys())//Event logs requirements in place
             {
+                Settings.ThreadsCount = Process.GetCurrentProcess().Threads.Count;
                 return true;
             }
             else
             {
                 FAILED_Sec_Check("Check_EventLog_Service() && Check_Reg_Keys()", "Windows Event Log Regkey or Service Missing or off. SWELF did not run due to possible tampering.", Errors.LogSeverity.Critical);
+                return false;
             }
-
-            return false;
         }
 
         public static void Pre_Live_Run_Sec_Checks()
@@ -59,8 +58,10 @@ namespace SWELF
                 return true;
             }
             else
+            {
                 GET_EventLog_Count_Before_Write(EVT_Log_Name);
-            return false;
+                return false;//FAILED
+            }
         }
 
         public static bool Post_Run_Sec_Checks(int NumberOfRecordsWritten)
@@ -70,7 +71,9 @@ namespace SWELF
                 return true;
             }
             else
+            {
                 return false;
+            }
         }
 
 
@@ -125,7 +128,9 @@ namespace SWELF
                     {
                     }
                     else
+                    {
                         return false;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -148,7 +153,11 @@ namespace SWELF
                         return false;
                 }
             }
-            catch { return false; }
+            catch
+            {
+                FAILED_Sec_Check("Check_EventLog_Service()", "Failed Check for running service.", Errors.LogSeverity.Critical);
+                return false;
+            }
         }
 
         private static bool Check_If_SWELF_Event_Logs_Written(int NumberOfRecordsWritten_Before, int NumberOfRecordsWritten_After, string EventLogName)

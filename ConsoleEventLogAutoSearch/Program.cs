@@ -34,8 +34,7 @@ namespace SWELF
                 catch (Exception e)
                 {
                     Errors.Log_Error("Start_Live_Process() ", e.Message.ToString() + ", Also the app halted.", Errors.LogSeverity.Critical);
-                    Start_Write_Errors();
-                    Stop(2);
+                    Settings.Stop(1265);
                 }
             }
         }
@@ -68,8 +67,7 @@ namespace SWELF
             {
                 Errors.Log_Error("Start_EVTX_Process() ", e.Message.ToString(),Errors.LogSeverity.Warning);
                 EventLog_SWELF.WRITE_Critical_EventLog("Start_EVTX_Process() " + e.Message.ToString());
-                Start_Write_Errors();
-                Stop(2);
+                Settings.Stop(1265);
             }
         }
 
@@ -87,23 +85,19 @@ namespace SWELF
                 Start_ReadLocal_Logs();
                 Start_Send_File_Based_Logs();
                 GC.Collect();
-                Start_Write_Errors();
+                Settings.Start_Write_Errors();
                 Write_HashFile_IPsFile();
                 Encryptions.Lock_File(Settings.GET_EventLogID_PlaceHolder);
             }
             else
             {
-                Stop(1265);
+                EventLog_SWELF.WRITE_Critical_EventLog("Sec_Checks.Pre_Run_Sec_Checks() && Sec_Checks.CHECK_If_Running_as_Admin(). APP FAILED Statement.");
+                Settings.Stop(1265);
             }
             if (Settings.CMDLine_Dissolve)
             {
                 Settings.Dissolve();
             }
-        }
-
-        private static void Stop(int error_code)
-        {
-            Environment.Exit(error_code);
         }
 
         private static void Start_Setup()
@@ -116,8 +110,7 @@ namespace SWELF
             {
                 Errors.Log_Error("Settings.InitializeAppSettings()", e.Message.ToString(), Errors.LogSeverity.Warning);
                 EventLog_SWELF.WRITE_Critical_EventLog("ALERT: SWELF MAIN ERROR: Settings.InitializeAppSettings() " + e.Message.ToString());
-                Start_Write_Errors();
-                Stop(2);
+                Settings.Stop(1265);
             }
         }
 
@@ -163,7 +156,7 @@ namespace SWELF
             {
                 Errors.Log_Error("Powershell_Plugin.Run_PS_Script() " , e.Message.ToString(), Errors.LogSeverity.Warning);
                 Network_Forwarder.SEND_Data_from_File("Powershell_Plugin.Run_PS_Script() - " + e.Message.ToString());
-                Start_Write_Errors();
+                Settings.Start_Write_Errors();
             }
         }
 
@@ -199,7 +192,6 @@ namespace SWELF
                             Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " " + e.Message.ToString(), Errors.LogSeverity.Warning);
                         }
                     }
-                    GC.Collect();
                 }
                 Start_Output_Post_Run();
             }
@@ -283,12 +275,6 @@ namespace SWELF
             }
         }
 
-        private static void Start_Write_Errors()
-        {
-            Errors.WRITE_Errors();
-            Errors.SEND_Errors_To_Central_Location();
-        }
-
         private static void PARSE_Commandline_Input()
         {
             for (int x = 0; x < Program_Start_Args.Count; ++x)
@@ -370,8 +356,7 @@ namespace SWELF
                 {
                     Errors.Log_Error("CHECK_Memory() ", "SWELF Detected MAXIMUM Memory useage and stopped after " + System_Performance_Info.Max_Memory_Dump_Retry_Number.ToString() + " tries to resolve issue.", Errors.LogSeverity.Critical);
                     EventLog_SWELF.WRITE_Critical_EventLog("SWELF Detected MAXIMUM Memory useage and stopped after " + System_Performance_Info.Max_Memory_Dump_Retry_Number.ToString() + " tries to resolve issue.");
-                    Start_Write_Errors();
-                    Stop(2);
+                    Settings.Stop(1265);
                 }
                 else
                 {

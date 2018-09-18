@@ -97,7 +97,7 @@ namespace SWELF
 
                     if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
                     {
-                        Settings.IP_List_EVT_Logs.Add(datA[1].Replace("\r\n", ""));
+                        Settings.Hashs_From_EVT_Logs.Add(datA[1].Replace("\r\n", ""));
                     }
                 }
                 if (EventData.Contains("hashes: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 6)

@@ -258,15 +258,14 @@ namespace SWELF
             try
             {
                 Encryptions.UnLock_File(GET_AppConfigFile);
-                string[] ConfgiFilelines = File.ReadAllLines(GET_AppConfigFile);
                 List<string> methods_args = new List<string>();
 
-                foreach (string ConfigFileline in ConfgiFilelines)
+                foreach (string ConfigFileline in File.ReadAllLines(GET_AppConfigFile))
                 {
                     if (!ConfigFileline.Contains(CommentCharConfigs) && ConfigFileline.Contains(SplitChar_ConfigVariableEquals[0]))
                     {
                         methods_args = ConfigFileline.Split(SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToList();
-                        if (methods_args.ElementAt(0).ToLower().Contains("central") == false)
+                        if (methods_args.ElementAt(0).ToLower().Contains("central_app_config") == false)
                         {
                             AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1).ToLower());
                         }
@@ -282,7 +281,7 @@ namespace SWELF
             catch (Exception e)
             {
                 AppConfig_File_Args = Backup_Config_File_Args;
-                Errors.WRITE_Errors_To_Log("READ_App_Config_File()", e.Message.ToString(), Errors.LogSeverity.Informataion);
+                Errors.WRITE_Errors_To_Log("READ_App_Config_File()", e.Message.ToString(), Errors.LogSeverity.Critical);
                 File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, AppConfigFile, File_Operation.WRITE_Default_ConsoleAppConfig_File());
             }
         }
@@ -445,7 +444,7 @@ namespace SWELF
         {
             try
             {
-                string line;
+                string line="";
                 Encryptions.UnLock_File(GET_SearchTermsFile);
                 StreamReader file = new StreamReader(GET_SearchTermsFile);
                 while ((line = file.ReadLine()) != null)
@@ -459,8 +458,9 @@ namespace SWELF
                 Search_Terms_Unparsed = Search_Terms_Unparsed.Distinct().ToList();
                 Encryptions.Lock_File(GET_SearchTermsFile);
             }
-            catch
+            catch (Exception e)
             {
+                Errors.Log_Error("READ_Search_Terms_File()" , e.Message.ToString(),Errors.LogSeverity.Critical);
                 File_Operation.CREATE_NEW_Files_And_Dirs(Search_File_Location, SearchTermsFileName, File_Operation.WRITE_Default_Logs_Search_File());
             }
         }
@@ -469,7 +469,7 @@ namespace SWELF
         {
             try
             {
-                string line;
+                string line="";
                 Encryptions.UnLock_File(GET_WhiteList_SearchTermsFile);
                 StreamReader file = new StreamReader(GET_WhiteList_SearchTermsFile);
                 while ((line = file.ReadLine()) != null)
@@ -482,8 +482,9 @@ namespace SWELF
                 file.Close();
                 Encryptions.Lock_File(GET_WhiteList_SearchTermsFile);
             }
-            catch
+            catch (Exception e)
             {
+                Errors.Log_Error("READ_WhiteList_Search_Terms_File() " , e.Message.ToString(),Errors.LogSeverity.Critical);
                 File_Operation.CREATE_NEW_Files_And_Dirs(Search_File_Location, Search_WhiteList, File_Operation.WRITE_Default_Logs_WhiteList_Search_File());
             }
         }
@@ -512,8 +513,9 @@ namespace SWELF
                     file.Close();
                     Encryptions.Lock_File(GET_EventLogID_PlaceHolder);
                 }
-                catch
+                catch (Exception e)
                 {
+                    Errors.Log_Error("READ_EventLogID_Placeholders()"," if (Clear_PlaceKeepers_and_Restart_Log_Query)" + e.Message.ToString(),Errors.LogSeverity.Critical);
                     File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, EventLogID_PlaceHolder, File_Operation.WRITE_Default_Eventlog_with_PlaceKeeper_File());
                 }
             }
@@ -537,8 +539,9 @@ namespace SWELF
                     file.Close();
                     Encryptions.Lock_File(GET_EventLogID_PlaceHolder);
                 }
-                catch
+                catch (Exception e)
                 {
+                    EventLog_SWELF.WRITE_Critical_EventLog("READ_EventLogID_Placeholders() else " + e.Message.ToString());
                     File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, EventLogID_PlaceHolder, File_Operation.WRITE_Default_Eventlog_with_PlaceKeeper_File());
                 }
             }
@@ -561,8 +564,9 @@ namespace SWELF
                 file.Close();
                 Encryptions.Lock_File(Plugin_Search_Location + "\\" + SearchTermsFileName);
             }
-            catch
+            catch (Exception e)
             {
+                EventLog_SWELF.WRITE_Critical_EventLog("READ_Powershell_SearchTerms() " + e.Message.ToString());
                 File_Operation.CREATE_NEW_Files_And_Dirs(Plugin_Search_Location, SearchTermsFileName, File_Operation.WRITE_Default_Powershell_Search_File());
             }
         }
@@ -704,57 +708,65 @@ namespace SWELF
 
         private static void CHECK_if_all_Search_Terms_have_Indexed_LogsSources()
         {
-            List<string> Searchs = new List<string>();
-
-            foreach (string SearchLogType in Search_Terms_Unparsed)//search terms
+            try
             {
-                string[] SearchsArgs = SearchLogType.Split(Settings.SplitChar_SearchCommandSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                List<string> Searchs = new List<string>();
 
-                if (SearchsArgs.Length > 1)
+                foreach (string SearchLogType in Search_Terms_Unparsed)//search terms
                 {
-                    if (String.IsNullOrEmpty(SearchsArgs[1]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false)
+                    string[] SearchsArgs = SearchLogType.Split(Settings.SplitChar_SearchCommandSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+                    if (SearchsArgs.Length > 1)
                     {
-                        foreach (string LogSource in EventLog_w_PlaceKeeper_List)//eventlogs to index
+                        if (String.IsNullOrEmpty(SearchsArgs[1]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false)
                         {
-                            try
+                            foreach (string LogSource in EventLog_w_PlaceKeeper_List)//eventlogs to index
                             {
-                                if (Settings.FIND_EventLog_Exsits(SearchsArgs[0]))
+                                try
                                 {
-                                    Searchs.Add(SearchsArgs[0]);
+                                    if (Settings.FIND_EventLog_Exsits(SearchsArgs[0]))
+                                    {
+                                        Searchs.Add(SearchsArgs[0]);
+                                    }
+                                    else if (SearchsArgs.Length > 1 && (String.IsNullOrEmpty(SearchsArgs[1]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.FIND_EventLog_Exsits(SearchsArgs[1])))
+                                    {
+                                        Searchs.Add(SearchsArgs[1]);
+                                    }
+                                    else if (SearchsArgs.Length > 2 && (String.IsNullOrEmpty(SearchsArgs[2]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.FIND_EventLog_Exsits(SearchsArgs[2])))
+                                    {
+                                        Searchs.Add(SearchsArgs[2]);
+                                    }
                                 }
-                                else if (SearchsArgs.Length > 1 && (String.IsNullOrEmpty(SearchsArgs[1]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.FIND_EventLog_Exsits(SearchsArgs[1])))
+                                catch (Exception e)
                                 {
-                                    Searchs.Add(SearchsArgs[1]);
+                                    Errors.Log_Error("CHECK_if_all_Search_Terms_have_Indexed_LogsSources()", e.Message.ToString(), Errors.LogSeverity.Warning);
                                 }
-                                else if (SearchsArgs.Length > 2 && (String.IsNullOrEmpty(SearchsArgs[2]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.FIND_EventLog_Exsits(SearchsArgs[2])))
-                                {
-                                    Searchs.Add(SearchsArgs[2]);
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Errors.Log_Error("CHECK_if_all_Search_Terms_have_Indexed_LogsSources()", e.Message.ToString(), Errors.LogSeverity.Warning);
                             }
                         }
                     }
                 }
-            }
-            List<string> MissingEventLogs = Searchs.Distinct().Except(EventLog_w_PlaceKeeper_List.Distinct()).ToList();
+                List<string> MissingEventLogs = Searchs.Distinct().Except(EventLog_w_PlaceKeeper_List.Distinct()).ToList();
 
-            for (int x = 0; x < MissingEventLogs.Count(); ++x)
-            {
-                EventLog_w_PlaceKeeper.Add(MissingEventLogs.ElementAt(x).ToLower(), 1);
-                EventLog_w_PlaceKeeper_List.Add(MissingEventLogs.ElementAt(x).ToLower());
+                for (int x = 0; x < MissingEventLogs.Count(); ++x)
+                {
+                    EventLog_w_PlaceKeeper.Add(MissingEventLogs.ElementAt(x).ToLower(), 1);
+                    EventLog_w_PlaceKeeper_List.Add(MissingEventLogs.ElementAt(x).ToLower());
+                }
+                EventLog_w_PlaceKeeper_List.Sort();
+                EventLog_w_PlaceKeeper_Backup = EventLog_w_PlaceKeeper;
             }
-            EventLog_w_PlaceKeeper_List.Sort();
-            EventLog_w_PlaceKeeper_Backup = EventLog_w_PlaceKeeper;
+            catch (Exception e)
+            {
+                Errors.Log_Error("CHECK_if_all_Search_Terms_have_Indexed_LogsSources() " ,e.Message.ToString(),Errors.LogSeverity.Critical);
+                Stop(1265);
+            }
         }
 
         public static bool FIND_EventLog_Exsits(string EventLog_ToFind)
         {
             for (int x = 0; x < Settings.EventLogs_List_Of_Avaliable.Count; ++x)
             {
-                if (Settings.EventLogs_List_Of_Avaliable.ElementAt(x).ToLower() == EventLog_ToFind)
+                if (Settings.EventLogs_List_Of_Avaliable.ElementAt(x).ToLower() == EventLog_ToFind.ToLower())
                 {
                     return true;
                 }
@@ -776,9 +788,10 @@ namespace SWELF
                     EvtLog.Source = SWELF_EventLog_Name;
                 }
             }
-            catch
+            catch (Exception e)
             {
                 EventLog.CreateEventSource("SWELF", SWELF_EventLog_Name);
+                Errors.Log_Error("SET_WindowsEventLog_Loc() ",  e.Message.ToString(),Errors.LogSeverity.Critical);
                 EvtLog.Source = SWELF_EventLog_Name;
             }
         }
@@ -902,6 +915,7 @@ SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV Findin
 
         public static void Dissolve()
         {
+            EventLog_SWELF.WRITE_Critical_EventLog("SWELF WAS TOLD TO SELF DELETE. After it ran.");
             Process.Start("cmd.exe", "/C choice /C Y /N /D Y /T 3 & Del /Q " + Directory.GetCurrentDirectory() + "\\SWELF.exe");
             Environment.Exit(0);
         }
@@ -916,6 +930,18 @@ SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV Findin
             {
                 return IPAddress.Parse(IP).ToString();
             }
+        }
+
+        public static void Stop(int error_code)
+        {
+            Start_Write_Errors();
+            Environment.Exit(error_code);
+        }
+
+        public static void Start_Write_Errors()
+        {
+            Errors.WRITE_Errors();
+            Errors.SEND_Errors_To_Central_Location();
         }
     }
 }

@@ -215,7 +215,7 @@ namespace SWELF
                     MissingLogInFileDueToException = true;
                 }
             }
-            Settings.IP_List_EVT_Logs.AddRange(Settings.Hashs_From_EVT_Logs.Distinct().ToList());
+            Settings.IP_List_EVT_Logs.AddRange(Settings.IP_List_EVT_Logs.Distinct().ToList());
             Settings.Hashs_From_EVT_Logs.AddRange(Settings.Hashs_From_EVT_Logs.Distinct().ToList());
             MissingLogInFileDueToException = false;
         }

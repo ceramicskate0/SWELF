@@ -67,9 +67,11 @@ namespace SWELF
             {
                 Remove_Whitelisted_Logs();
             }
-
-            var queue = new Queue<EventLog_Entry>(Filtered_Matched_Logs_This_SWELF_Run);
+            Filtered_Matched_Logs_This_SWELF_Run.AddRange(Settings.SWELF_Events_Of_Interest_Matching_EventLogs);//add what we already found with new findings
+            Filtered_Matched_Logs_This_SWELF_Run=Filtered_Matched_Logs_This_SWELF_Run.Distinct().ToList();//remove duplicates
+            var queue = new Queue<EventLog_Entry>(Filtered_Matched_Logs_This_SWELF_Run);//set total findings list to the new total findings
             Filtered_Matched_Logs_This_SWELF_Run.Clear();
+            ALL_Logs_That_Matched_Search_This_Event_Log.Clear();
             return queue;
         }
 

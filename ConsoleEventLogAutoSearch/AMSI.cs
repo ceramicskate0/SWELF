@@ -30,6 +30,7 @@ namespace SWELF
         [DllImport("Amsi.dll", EntryPoint = "AmsiScanBuffer", CallingConvention = CallingConvention.StdCall)]
         public static extern int AmsiScanBuffer(IntPtr amsiContext, byte[] buffer, ulong length, string contentName, IntPtr session, out AMSI_RESULT result);
 
+        //This method apparently exists on MSDN but not in AMSI.dll (version 4.9.10586.0)
         [DllImport("Amsi.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
         public static extern bool AmsiResultIsMalware(AMSI_RESULT result);
     }
