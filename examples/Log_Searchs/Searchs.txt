@@ -159,6 +159,7 @@ System~Microsoft-Windows-DistributedCOM~10016
 ~System~7040
 ~System~7022
 ~System~4719
+~System~7009
 
 #Security
 ~Security~517
