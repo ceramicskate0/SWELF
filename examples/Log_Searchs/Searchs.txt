@@ -39,6 +39,7 @@ base64decode~Microsoft-Windows-PowerShell/Operational~
 count:&:10~Microsoft-Windows-PowerShell/Operational~
 frombase64string~Microsoft-Windows-PowerShell/Operational~
 [System.Reflection.Assembly]::Load~Microsoft-Windows-PowerShell/Operational~
+Invoke-Item~Microsoft-Windows-PowerShell/Operational~
 
 #Application
 ~Application~866
@@ -111,6 +112,7 @@ commandline_contains:regasm.exe /U~Microsoft-Windows-Sysmon/Operational~
 count:|:2~Microsoft-Windows-Sysmon/Operational~
 #commandline_contains:C:\Windows\System32\wmiprvse.exe -secured -Embedding~Microsoft-Windows-Sysmon/Operational~1
 #commandline_contains:==~Microsoft-Windows-Sysmon/Operational~1
+sc.exe~Microsoft-Windows-Sysmon/Operational~1
 
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
@@ -190,6 +192,7 @@ commandline_contains:Scriptrunner.exe -appvscript
 commandline_contains:javascript
 commandline_contains:vbscript
 commandline_contains:sc create
+commandline_contains:java.exe -jar 
 
 #Command COUNT to be run on all
 count:+:12
@@ -209,6 +212,7 @@ network_connect:443:cmd
 network_connect:80:cmd
 network_connect:80:javaw
 network_connect:443:javaw
+search_multiple:vbc`.txt
 
 #KEYWORD SEARCHS to be run on all
 jscript
@@ -235,4 +239,4 @@ rundll32.exe http:
 #msbuild
 attrib.exe
 vbc.exe
-vbc
+#vbc
