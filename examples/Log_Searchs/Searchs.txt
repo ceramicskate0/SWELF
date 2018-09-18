@@ -215,6 +215,7 @@ network_connect:443:javaw
 search_multiple:vbc`.txt
 
 #KEYWORD SEARCHS to be run on all
+sc.exe
 jscript
 cvtres
 vbscript
