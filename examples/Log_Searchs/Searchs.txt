@@ -213,6 +213,8 @@ network_connect:80:cmd
 network_connect:80:javaw
 network_connect:443:javaw
 search_multiple:vbc`.txt
+search_multiple:%COMPSPEC%`cmd~~7045
+search_multiple:%COMPSPEC%`powershell~~7045
 
 #KEYWORD SEARCHS to be run on all
 sc.exe
