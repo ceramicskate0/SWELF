@@ -18,10 +18,11 @@
 ## The details:
 
 **Now in early release.** 
-> SWELF is designed to be a simple enough for almost anyone to use for windows event log forwarding application with some speedy IR capabilities. As a forwarder ehe agent will 1st search your logs for what you want then forward just those logs. 
-Since SWELF is early release sofwtare this means there may be bugs that exist. 
 
-> But this also means im taking feature requests (even if you dont code), deisgn recommendation, and basically any input you think is relavent.
+> SWELF is designed to be a simple enough for almost anyone to use for windows event log forwarding application with some speedy IR capabilities. As a forwarder the agent will 1st search your logs for what you want, then forward just those logs. 
+Since SWELF is early release software this means there may be bugs that exist. 
+
+> But this also means im taking almost any feature request (even if you dont code), deisgn recommendations, and basically any input you think is relavent. I will take it in the form of Twitter (https://twitter.com/Ceramicskate0?lang=en) or as Issue (Feature) request here on Github.
 
 > This app is a mainly a log forwarder with the ability to search, forward, and run your plugins. This means that you can tell your log forwarding agent (SWELF) exactly what logs to forward and it wont forward the rest (This will help with that pesky "to many logs", "we cant send those logs its to much noise", or "the SIEM cant handle all the logs" issues with SIEMs and IT Departments). ;D
 
