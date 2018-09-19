@@ -118,6 +118,7 @@ commandline_contains:ATBroker.exe /start~Microsoft-Windows-Sysmon/Operational~
 commandline_contains:EQNEDT32.EXE -Embedding~Microsoft-Windows-Sysmon/Operational~
 commandline_contains:pcalua.exe -a~Microsoft-Windows-Sysmon/Operational~
 commandline_contains:regasm.exe /U~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:-urlcache~Microsoft-Windows-Sysmon/Operational~
 count:|:2~Microsoft-Windows-Sysmon/Operational~
 #commandline_contains:C:\Windows\System32\wmiprvse.exe -secured -Embedding~Microsoft-Windows-Sysmon/Operational~1
 #commandline_contains:==~Microsoft-Windows-Sysmon/Operational~1
