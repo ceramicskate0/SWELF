@@ -124,6 +124,7 @@ count:|:2~Microsoft-Windows-Sysmon/Operational~
 #commandline_contains:C:\Windows\System32\wmiprvse.exe -secured -Embedding~Microsoft-Windows-Sysmon/Operational~1
 #commandline_contains:==~Microsoft-Windows-Sysmon/Operational~1
 sc.exe~Microsoft-Windows-Sysmon/Operational~1
+netsh.exe~Microsoft-Windows-Sysmon/Operational~
 
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
