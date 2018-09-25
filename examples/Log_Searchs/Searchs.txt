@@ -256,3 +256,4 @@ rundll32.exe http:
 attrib.exe
 vbc.exe
 #vbc
+installutil.exe
