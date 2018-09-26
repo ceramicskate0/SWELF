@@ -257,3 +257,5 @@ attrib.exe
 vbc.exe
 #vbc
 installutil.exe
+at.exe
+netsh advfirewall
