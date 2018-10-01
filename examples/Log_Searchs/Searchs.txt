@@ -91,7 +91,7 @@ search_multiple:firefox`cmd~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:mshta`cmd~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:mshta`jscript~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:mshta`powershell~Microsoft-Windows-Sysmon/Operational~1
-search_multiple:cmd`wmic~Microsoft-Windows-Sysmon/Operational~1
+#search_multiple:cmd`wmic~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:wscript`wmic~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:wscript`cmd~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:wscript`powershell~Microsoft-Windows-Sysmon/Operational~1
