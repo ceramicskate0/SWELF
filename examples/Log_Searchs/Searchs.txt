@@ -259,3 +259,4 @@ vbc.exe
 installutil.exe
 at.exe
 netsh advfirewall
+appvlp.exe
