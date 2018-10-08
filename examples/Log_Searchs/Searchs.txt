@@ -125,6 +125,7 @@ count:|:2~Microsoft-Windows-Sysmon/Operational~
 #commandline_contains:==~Microsoft-Windows-Sysmon/Operational~1
 sc.exe~Microsoft-Windows-Sysmon/Operational~1
 netsh.exe~Microsoft-Windows-Sysmon/Operational~
+ParentCommandLine: C:\Windows\System32\wbem\WmiPrvSE.exe~Microsoft-Windows-Sysmon/Operational~
 
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
