@@ -50,8 +50,8 @@ invoke-shellcode~Microsoft-Windows-PowerShell/Operational~4104
 ~Application~866
 ~Application~1534
 
-#WMI~Application
-
+#Microsoft-Windows-WMI-Activity/Operational
+~Microsoft-Windows-WMI-Activity/Operational~5861
 
 #Windows-Sysmon/Operational
 ~Microsoft-Windows-Sysmon/Operational~2
