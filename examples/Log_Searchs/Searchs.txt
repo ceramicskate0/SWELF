@@ -126,6 +126,9 @@ count:|:2~Microsoft-Windows-Sysmon/Operational~
 sc.exe~Microsoft-Windows-Sysmon/Operational~1
 netsh.exe~Microsoft-Windows-Sysmon/Operational~
 ParentCommandLine: C:\Windows\System32\wbem\WmiPrvSE.exe~Microsoft-Windows-Sysmon/Operational~
+#Below will log unloading of Sysmon Driver
+Filter Manager~Microsoft-Windows-Sysmon/Operational~1
+file system filter~Microsoft-Windows-Sysmon/Operational~1
 
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
