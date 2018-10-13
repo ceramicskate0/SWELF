@@ -3,7 +3,11 @@
 
 ## Summary:
 
-> Having the to many log issue?!! Or maybe just cant find what you want from a log forwarder? Want to quickly get the logs you want from local evtx files? Maybe the other log forwarders are just too complicated and you want something simple that can do it all? SWELF might help you. You tell it the log source and/or the event ID and/or the key words and/or the number of chars in log and/or the length of the commandline, and/or the length of the log itself and the SWELF app will send just that log to your Log Collection location from a windows machine. SWELF is designed to be all windows native very low on requirements and setup as well as powerful and useful. Also an interesting case has come up recently, that red team could use this to help simulate a SIEM on a VM testing endpoint. :)
+> Having the to many log issue? Or maybe just cant find what you want from a log forwarder? Want to quickly get the logs you want from local evtx files or IR and them get them in the order they where made? Maybe the other log forwarders are just too complicated and you want something simple that can do it all? 
+> SWELF might be able to help you. You tell SWELF the the key words and/or Event Log Name and/or the event ID and it will find it for you. You can event tell it things like the minimum number of characters in log, or the maximum length of the commandline arguemtns, or the length of the log itself, then the SWELF app will send just that log to your Log Collection location from a windows machine in a variety of formats. 
+> SWELF is designed to be as small,lightweight, and  windows native as possible with very low requirements and setup and still be a powerful and useful tool.  
+Also, an interesting case has come up recently, that red teamers could use this to help simulate a SIEM on a VM testing endpoint. 
+
 
 ## [Want to know more or have Questions check out the WIKI:](https://github.com/ceramicskate0/SWELF/wiki)
 
