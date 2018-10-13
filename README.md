@@ -17,7 +17,7 @@ Also, an interesting case has come up recently, that red teamers could use this 
 
 2. Read and search any local log file for everything or just the log with the data you want.
 
-3. Read, search, and forward any 'Powershell Plugin' (after attempting to force it through Microsoft AMSI) output (ie that script you like thay you cant get output from at scale) for everything or just the log with the data you want.
+3. Read, search, and forward any 'Powershell Plugin' (after attempting to force it through Microsoft [AMSI](https://docs.microsoft.com/en-us/windows/desktop/amsi/antimalware-scan-interface-portal)) output (ie that script you like thay you cant get output from at scale) for everything or just the log with the data you want.
 
 ## The details:
 
