@@ -13,9 +13,9 @@ Also, an interesting case has come up recently, that red teamers could use this 
 
 ## What can SWELF do:
 
-1. Read, search, and forward any live Windows Eventlog and/or saved evtx file for everything or just the log with the data you want.
+1. Read, search, and forward any Windows Eventlog and/or saved evtx (not IO locked) file for everything or just the log with the data you want.
 
-2. Read (and soon search) any local log file for everything or just the log with the data you want.
+2. Read and search any local log file for everything or just the log with the data you want.
 
 3. Read, search, and forward any 'Powershell Plugin' output (ie that script you like thay you cant get output from at scale) for everything or just the log with the data you want.
 
