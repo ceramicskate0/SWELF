@@ -6,14 +6,14 @@
 > Having the to many log issue? Or maybe just cant find what you want from a log forwarder? Want to quickly get the logs you want from local evtx files or IR and them get them in the order they where made? Maybe the other log forwarders are just too complicated and you want something simple that can do it all? 
 > SWELF might be able to help you. You tell SWELF the the key words and/or Event Log Name and/or the event ID and it will find it for you. You can event tell it things like the minimum number of characters in log, or the maximum length of the commandline arguemtns, or the length of the log itself, then the SWELF app will send just that log to your Log Collection location from a windows machine in a variety of formats. 
 > SWELF is designed to be as small,lightweight, and  windows native as possible with very low requirements and setup and still be a powerful and useful tool.  
-Also, an interesting case has come up recently, that red teamers could use this to help simulate a SIEM on a VM testing endpoint. 
-
+>Also, an interesting case has come up recently, that red teamers could use this to help simulate a SIEM on a VM testing endpoint. 
+>SWELF is designed to put you back in control of your log data adn your log forwarder as much as possible.
 
 ## [Want to know more or have Questions check out the WIKI:](https://github.com/ceramicskate0/SWELF/wiki)
 
 ## What can SWELF do:
 
-1. Read, search, and forward any Windows Eventlog and/or saved evtx (not IO locked) file for everything or just the log with the data you want.
+1. Read, search, and forward any Windows Eventlog and/or saved evtx (that are not I.O. locked) file for everything or just the log with the data you want.
 
 2. Read and search any local log file for everything or just the log with the data you want.
 
@@ -38,4 +38,4 @@ Since SWELF is early release software this means there may be bugs that exist.
 ![bf icon_v02](https://user-images.githubusercontent.com/6934294/38778422-18790d6c-407f-11e8-8594-be72577b26cd.png)
 
 # Legal Disclaimer:
-> If you use this software you do so at your own risk and your own responsibility/liability. I have NEVER authorized, condoned, or recommend the use of anything in any of my repos for any malicious reason. Do not use for evil, malicious purposes, or on machines you do not own. I recommend that you always Test it before you use it or deploy it.
+> THIS IS OPEN SOURCE SOFTWARE AND NOT READY FOR PRODUCTION, YET! If you use this software you do so at your own risk and your own responsibility/liability. I have NEVER authorized, condoned, or recommend the use of anything in any of my repos for any malicious reason. Do not use for evil, malicious purposes, or on machines you do not own. I recommend that you always Test it before you use it or deploy it. Use at your own risk.
