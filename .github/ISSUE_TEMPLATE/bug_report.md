@@ -33,3 +33,5 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+
+**Attach the Error log (Error_log.log)**
