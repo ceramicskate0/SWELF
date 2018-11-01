@@ -37,6 +37,10 @@ namespace SWELF
                     }
                     catch (Exception e)
                     {
+                        if (e.Message.ToString().Contains("A socket operation was attempted to an unreachable host"))
+                        {
+                            //DO something here for unable to connect
+                        }
                         Errors.Log_Error("SEND_Logs(EventLogEntry Data)","SWELF NETWORK ERROR: "+e.Message.ToString(),Errors.LogSeverity.Warning);
                     }
                 }
@@ -116,13 +120,13 @@ namespace SWELF
                     }
                 case "syslog":
                     {
-                        Data = DateTime.Now.ToString("MMM dd HH:mm:ss") + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.LogName + "   " + data.CreatedTime + "   " + data.EventRecordID + "   " + data.TaskDisplayName + "   " + data.EventData;
+                        Data = DateTime.Now.ToString("MMM dd HH:mm:ss") + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.LogName + "   " + data.CreatedTime + "   " + data.EventRecordID + "   " + data.TaskDisplayName + "   " +data.SearchRule + "   " + data.EventData;
                         break;
 
                     }
                 case "syslogxml":
                     {
-                        Data = DateTime.Now.ToString("MMM dd HH:mm:ss") + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.LogName + "   " + data.CreatedTime + "   " + data.EventRecordID + "   " + data.TaskDisplayName + "   " + data.GET_XML_of_Log;
+                        Data = DateTime.Now.ToString("MMM dd HH:mm:ss") + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.LogName + "   " + data.CreatedTime + "   " + data.EventRecordID + "   " + data.TaskDisplayName+ "   " + data.SearchRule + "   " + data.GET_XML_of_Log;
                         break;
 
                     }
@@ -133,12 +137,12 @@ namespace SWELF
                     }
                 case "keyvalue":
                     {
-                        Data = "CreatedTime=\"" + data.CreatedTime + "\""+"   " + "ComputerName =\"" + Settings.ComputerName + "\"" + "   " + "EventID =\"" + data.EventID.ToString() + "\"" + "   " + "EventLogName=\"" + data.LogName + "\"" + "   " + "EventRecordID=\"" + data.EventRecordID + "\"" + "   " + "DisplayName=\"" + data.TaskDisplayName + "\"" + "   " + "Severity=\"" + data.Severity + "\"" + "   " + "UserID=\"" + data.UserID + "\"" + "   " + "ComputerName=\"" + data.ComputerName + "\"" + "   " + "EventData=\"" + data.EventData+"\"";
+                        Data = "CreatedTime=\"" + data.CreatedTime + "\""+ "   " + "ComputerName =\"" + Settings.ComputerName + "\"" + "   " + "EventID =\"" + data.EventID.ToString() + "\"" + "   " + "EventLogName=\"" + data.LogName + "\"" + "   " + "EventRecordID=\"" + data.EventRecordID + "\"" + "   " + "DisplayName=\"" + data.TaskDisplayName + "\"" + "   " + "Severity=\"" + data.Severity + "\"" + "   " + "UserID=\"" + data.UserID + "\"" + "   " + "ComputerName=\"" + data.ComputerName + "\"" + "   " +"SearchRule=\""+ data.SearchRule + "\"   " + "EventData=\"" + data.EventData+"\"";
                         break;
                     }
                 default:
                     {
-                        Data = data.GET_XML_of_Log;
+                        Data = data.SearchRule + "    "+data.GET_XML_of_Log;
                         break;
                     }
             }

@@ -31,9 +31,10 @@
     <MinimumRequiredVersion>0.2.0.2</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <DisallowUrlActivation>true</DisallowUrlActivation>
-    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>0.4.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -63,16 +64,16 @@
     <StartupObject>SWELF.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>swelf_icon.ico</ApplicationIcon>
+    <ApplicationIcon>swelflogo_v002_WCb_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>SWELF.pfx</AssemblyOriginatorKeyFile>
@@ -116,7 +117,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AMSI.cs" />
-    <Compile Include="AppConfig.cs" />
     <Compile Include="Compress.cs" />
     <Compile Include="Encryptions.cs" />
     <Compile Include="Errors.cs" />
@@ -130,16 +130,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Read_EventLog.cs" />
     <Compile Include="Read_LocalFiles.cs" />
+    <Compile Include="Reg.cs" />
     <Compile Include="Search_EventLogs.cs" />
     <Compile Include="Sec_Checks.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="System_Performance_Info.cs" />
+    <Compile Include="System_Info.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
+    <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="app.manifest" />
     <None Include="SWELF.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -155,7 +155,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="swelf_icon.ico" />
+    <Content Include="swelflogo_v002_WCb_icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

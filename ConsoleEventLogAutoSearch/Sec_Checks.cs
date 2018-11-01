@@ -42,31 +42,51 @@ namespace SWELF
 
         public static void Pre_Live_Run_Sec_Checks()
         {
-            Settings.ThreadsCount = Process.GetCurrentProcess().Threads.Count;
-            Settings.SWELF_PROC = Process.GetCurrentProcess();
-            Settings.SWELF_Starting_Dlls = Settings.SWELF_PROC.Modules.Count;
-            Settings.SWELF_Start_currentDomain = AppDomain.CurrentDomain;
-            Settings.SWELF_Start_asEvidence = Settings.SWELF_Start_currentDomain.Evidence;
-            Settings.SWELF_Start_Assemblys = Settings.SWELF_Start_currentDomain.GetAssemblies();
+            //TODO Fix non working algo for live run checks
+            //Maybe reg values over time analysis?????
+            //Settings.ThreadsCount = Process.GetCurrentProcess().Threads.Count;
+            //Settings.SWELF_PROC = Process.GetCurrentProcess();
+            //Settings.SWELF_Starting_Dlls = Settings.SWELF_PROC.Modules.Count;
+            //Settings.SWELF_Start_currentDomain = AppDomain.CurrentDomain;
+            //Settings.SWELF_Start_asEvidence = Settings.SWELF_Start_currentDomain.Evidence;
+            //Settings.SWELF_Start_Assemblys = Settings.SWELF_Start_currentDomain.GetAssemblies();
         }
 
         public static bool Live_Run_Sec_Checks(string EVT_Log_Name)
         {
-            if (Check_Event_Log_Is_Blank(EVT_Log_Name) && Check_Event_Log_Is_Blank(Settings.SWELF_EventLog_Name) && Check_Windows_Event_Log_Size(EVT_Log_Name) && Check_Windows_Event_Log_Retention_Policy(EVT_Log_Name) && Check_Event_Log_Has_Not_Recorded_Logs_In_X_Days(EVT_Log_Name))
+            try
             {
-                GET_EventLog_Count_Before_Write(EVT_Log_Name);
-                return true;
+                if (Settings.CHECK_If_EventLog_Exsits(EVT_Log_Name))
+                {
+                    if (EVT_Log_Name== "microsoft-windows-taskscheduler/operational")
+                    {
+                        //delete this staement
+                    }
+                    if (Check_Event_Log_Is_Blank(EVT_Log_Name) && Check_Event_Log_Is_Blank(Settings.SWELF_EventLog_Name) && Check_Windows_Event_Log_Size(EVT_Log_Name) && Check_Windows_Event_Log_Retention_Policy(EVT_Log_Name) && Check_Event_Log_Has_Not_Recorded_Logs_In_X_Days(EVT_Log_Name))
+                    {
+                        GET_EventLog_Count_Before_Write(EVT_Log_Name);
+                        return true;
+                    }
+                    else
+                    {
+                        GET_EventLog_Count_Before_Write(EVT_Log_Name);
+                        return false;//FAILED
+                    }
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
+            catch (Exception e)
             {
-                GET_EventLog_Count_Before_Write(EVT_Log_Name);
                 return false;//FAILED
             }
         }
 
-        public static bool Post_Run_Sec_Checks(int NumberOfRecordsWritten)
+        public static bool Post_Run_Sec_Checks()
         {
-            if (Check_If_SWELF_Event_Logs_Written(Convert.ToInt32(Eventlog_Count_Before_Write), NumberOfRecordsWritten, Settings.SWELF_EventLog_Name))
+            if (Check_If_SWELF_Event_Logs_Written(Convert.ToInt32(Eventlog_Count_Before_Write), Settings.SWELF_Events_Of_Interest_Matching_EventLogs.Count))
             {
                 return true;
             }
@@ -106,8 +126,7 @@ namespace SWELF
             }
             else
             {
-                Errors.Log_Error("ERROR: Settings.CHECK_If_Running_as_Admin()", Settings.ComputerName + " SWELF MAIN ERROR: APP not running as admin and was unable to read eventlogs.", Errors.LogSeverity.Critical);
-                Errors.WRITE_Errors();
+                Errors.Log_Error("ERROR: Settings.CHECK_If_Running_as_Admin()", Settings.ComputerName + " SWELF not running as admin and was unable to read eventlogs.", Errors.LogSeverity.Critical);
                 Errors.SEND_Errors_To_Central_Location();
                 return false;
             }
@@ -126,6 +145,7 @@ namespace SWELF
                     RegistryKey reg = Registry.LocalMachine.OpenSubKey(RegKeys.ElementAt(x));
                     if (reg != null)
                     {
+
                     }
                     else
                     {
@@ -160,9 +180,9 @@ namespace SWELF
             }
         }
 
-        private static bool Check_If_SWELF_Event_Logs_Written(int NumberOfRecordsWritten_Before, int NumberOfRecordsWritten_After, string EventLogName)
+        private static bool Check_If_SWELF_Event_Logs_Written(int NumberOfRecordsWritten_Before, int NumberOfRecordsWritten_After)
         {
-            if ((NumberOfRecordsWritten_Before + NumberOfRecordsWritten_After) <= EventLogSession.GlobalSession.GetLogInformation(EventLogName, PathType.LogName).RecordCount.Value)
+            if ((NumberOfRecordsWritten_Before + NumberOfRecordsWritten_After) >= NumberOfRecordsWritten_Before)
             {
                 return true;
             }
@@ -179,7 +199,7 @@ namespace SWELF
             long EVT_Log_Namez_FileSize = EventLogSession.GlobalSession.GetLogInformation(EVT_Log_Name, PathType.LogName).FileSize.Value;
             if (EVT_Log_Namez_FileSize < Default_Min_EventLogSize)
             {
-                Errors.Log_Error("Check_Windows_Event_Log_Size()", "The " + EVT_Log_Name + " eventlog is smaller that the system log. This could be unintended modification", Errors.LogSeverity.Informataion);
+                Errors.Log_Error("Check_Windows_Event_Log_Size()", "The " + EVT_Log_Name + " eventlog is smaller that the system log. This could be unintended modification", Errors.LogSeverity.Warning);
                 return false;
             }
             return true;
@@ -256,32 +276,40 @@ namespace SWELF
 
         private static bool Check_Event_Log_Is_Blank(string EVT_Log_Name)
         {
-            if (Settings.FIND_EventLog_Exsits(EVT_Log_Name))
+            try
             {
-                if (EventLogSession.GlobalSession.GetLogInformation(EVT_Log_Name, PathType.LogName).RecordCount.Value > 1)
+                if (Settings.CHECK_If_EventLog_Exsits(EVT_Log_Name))
                 {
-                    return true;
-                }
-                else
-                {
-                    if (EventLogSession.GlobalSession.GetLogInformation(Settings.SWELF_EventLog_Name, PathType.LogName).RecordCount.Value > 0)
+                    if (EventLogSession.GlobalSession.GetLogInformation(EVT_Log_Name, PathType.LogName).RecordCount.Value > 1)
                     {
                         return true;
                     }
-                    else if (EVT_Log_Name == Settings.SWELF_EventLog_Name)
-                    {
-                        FAILED_Sec_Check("Check_Event_Log_Is_Blank()", EVT_Log_Name + " Eventlog is empty.", Errors.LogSeverity.Critical);
-                        return false;//FAILED
-                    }
                     else
                     {
-                        FAILED_Sec_Check("Check_Event_Log_Is_Blank()", EVT_Log_Name + " Eventlog is empty.", Errors.LogSeverity.Critical);
-                        return false;//FAILED
+                        if (EventLogSession.GlobalSession.GetLogInformation(Settings.SWELF_EventLog_Name, PathType.LogName).RecordCount.Value > 0)
+                        {
+                            return true;
+                        }
+                        else if (EVT_Log_Name == Settings.SWELF_EventLog_Name)
+                        {
+                            FAILED_Sec_Check("Check_Event_Log_Is_Blank()", EVT_Log_Name + " Eventlog is empty.", Errors.LogSeverity.Critical);
+                            return false;//FAILED
+                        }
+                        else
+                        {
+                            FAILED_Sec_Check("Check_Event_Log_Is_Blank()", EVT_Log_Name + " Eventlog is empty.", Errors.LogSeverity.Critical);
+                            return false;//FAILED
+                        }
                     }
                 }
+                else
+                {
+                    return false;//FAILED
+                }
             }
-            else
+            catch (Exception e)
             {
+                FAILED_Sec_Check("Check_Event_Log_Is_Blank()", EVT_Log_Name + " "+e.Message.ToString(), Errors.LogSeverity.Critical);
                 return false;//FAILED
             }
         }
@@ -290,7 +318,6 @@ namespace SWELF
         {
             Errors.Log_Error(Method, DataOnFail, LogSeverity);
             EventLog_SWELF.WRITE_Critical_EventLog(Method + " : " + DataOnFail);
-            Errors.WRITE_Errors();
         }
 
     }

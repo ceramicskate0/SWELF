@@ -10,24 +10,236 @@ namespace SWELF
     public class EventLog_Entry
     {
         public long EventLog_Seq_num = 0;
+        private string logName = null;
+        private string taskDisplayName = null;
+        private string severity = null;
+        private int eventRecordID = 0;
+        private int eventID = 0;
+        private string computerName = null;
+        private string userID = null;
 
-        public int EventRecordID { get; set; }
-        public string GET_XML_of_Log { get; set; }
-        public int EventID { get; set; }
-        public string ComputerName { get; set; }
-        public string UserID { get; set; }
-        public string EventData { get; set; }
-        public string LogName { get; set; }
-        public string Severity { get; set; }
-        public string TaskDisplayName { get; set; }
+        private byte[] EVT_Data_Compressed;
+        private int EVT_Data_Size=0;
+
+        private byte[] XML_Data_Compressed;
+        private int XML_Data_Size = 0;
+
+        private string evntdata;
+        private string xml_evntdata;
+
+        public string EventData
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(evntdata))
+                    {
+                        return Compress.DeCompress_Contents_String(EVT_Data_Compressed, EVT_Data_Size);
+                    }
+                    else
+                    {
+                        return evntdata;
+                    }
+                }
+                catch (Exception e)
+                {
+                    return evntdata;
+                }
+            }
+            set
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(evntdata))
+                    {
+                        EVT_Data_Size = Compress.uniEncode.GetBytes(value).Length;
+                        EVT_Data_Compressed = Compress.Compress_Contents_Byte(value);
+                    }
+                    else
+                    {
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    evntdata = value;
+                }
+            }
+        }
+        public string GET_XML_of_Log
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(xml_evntdata))
+                    {
+                        return Compress.DeCompress_Contents_String(XML_Data_Compressed, XML_Data_Size);
+                    }
+                    else
+                    {
+                        return xml_evntdata;
+                    }
+                }
+                catch (Exception e)
+                {
+                  return xml_evntdata;
+                }
+        }
+            set
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(xml_evntdata))
+                    {
+                        XML_Data_Size = Compress.uniEncode.GetBytes(value).Length;
+                        XML_Data_Compressed = Compress.Compress_Contents_Byte(value);
+                    }
+                    else
+                    {
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    xml_evntdata=value;
+                }
+            }
+        }
+
+        public int EventRecordID
+        {
+            get
+            {
+                return eventRecordID;
+            }
+            set
+            {
+                if (eventRecordID==0)
+                {
+                    eventRecordID = value;
+                }
+                else
+                {
+
+                }
+            }
+        }
+        public int EventID
+        {
+            get
+            {
+                return eventID;
+            }
+            set
+            {
+                if (eventID==0)
+                {
+                    eventID = value;
+                }
+                else
+                {
+
+                }
+            }
+        }
+        public string ComputerName
+        {
+            get
+            {
+                return computerName;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(computerName) == true)
+                {
+                    computerName = value;
+                }
+                else
+                {
+
+                }
+            }
+        }
+        public string UserID
+        {
+            get
+            {
+                return userID;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(userID) == true)
+                {
+                    userID = value;
+                }
+                else
+                {
+
+                }
+            }
+        }
+        public string LogName
+        {
+            get
+            {
+              return logName;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(logName)==true && string.IsNullOrWhiteSpace(LogName)==true && string.IsNullOrEmpty(value) == false)
+                {
+                    logName = value;
+                }
+                else
+                {
+                    logName = "ERROR";//remove this line when fixed
+                }
+            }
+        }
+        public string Severity
+        {
+            get
+            {
+                return severity;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(severity) == true)
+                {
+                    severity = value;
+                }
+                else
+                {
+
+                }
+            }
+        }
+        public string TaskDisplayName
+        {
+            get
+            {
+                return taskDisplayName;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(taskDisplayName) == true)
+                {
+                    taskDisplayName = value;
+                }
+                else
+                {
+
+                }
+            }
+        }
+
         public DateTime CreatedTime { get; set; }
-
+        public string SearchRule { get; set; }
         public static int CommandLineArgLength { get; set; }
-
         public static string CommandLineArgs { get; set; }
-
         public static string Sysmon_DST_Port { get; set; }
-
         public static string Sysmon_Src_Process { get; set; }
 
         public string GET_Sysmon_CommandLine_Args
@@ -54,22 +266,25 @@ namespace SWELF
             }
         }
 
+
+
         public void GET_IP_FromLogFile()
         {
-                if (Settings.AppConfig_File_Args.ContainsKey("output_ips"))
+            string Eventdata = Compress.DeCompress_Contents_String(EVT_Data_Compressed,EVT_Data_Size);
+
+            if (Settings.AppConfig_File_Args.ContainsKey("output_ips"))
                 {
-                List<string> EventlogDataSegment = EventData.Split(Settings.EventLogEntry_splitter, StringSplitOptions.RemoveEmptyEntries).ToList();
+                List<string> EventlogDataSegment = Eventdata.Split(Settings.EventLogEntry_splitter, StringSplitOptions.RemoveEmptyEntries).ToList();
                 EventlogDataSegment = EventlogDataSegment.Distinct().ToList();
                 EventlogDataSegment.Sort();
 
                 foreach (string line in EventlogDataSegment)
                 {
-                    if (EventData.Contains("destinationip: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 3)
+                    if (Eventdata.Contains("destinationip: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 3)
                     {
-                        string data = EventData;
                         string[] delm1 = { "destinationip: ", "destinationhostname: " };
 
-                        string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                        string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                         if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
                         {
@@ -86,35 +301,35 @@ namespace SWELF
 
         public void GET_FileHash()
         {
+            string Eventdata = Compress.DeCompress_Contents_String(EVT_Data_Compressed, EVT_Data_Size);
+
             if (Settings.AppConfig_File_Args.ContainsKey("output_hashs"))
             {
-                if (EventData.Contains("hashes: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 1)
+                if (Eventdata.Contains("hashes: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 1)
                 {
-                    string data = EventData;
                     string[] delm1 = { "hashes: ", "parentprocessguid: " };
 
-                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
                     {
                         Settings.Hashs_From_EVT_Logs.Add(datA[1].Replace("\r\n", ""));
                     }
                 }
-                if (EventData.Contains("hashes: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 6)
+                if (Eventdata.Contains("hashes: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 6)
                 {
-                    string data = EventData;
                     string[] delm1 = { "hashes: ", "signed: " };
 
-                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
                     {
                         Settings.Hashs_From_EVT_Logs.Add(datA[1].Replace("\r\n", ""));
                     }
                 }
-                else if (Settings.SHA256_RegX.Matches(EventData).Count > 0)
+                else if (Settings.SHA256_RegX.Matches(Eventdata).Count > 0)
                 {
-                    foreach (MatchCollection MatchedHash in Settings.SHA256_RegX.Matches(EventData))
+                    foreach (MatchCollection MatchedHash in Settings.SHA256_RegX.Matches(Eventdata))
                     {
                         Settings.Hashs_From_EVT_Logs.Add(MatchedHash.ToString());
                     }
@@ -124,19 +339,20 @@ namespace SWELF
 
         public void GET_HostName_FromLogFile()
         {
-            List<string> EventlogDataSegment = EventData.Split(Settings.EventLogEntry_splitter, StringSplitOptions.RemoveEmptyEntries).ToList();
+            string Eventdata = Compress.DeCompress_Contents_String(EVT_Data_Compressed, EVT_Data_Size);
+
+            List<string> EventlogDataSegment = Eventdata.Split(Settings.EventLogEntry_splitter, StringSplitOptions.RemoveEmptyEntries).ToList();
             EventlogDataSegment = EventlogDataSegment.Distinct().ToList();
             EventlogDataSegment.Sort();
             if (Settings.AppConfig_File_Args.ContainsKey("output_ips"))
             {
                 foreach (string line in EventlogDataSegment)
                 {
-                    if (EventData.Contains("destinationhostname: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 3)
+                    if (Eventdata.Contains("destinationhostname: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 3)
                     {
-                        string data = EventData;
                         string[] delm1 = { "destinationhostname: ", "destinationhostname: " };
 
-                        string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                        string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                         if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
                         {
@@ -156,12 +372,13 @@ namespace SWELF
             string commandLine="";
             try
             {
-                if (EventData.Contains("commandline: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational"))
-                {
-                    string data = EventData;
+                string Eventdata = Compress.DeCompress_Contents_String(EVT_Data_Compressed, EVT_Data_Size);
+
+                if (Eventdata.Contains("commandline: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational"))
+                {;
                     string[] delm1 = { "commandline: ", "currentdirectory: " };
 
-                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if (datA[1].Length>commandLine.Length && (!string.IsNullOrEmpty(datA[1])))
                     {
@@ -169,12 +386,11 @@ namespace SWELF
                     }
                 }
 
-                if (EventData.Contains("parentcommandline: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational"))
+                if (Eventdata.Contains("parentcommandline: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational"))
                 {
-                    string data = EventData;
                     string[] delm1 = { "parentcommandline: ", "" };
 
-                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if ((datA[1].Length + "Target-CommandLine: ".Length) > commandLine.Length && (!string.IsNullOrEmpty(datA[1])))
                     {
@@ -182,12 +398,11 @@ namespace SWELF
                     }
                 }
 
-                if (EventData.Contains("commandline= ") && LogName.ToLower().Equals("windows powershell"))
+                if (Eventdata.Contains("commandline= ") && LogName.ToLower().Equals("windows powershell"))
                 {
-                    string data = EventData;
                     string[] delm1 = { "commandline=  ", "details: " };
 
-                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if (!string.IsNullOrEmpty(datA[1]))
                         {
@@ -198,12 +413,11 @@ namespace SWELF
                     }
                 }
 
-                if (EventData.Contains("process command line: ") && LogName.ToLower().Equals("microsoft-windows-security-auditing") && EventID==4688)
+                if (Eventdata.Contains("process command line: ") && LogName.ToLower().Equals("microsoft-windows-security-auditing") && EventID==4688)
                 {
-                    string data = EventData;
                     string[] delm1 = { "process command line:  ", "token elevation type " };
 
-                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if (!string.IsNullOrEmpty(datA[1]))
                     {
@@ -222,7 +436,7 @@ namespace SWELF
                 CommandLineArgs = commandLine;
                 return commandLine;
             }
-            catch
+            catch (Exception e)
             {
                 return commandLine;
             }
@@ -231,13 +445,14 @@ namespace SWELF
         private string GET_Sysmon_Netwrok_Calling_Process_Name_Dst_Port()
         {
             try
-            {               
-                if (EventData.Contains("destinationport: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID==3)
+            {
+                string Eventdata = Compress.DeCompress_Contents_String(EVT_Data_Compressed, EVT_Data_Size);
+
+                if (Eventdata.Contains("destinationport: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID==3)
                 {
-                    string data = EventData;
                     string[] delm1 = { "destinationport: ", "destinationportname: "};
 
-                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
                     {
@@ -246,7 +461,7 @@ namespace SWELF
                 }
                 return Sysmon_DST_Port;
             }
-            catch
+            catch (Exception e)
             {
                 return Sysmon_DST_Port="";
             }
@@ -256,13 +471,13 @@ namespace SWELF
         {
             try
             {
+                string Eventdata = Compress.DeCompress_Contents_String(EVT_Data_Compressed, EVT_Data_Size);
 
-                if (EventData.Contains("image: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 3)
+                if (Eventdata.Contains("image: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 3)
                 {
-                    string data = EventData;
                     string[] delm1 = { "image: ", "user: " };
 
-                    string[] datA = data.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
                     if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
                     {
                         string[] filepath = datA[1].Split('\\').ToArray();
@@ -272,7 +487,7 @@ namespace SWELF
                 }
                 return Sysmon_Src_Process;
             }
-            catch
+            catch (Exception e)
             {
                 return Sysmon_Src_Process = "";
             }

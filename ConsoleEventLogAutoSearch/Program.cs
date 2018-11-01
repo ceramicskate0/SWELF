@@ -4,16 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Threading;
 
 namespace SWELF
 {
     public class Program
     {
-        private static Read_EventLog EvntLogSearch = new Read_EventLog();
         private static List<string> Program_Start_Args = new List<string>();
+
 
         public static void Main(string[] args)
         {
+            //Reg swelfrefg = new Reg();
 
             Program_Start_Args = Environment.GetCommandLineArgs().ToList();
 
@@ -29,11 +31,20 @@ namespace SWELF
             {
                 try
                 {
-                    Start_Live_Process();
+                    if (System_Info.Is_SWELF_Running())
+                    {
+                        Start_Live_Process();
+                    }
+                    else
+                    {
+                       Errors.Log_Error("System_Performance_Info.Is_SWELF_Running()","SWELF tried to run but another instance was already running. Closing this instance of SWELF.exe.", Errors.LogSeverity.Verbose);
+                        Settings.Stop(0);
+                    }
                 }
                 catch (Exception e)
                 {
                     Errors.Log_Error("Start_Live_Process() ", e.Message.ToString() + ", Also the app halted.", Errors.LogSeverity.Critical);
+                    Errors.WRITE_Stored_Errors();
                     Settings.Stop(1265);
                 }
             }
@@ -43,7 +54,9 @@ namespace SWELF
         {
             try
             {
-                PARSE_Commandline_Input();
+                Read_EventLog EvntLogSearch = new Read_EventLog();
+
+                PARSE_Commandline_Input(EvntLogSearch);
 
                 Search_EventLogs search_Obj = new Search_EventLogs(EvntLogSearch.EVTX_File_Logs);
 
@@ -62,11 +75,13 @@ namespace SWELF
                 {
                     Settings.Dissolve();
                 }
+                Errors.WRITE_Stored_Errors();
             }
             catch (Exception e)
             {
-                Errors.Log_Error("Start_EVTX_Process() ", e.Message.ToString(),Errors.LogSeverity.Warning);
+                Errors.Log_Error("Start_EVTX_Process() ", e.Message.ToString(),Errors.LogSeverity.FailureAudit);
                 EventLog_SWELF.WRITE_Critical_EventLog("Start_EVTX_Process() " + e.Message.ToString());
+                Errors.WRITE_Stored_Errors();
                 Settings.Stop(1265);
             }
         }
@@ -75,19 +90,35 @@ namespace SWELF
         {
             if (Sec_Checks.Pre_Run_Sec_Checks() && Sec_Checks.CHECK_If_Running_as_Admin())
             {
-                if (Program_Start_Args.ElementAt(0).ToLower().Equals("-dissolve") && Settings.FIND_EventLog_Exsits(Settings.SWELF_EventLog_Name) == false && File_Operation.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
+                if (Program_Start_Args.ElementAt(0).ToLower().Equals("-dissolve") && Settings.CHECK_If_EventLog_Exsits(Settings.SWELF_EventLog_Name) == false && File_Operation.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
                 {
                     Settings.CMDLine_Dissolve = true;
                 }
+
                 Start_Setup();
-                Start_Run_Plugins();
+
+                Thread PS_Plugins_Thread = new Thread(() => Start_Run_Plugins());
+                PS_Plugins_Thread.Start();
+                //Start_Run_Plugins();
+
+                Thread Local_Logs_Thread = new Thread(() => Start_ReadLocal_Logs());
+                Local_Logs_Thread.Start();
+                //Start_ReadLocal_Logs();
+
                 Start_Read_Search_Write_Forward_EventLogs();
-                Start_ReadLocal_Logs();
+
                 Start_Send_File_Based_Logs();
-                GC.Collect();
+
                 Settings.Start_Write_Errors();
                 Write_HashFile_IPsFile();
                 Encryptions.Lock_File(Settings.GET_EventLogID_PlaceHolder);
+
+                int TOut = 0;
+                while (Settings.PS_PluginDone != true && TOut!=5)
+                {
+                    Thread.Sleep(300000);
+                    TOut++;
+                }
             }
             else
             {
@@ -98,6 +129,7 @@ namespace SWELF
             {
                 Settings.Dissolve();
             }
+            Errors.WRITE_Stored_Errors();
         }
 
         private static void Start_Setup()
@@ -122,21 +154,24 @@ namespace SWELF
                 {
                     EventLog_Entry PSLog = new EventLog_Entry();
                     PSLog.ComputerName = Settings.ComputerName;
-                    PSLog.EventID = 3;
-                    PSLog.LogName = "SWELF Powershell Plugin Output";
+                    PSLog.EventID = 993;
+                    PSLog.LogName = "SWELF PowerShell Plugin Output";
                     PSLog.Severity = "Information";
                     PSLog.CreatedTime = DateTime.Now;
                     PSLog.TaskDisplayName = "SWELF Powershell Plugin Output";
+                    PSLog.SearchRule = "SWELF Powershell Plugin " + Settings.Plugin_Search_Terms_Unparsed.ElementAt(x);
                     PSLog.UserID = Environment.UserName;
-                    char spliter=Settings.SplitChar_SearchCommandSplit[0];
-                    PSLog.EventData=Powershell_Plugin.Run_PS_Script(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(spliter).ElementAt(0), Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(spliter).ElementAt(2));
 
-                    if (PSLog.EventData.ToLower().Contains(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(spliter).ElementAt(1).ToLower()))
+                    PSLog.EventData=Powershell_Plugin.Run_PS_Script(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandSplit[0]).ElementAt(0), Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandSplit[0]).ElementAt(2));
+
+                    if (PSLog.EventData.ToLower().Contains(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandSplit[0]).ElementAt(1).ToLower()))
                     {
                         Settings.SWELF_Events_Of_Interest_Matching_EventLogs.Enqueue(PSLog);
+
                         try
                         {
                             EventLog_SWELF.WRITE_EventLog_From_SWELF_Search(Settings.SWELF_Events_Of_Interest_Matching_EventLogs.ElementAt(0));
+
                             if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == false || String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)//Does admin want to send off logs?
                             {
                                 for (int z = 0; z < Settings.SWELF_Events_Of_Interest_Matching_EventLogs.Count; ++z)
@@ -151,55 +186,86 @@ namespace SWELF
                         }
                     }
                 }
+                Settings.PS_PluginDone = true;
+                GC.Collect();
             }
             catch (Exception e)
             {
                 Errors.Log_Error("Powershell_Plugin.Run_PS_Script() " , e.Message.ToString(), Errors.LogSeverity.Warning);
                 Network_Forwarder.SEND_Data_from_File("Powershell_Plugin.Run_PS_Script() - " + e.Message.ToString());
                 Settings.Start_Write_Errors();
+                Settings.PS_PluginDone = true;
+                GC.Collect();
             }
         }
 
         private static void Start_Read_Search_Write_Forward_EventLogs()
         {
+            if (Settings.Max_Thread_Count < 1)
+            {
+                Settings.Max_Thread_Count = 1;
+            }
             if (Settings.EventLog_w_PlaceKeeper_List.Count > 0)
             {
                 Sec_Checks.Pre_Live_Run_Sec_Checks();
-                for (int x = 0; x < Settings.EventLog_w_PlaceKeeper_List.Count; ++x)//READ and Search
+
+                while(Settings.Total_Threads_Run < Settings.EventLog_w_PlaceKeeper_List.Count)//READ and Search
                 {
-                    try
+                    if ((Settings.Running_Thread_Count < Settings.Max_Thread_Count) || Settings.Total_Threads_Run == 0)//start threads
                     {
-                        Sec_Checks.Live_Run_Sec_Checks(Settings.EventLog_w_PlaceKeeper_List.ElementAt(x));
-
-                        EvntLogSearch.READ_EventLog(Settings.EventLog_w_PlaceKeeper_List.ElementAt(x), Settings.EventLog_w_PlaceKeeper[Settings.EventLog_w_PlaceKeeper_List.ElementAt(x)]);
-
-                        Search_EventLogs search_Obj = new Search_EventLogs(EvntLogSearch.EventLog_Log_API.Contents_of_EventLog);
-
-                        Settings.SWELF_Events_Of_Interest_Matching_EventLogs = search_Obj.Search(Settings.EventLog_w_PlaceKeeper_List.ElementAt(x));
-
-                        GC.Collect();
-
-                        CHECK_Memory();
+                       Thread Search_Thread = new Thread(() => Start_Threaded_Search(Settings.Total_Threads_Run));
+                       Search_Thread.Start();
+                       Thread.Sleep(1000);//wait for thread to start
                     }
-                    catch (Exception e)
+                    while (Settings.Running_Thread_Count >= Settings.Max_Thread_Count)//wait for 1 thread to finish when max limit is hit. sleep becuz no work to do while threads work
                     {
-                        if (e.Message == "Object reference not set to an instance of an object.")
-                        {
-                            Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs() ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " Event Log Empty.", Errors.LogSeverity.Verbose);
-                        }
-                        else
-                        {
-                            Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " " + e.Message.ToString(), Errors.LogSeverity.Warning);
-                        }
+                        Thread.Sleep(Settings.Thread_Sleep_Time);
                     }
+                }
+                while (Settings.Running_Thread_Count != 0)//wait 4 started threads to finish
+                {
+                    Thread.Sleep(Settings.Thread_Sleep_Time);
                 }
                 Start_Output_Post_Run();
             }
-            GC.Collect();
             File_Operation.UPDATE_EventLog_w_PlaceKeeper_File();
         }
 
-        private static void Start_Output_Post_Run()
+        private static void Start_Threaded_Search(int Index)
+        {
+            Settings.Running_Thread_Count++;
+            Settings.Total_Threads_Run++;
+            try
+            {
+                Read_EventLog EVNT_Log = new Read_EventLog();
+
+                Sec_Checks.Live_Run_Sec_Checks(Settings.EventLog_w_PlaceKeeper_List.ElementAt(Index));
+
+                EVNT_Log.READ_EventLog(Settings.EventLog_w_PlaceKeeper_List.ElementAt(Index), Settings.EventLog_w_PlaceKeeper[Settings.EventLog_w_PlaceKeeper_List.ElementAt(Index)]);
+
+                Search_EventLogs search_Obj = new Search_EventLogs(EVNT_Log.EventLog_Log_API.Contents_of_EventLog);
+
+                Settings.SWELF_Events_Of_Interest_Matching_EventLogs = search_Obj.Search(Settings.EventLog_w_PlaceKeeper_List.ElementAt(Index));
+            }
+            catch (Exception e)
+            {
+                if (e.Message == "Object reference not set to an instance of an object.")
+                {
+                    Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs() ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(Settings.Total_Threads_Run) + " Event Log Empty.", Errors.LogSeverity.Verbose);
+                }
+                else if (e.Message.ToString().Contains("The process cannot access the file"))
+                {
+                    Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs() ", e.Message.ToString()+" OS File lock of vital resource at runtime.", Errors.LogSeverity.Informataion);
+                }
+                else
+                {
+                    Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", " " + Settings.EventLog_w_PlaceKeeper_List.ElementAt(Settings.Total_Threads_Run) + " x=" + (Settings.Total_Threads_Run).ToString() + " " + e.Message.ToString() + ". Check search Syntx", Errors.LogSeverity.Informataion);
+                }
+            }
+            Settings.Running_Thread_Count--;
+        }
+
+        public static void Start_Output_Post_Run()
         {
             if (Settings.SWELF_Events_Of_Interest_Matching_EventLogs.Count > 0)
             {
@@ -219,7 +285,7 @@ namespace SWELF
                 {
                     Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", e.Message.ToString(), Errors.LogSeverity.Warning);
                 }
-                Sec_Checks.Post_Run_Sec_Checks(Settings.SWELF_Events_Of_Interest_Matching_EventLogs.Count);
+                Sec_Checks.Post_Run_Sec_Checks();
             }
             GC.Collect();
         }
@@ -240,7 +306,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    Errors.Log_Error("Start_Write_To_SWELF_EventLogs()", "An EventLog "+ Settings.SWELF_Events_Of_Interest_Matching_EventLogs.ElementAt(z) + " errored on write to SWELF Eventlog with the following error " + e.Message.ToString(),Errors.LogSeverity.Warning);
+                    Errors.Log_Error("Start_Write_To_SWELF_EventLogs()", "An EventLog "+ Settings.SWELF_Events_Of_Interest_Matching_EventLogs.ElementAt(z).GET_XML_of_Log + " errored on write to SWELF Eventlog with the following error " + e.Message.ToString(),Errors.LogSeverity.Warning);
                 }
             }
         }
@@ -275,7 +341,7 @@ namespace SWELF
             }
         }
 
-        private static void PARSE_Commandline_Input()
+        private static void PARSE_Commandline_Input(Read_EventLog EvntLogSearch)
         {
             for (int x = 0; x < Program_Start_Args.Count; ++x)
             {
@@ -348,41 +414,23 @@ namespace SWELF
             }
             }
 
-        private static void CHECK_Memory()
-        {
-            if (System_Performance_Info.CHECK_Total_Memory_Useage() <= System_Performance_Info.SWELF_Memory_MIN_Threshold)
-            {
-                if (System_Performance_Info.Current_Memory_Dump_Retry_Number >= System_Performance_Info.Max_Memory_Dump_Retry_Number)
-                {
-                    Errors.Log_Error("CHECK_Memory() ", "SWELF Detected MAXIMUM Memory useage and stopped after " + System_Performance_Info.Max_Memory_Dump_Retry_Number.ToString() + " tries to resolve issue.", Errors.LogSeverity.Critical);
-                    EventLog_SWELF.WRITE_Critical_EventLog("SWELF Detected MAXIMUM Memory useage and stopped after " + System_Performance_Info.Max_Memory_Dump_Retry_Number.ToString() + " tries to resolve issue.");
-                    Settings.Stop(1265);
-                }
-                else
-                {
-                    System_Performance_Info.Current_Memory_Dump_Retry_Number++;
-                    Start_Output_Post_Run();
-                }
-            }
-        }
-
         private static void Write_HashFile_IPsFile()
         {
-            //TODO Do file size limit check if over size delete old data and replace with only new
             if (Settings.AppConfig_File_Args.ContainsKey("output_hashs"))
             {
                 try
                 {
                     if (File.Exists(Settings.Hashs_File))
                     {
+                        File_Operation.CHECK_File_Size(Settings.Hashs_File,.0002);
                         Settings.Hashs_From_EVT_Logs.AddRange(File_Operation.READ_File_In(Settings.Hashs_File).Distinct().ToList());
                         Settings.Hashs_From_EVT_Logs = Settings.Hashs_From_EVT_Logs.Distinct().ToList();
                     }
                     File_Operation.Write_Hash_Output(Settings.Hashs_From_EVT_Logs.Distinct().ToList());
                 }
-                catch
+                catch (Exception e)
                 {
-
+                    Errors.Log_Error("Write_HashFile_IPsFile()", "output_hashs "+e.Message.ToString(), Errors.LogSeverity.Informataion);
                 }
             }
             if (Settings.AppConfig_File_Args.ContainsKey("output_ips"))
@@ -391,13 +439,14 @@ namespace SWELF
                 {
                     if (File.Exists(Settings.IPs_File))
                     {
+                        File_Operation.CHECK_File_Size(Settings.IPs_File, .0002);
                         Settings.IP_List_EVT_Logs.AddRange(File_Operation.READ_File_In(Settings.IPs_File).Distinct().ToList());
                         Settings.IP_List_EVT_Logs = Settings.IP_List_EVT_Logs.Distinct().ToList();
                     }
                 }
-                catch
+                catch (Exception e)
                 {
-
+                    Errors.Log_Error("Write_HashFile_IPsFile()", "output_ips " + e.Message.ToString(), Errors.LogSeverity.Informataion);
                 }
                 File_Operation.Write_IP_Output(Settings.IP_List_EVT_Logs.Distinct().ToList());
             }

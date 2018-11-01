@@ -8,26 +8,29 @@ namespace SWELF
 {
     class EventLog_File
     {
-        public Queue<EventLog_Entry> Contents_of_EventLog= new Queue<EventLog_Entry> ();
+        private Queue<EventLog_Entry> contents_of_EventLog;
 
         public string EventLogFileName = "";
-        private long iD_EVENTLOG=0;
+        private long iD_EVENTLOG = 0;
         public bool EventlogMissing = false;
         public long Last_EventLogID_From_Check { get; set; }
         public long First_EventLogID_From_Check { get; set; }
 
-        public EventLog_File(string Name,long ID_EVENTLOGRecordID=0)
+        public EventLog_File(string LogName, long ID_EVENTLOGRecordID = 0)
         {
-            EventLogFileName = Name;
-            Contents_of_EventLog = new Queue<EventLog_Entry>();
+            EventLogFileName = LogName;
+            contents_of_EventLog = new Queue<EventLog_Entry>();
             iD_EVENTLOG = ID_EVENTLOGRecordID;
-            GET_Last_EventRecordID_InLogFile(Name);
-            GET_First_EventRecordID_InLogFile(Name);
+            GET_Last_EventRecordID_InLogFile(LogName);
+            GET_First_EventRecordID_InLogFile(LogName);
         }
 
-        public void Clear()
+        public Queue<EventLog_Entry> Contents_of_EventLog
         {
-            Contents_of_EventLog.Clear();
+            get
+            {
+            return contents_of_EventLog;
+            }
         }
 
         public long ID_EVENTLOG

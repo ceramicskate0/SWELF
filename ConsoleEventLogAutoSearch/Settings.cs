@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Reflection;
 using System.Security.Policy;
-
+using System.Threading.Tasks;
 
 namespace SWELF
 {
@@ -25,7 +25,7 @@ namespace SWELF
         public static Dictionary<string, long> EventLog_w_PlaceKeeper = new Dictionary<string, long>();
         public static List<string> EventLog_w_PlaceKeeper_List = new List<string>();//Tracks Eventlog reading
         public static Dictionary<string, string> AppConfig_File_Args = new Dictionary<string, string>();//program config arguements from file
-        public static Dictionary<string, string> AppConfig_App_Args = new Dictionary<string, string>();//app config from appconfig.conf
+        //public static Dictionary<string, string> AppConfig_App_Args = new Dictionary<string, string>();//app config from appconfig.conf
 
         public static Dictionary<string, string> Backup_Config_File_Args;//program config arguements
         public static string[] Backup_Config_File_Args_Array;//program config arguements
@@ -47,12 +47,23 @@ namespace SWELF
         public static string SWELF_EventLog_Name = "SWELF_Events_of_Interest";
         public static int Log_Forward_Location_Port = 514;
         public static List<string> Log_Forwarders_HostNames = new List<string>();
+        private static System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+        private static FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+        public static string SWELF_Version = fvi.FileVersion;
+
+        //Thread settings
+        public static int Max_Thread_Count = 1;// Environment.ProcessorCount / 2;
+        public static bool PS_PluginDone = false;
+        public static int Running_Thread_Count = 0;
+        public static int Total_Threads_Run = 0;
+        public static int Thread_Sleep_Time = 5000;
 
         //Hashs and ips files
         public static string Hashs_File = Directory.GetCurrentDirectory() + "\\" + "hashs.txt";
         public static string IPs_File = Directory.GetCurrentDirectory() + "\\" + "ips.txt";
 
         //file path info
+        public static string SWELF_CWD = Directory.GetCurrentDirectory();
         public static string Config_File_Location = Directory.GetCurrentDirectory() + "\\Config";
         public static string Search_File_Location = Directory.GetCurrentDirectory() + "\\Log_Searchs";
         public static string SWELF_Log_File_Location = Directory.GetCurrentDirectory() + "\\SWELF_Logs";
@@ -113,7 +124,6 @@ namespace SWELF
                 return SWELF_Log_File_Location + "\\" + ErrorFile;
             }
         }
-
         public static string GET_AppConfigFile
         {
             get
@@ -121,7 +131,6 @@ namespace SWELF
                 return Config_File_Location + "\\" + AppConfigFile;
             }
         }
-
         public static string GET_EventLogID_PlaceHolder
         {
             get
@@ -129,7 +138,6 @@ namespace SWELF
                 return Config_File_Location + "\\" + EventLogID_PlaceHolder;
             }
         }
-
         public static string GET_SearchTermsFile
         {
             get
@@ -137,7 +145,6 @@ namespace SWELF
                 return Search_File_Location + "\\" + SearchTermsFileName;
             }
         }
-
         public static string GET_SearchTermsFile_PLUGIN
         {
             get
@@ -145,7 +152,6 @@ namespace SWELF
                 return Plugin_Search_Location + "\\" + SearchTermsFileName;
             }
         }
-
         public static string GET_WhiteList_SearchTermsFile_PLUGIN
         {
             get
@@ -153,7 +159,6 @@ namespace SWELF
                 return Plugin_Search_Location + "\\" + Search_WhiteList;
             }
         }
-
         public static string GET_WhiteList_SearchTermsFile
         {
             get
@@ -161,7 +166,6 @@ namespace SWELF
                 return Search_File_Location + "\\" + Search_WhiteList;
             }
         }
-
         public static string GET_FilesToMonitor
         {
             get
@@ -169,7 +173,6 @@ namespace SWELF
                 return Config_File_Location + "\\" + FilesToMonitor;
             }
         }
-
         public static string GET_DirectoriesToMonitor
         {
             get
@@ -178,17 +181,22 @@ namespace SWELF
             }
         }
 
+
+
+
         public static void InitializeAppSettings()
         {
-            File_Operation.GET_ErrorLog_Ready();
+            GET_ErrorLog_Ready();
             SET_WindowsEventLog_Loc();
             READ_App_Config_File();
             READ_EventLogID_Placeholders();
             READ_Search_Terms_File();
             READ_WhiteList_Search_Terms_File();
             READ_Powershell_SearchTerms();
+
             File_Operation.GET_Plugin_Scripts_Ready();
 
+            //DO REG STUFF ONLY FOR CENTRAL CONFIG
             if (AppConfig_File_Args.ContainsKey(SWELF_Central_App_Config_Arg))//central config for all the files in Config Dir
             {
                 Backup_Config_File_Args = AppConfig_File_Args;
@@ -213,76 +221,32 @@ namespace SWELF
                 READ_Powershell_SearchTerms();
             }
             CHECK_if_all_Search_Terms_have_Indexed_LogsSources();
-        }
 
-        private static bool VERIFY_Config_DIR()
-        {
-            try
+            if (Settings.AppConfig_File_Args.ContainsKey("debug"))
             {
-                if (File_Operation.VERIFY_if_File_Exists(GET_AppConfigFile) && File_Operation.VERIFY_if_File_Exists(GET_DirectoriesToMonitor) && File_Operation.VERIFY_if_File_Exists(GET_EventLogID_PlaceHolder) && File_Operation.VERIFY_if_File_Exists(GET_FilesToMonitor))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch
-            {
-                return false;
+                Logging_Level_To_Report = "verbose";
             }
         }
 
-        private static bool VERIFY_Search_DIR()
-        {
-            try
-            {
-                if (File_Operation.VERIFY_if_File_Exists(GET_SearchTermsFile))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
-        private static void READ_App_Config_File()
-        {
-            try
-            {
-                Encryptions.UnLock_File(GET_AppConfigFile);
-                List<string> methods_args = new List<string>();
 
-                foreach (string ConfigFileline in File.ReadAllLines(GET_AppConfigFile))
-                {
-                    if (!ConfigFileline.Contains(CommentCharConfigs) && ConfigFileline.Contains(SplitChar_ConfigVariableEquals[0]))
-                    {
-                        methods_args = ConfigFileline.Split(SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToList();
-                        if (methods_args.ElementAt(0).ToLower().Contains("central_app_config") == false)
-                        {
-                            AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1).ToLower());
-                        }
-                        else
-                        {
-                            AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
-                        }
-                        methods_args.Clear();
-                    }
-                }
-                Encryptions.Lock_File(GET_AppConfigFile);
-            }
-            catch (Exception e)
+
+        private static void READ_REG_Config()
+        {
+            Reg.READ_All_SWELF_Reg_Keys();
+            if (Reg.Reg_Keys_and_Values.Count<=0)
             {
-                AppConfig_File_Args = Backup_Config_File_Args;
-                Errors.WRITE_Errors_To_Log("READ_App_Config_File()", e.Message.ToString(), Errors.LogSeverity.Critical);
-                File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, AppConfigFile, File_Operation.WRITE_Default_ConsoleAppConfig_File());
+                Reg.WRITE_Default_Reg_Keys();
+            }
+
+            if (File.Exists(GET_AppConfigFile))
+            {
+                READ_App_Config_File();
+                if (Reg.READ_Reg_Key(Reg.REG_KEY.log_level).ToLower() != AppConfig_File_Args["log_level"].ToLower())
+                {
+                    Errors.Log_Error("READ_REG_Config()", "Reg.READ_Reg_Key(Reg.REG_KEY.log_level).ToLower() != AppConfig_File_Args[\"log_level\"].ToLower()", Errors.LogSeverity.Warning);
+                    Reg.CHANGE_Reg_Key(Reg.REG_KEY.log_level, AppConfig_File_Args["log_level"]);
+                }
             }
         }
 
@@ -324,7 +288,6 @@ namespace SWELF
                 READ_App_Config_File();
                 Errors.Log_Error("READ_CENTRAL_APP_Config_File() ", e.Message.ToString(), Errors.LogSeverity.Critical);
                 EventLog_SWELF.WRITE_Critical_EventLog("ALERT: READ_CENTRAL_App_Config_File: READ_CENTRAL_APP_Config_File() " + e.Message.ToString());
-                Errors.WRITE_Errors();
                 Errors.SEND_Errors_To_Central_Location();
             }
         }
@@ -356,7 +319,6 @@ namespace SWELF
                 File.WriteAllLines(GET_SearchTermsFile_PLUGIN, Backup_Config_File_Args_Array);
                 Errors.Log_Error("READ_CENTRAL_PLUGINS_Folders() ", e.Message.ToString(), Errors.LogSeverity.Warning);
                 EventLog_SWELF.WRITE_Critical_EventLog("READ_CENTRAL_PLUGINS_Folders() " + e.Message.ToString());
-                Errors.WRITE_Errors();
                 Errors.SEND_Errors_To_Central_Location();
             }
         }
@@ -395,7 +357,6 @@ namespace SWELF
                 File.WriteAllLines(GET_SearchTermsFile, Backup_Config_File_Args_Array);
                 Errors.Log_Error("READ_CENTRAL_SEARCH_Config_File() ", e.Message.ToString(), Errors.LogSeverity.Warning);
                 EventLog_SWELF.WRITE_Critical_EventLog("READ_CENTRAL_SEARCH_Config_File() " + e.Message.ToString());
-                Errors.WRITE_Errors();
                 Errors.SEND_Errors_To_Central_Location();
             }
         }
@@ -435,8 +396,40 @@ namespace SWELF
                 File.WriteAllLines(GET_WhiteList_SearchTermsFile, Backup_Config_File_Args_Array);
                 Errors.Log_Error("READ_CENTRAL_SEARCH_Config_File() ", e.Message.ToString(), Errors.LogSeverity.Warning);
                 EventLog_SWELF.WRITE_Critical_EventLog("ALERT: READ_CENTRAL_SEARCH_Config_File: READ_CENTRAL_SEARCH_Config_File() " + e.Message.ToString());
-                Errors.WRITE_Errors();
                 Errors.SEND_Errors_To_Central_Location();
+            }
+        }
+
+        private static void READ_App_Config_File()
+        {
+            try
+            {
+                Encryptions.UnLock_File(GET_AppConfigFile);
+                List<string> methods_args = new List<string>();
+
+                foreach (string ConfigFileline in File.ReadAllLines(GET_AppConfigFile))
+                {
+                    if (!ConfigFileline.Contains(CommentCharConfigs) && ConfigFileline.Contains(SplitChar_ConfigVariableEquals[0]))
+                    {
+                        methods_args = ConfigFileline.Split(SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToList();
+                        if (methods_args.ElementAt(0).ToLower().Contains("central_app_config") == false)
+                        {
+                            AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1).ToLower());
+                        }
+                        else
+                        {
+                            AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                        }
+                        methods_args.Clear();
+                    }
+                }
+                Encryptions.Lock_File(GET_AppConfigFile);
+            }
+            catch (Exception e)
+            {
+                AppConfig_File_Args = Backup_Config_File_Args;
+                Errors.WRITE_Errors_To_Log("READ_App_Config_File()", e.Message.ToString(), Errors.LogSeverity.Critical);
+                File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, AppConfigFile, File_Operation.WRITE_Default_ConsoleAppConfig_File());
             }
         }
 
@@ -498,6 +491,7 @@ namespace SWELF
                     Encryptions.UnLock_File(GET_EventLogID_PlaceHolder);
                     EventLog_w_PlaceKeeper.Clear();
                     EventLog_w_PlaceKeeper_List.Clear();
+
                     string line;
                     StreamReader file = new StreamReader(GET_EventLogID_PlaceHolder);
                     while ((line = file.ReadLine()) != null)
@@ -507,7 +501,6 @@ namespace SWELF
                             string[] lines = line.Split(SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToArray();
                             EventLog_w_PlaceKeeper.Add(lines[0].ToLower(), 1);
                             EventLog_w_PlaceKeeper_List.Add(lines[0].ToLower());
-                            AppConfig.ADD_UPDATE_App_Config_Setting(lines[0].ToLower(), lines[1].ToLower());
                         }
                     }
                     file.Close();
@@ -528,12 +521,11 @@ namespace SWELF
                     StreamReader file = new StreamReader(GET_EventLogID_PlaceHolder);
                     while ((line = file.ReadLine()) != null)
                     {
-                        if (!line.Contains(Settings.CommentCharConfigs))
+                        if (!line.Contains(Settings.CommentCharConfigs) && string.IsNullOrWhiteSpace(line)==false)
                         {
                             string[] lines = line.Split(Settings.SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToArray();
                             EventLog_w_PlaceKeeper.Add(lines[0].ToLower(), Convert.ToInt64(lines[1]));
                             EventLog_w_PlaceKeeper_List.Add(lines[0].ToLower());
-                            AppConfig.ADD_UPDATE_App_Config_Setting(lines[0].ToLower(), lines[1].ToLower());
                         }
                     }
                     file.Close();
@@ -541,7 +533,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    EventLog_SWELF.WRITE_Critical_EventLog("READ_EventLogID_Placeholders() else " + e.Message.ToString());
+                    EventLog_SWELF.WRITE_Critical_EventLog("READ_EventLogID_Placeholders() " + e.Message.ToString());
                     File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, EventLogID_PlaceHolder, File_Operation.WRITE_Default_Eventlog_with_PlaceKeeper_File());
                 }
             }
@@ -609,6 +601,11 @@ namespace SWELF
             }
         }
 
+        public static void GET_ErrorLog_Ready()
+        {
+            File_Operation.CREATE_NEW_Files_And_Dirs(Settings.SWELF_Log_File_Location, Settings.ErrorFile);
+        }
+
         public static List<string> GET_LogCollector_Location()
         {
             List<string> IPAddr = new List<string>();
@@ -619,7 +616,6 @@ namespace SWELF
                 try
                 {
                     Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector"]));
-                    AppConfig.ADD_UPDATE_App_Config_Setting("log_collector", GET_HostName(AppConfig_File_Args["log_collector"]));
                 }
                 catch
                 {
@@ -632,8 +628,6 @@ namespace SWELF
                 try
                 {
                     Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector1"]));
-                    AppConfig.ADD_UPDATE_App_Config_Setting("log_collector1", GET_HostName(AppConfig_File_Args["log_collector1"]));
-
                 }
                 catch
                 {
@@ -646,8 +640,6 @@ namespace SWELF
                 try
                 {
                     Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector2"]));
-                    AppConfig.ADD_UPDATE_App_Config_Setting("log_collector2", GET_HostName(AppConfig_File_Args["log_collector2"]));
-
                 }
                 catch
                 {
@@ -660,8 +652,6 @@ namespace SWELF
                 try
                 {
                     Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector3"]));
-                    AppConfig.ADD_UPDATE_App_Config_Setting("log_collector3", GET_HostName(AppConfig_File_Args["log_collector3"]));
-
                 }
                 catch
                 {
@@ -674,8 +664,6 @@ namespace SWELF
                 try
                 {
                     Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector4"]));
-                    AppConfig.ADD_UPDATE_App_Config_Setting("log_collector4", GET_HostName(AppConfig_File_Args["log_collector4"]));
-
                 }
                 catch
                 {
@@ -688,8 +676,6 @@ namespace SWELF
                 try
                 {
                     Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector5"]));
-                    AppConfig.ADD_UPDATE_App_Config_Setting("log_collector5", GET_HostName(AppConfig_File_Args["log_collector5"]));
-
                 }
                 catch
                 {
@@ -724,15 +710,15 @@ namespace SWELF
                             {
                                 try
                                 {
-                                    if (Settings.FIND_EventLog_Exsits(SearchsArgs[0]))
+                                    if (Settings.CHECK_If_EventLog_Exsits(SearchsArgs[0]))
                                     {
                                         Searchs.Add(SearchsArgs[0]);
                                     }
-                                    else if (SearchsArgs.Length > 1 && (String.IsNullOrEmpty(SearchsArgs[1]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.FIND_EventLog_Exsits(SearchsArgs[1])))
+                                    else if (SearchsArgs.Length > 1 && (String.IsNullOrEmpty(SearchsArgs[1]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.CHECK_If_EventLog_Exsits(SearchsArgs[1])))
                                     {
                                         Searchs.Add(SearchsArgs[1]);
                                     }
-                                    else if (SearchsArgs.Length > 2 && (String.IsNullOrEmpty(SearchsArgs[2]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.FIND_EventLog_Exsits(SearchsArgs[2])))
+                                    else if (SearchsArgs.Length > 2 && (String.IsNullOrEmpty(SearchsArgs[2]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.CHECK_If_EventLog_Exsits(SearchsArgs[2])))
                                     {
                                         Searchs.Add(SearchsArgs[2]);
                                     }
@@ -762,16 +748,9 @@ namespace SWELF
             }
         }
 
-        public static bool FIND_EventLog_Exsits(string EventLog_ToFind)
+        public static bool CHECK_If_EventLog_Exsits(string EventLog_ToFind)
         {
-            for (int x = 0; x < Settings.EventLogs_List_Of_Avaliable.Count; ++x)
-            {
-                if (Settings.EventLogs_List_Of_Avaliable.ElementAt(x).ToLower() == EventLog_ToFind.ToLower())
-                {
-                    return true;
-                }
-            }
-            return false;
+            return EventLogs_List_Of_Avaliable.Any(s => string.Equals(s, EventLog_ToFind, StringComparison.OrdinalIgnoreCase));
         }
 
         private static void SET_WindowsEventLog_Loc()
@@ -816,7 +795,7 @@ namespace SWELF
                     {
                         reader.BaseStream.ReadTimeout = 3000;
                         string html = reader.ReadToEnd();
-                        Regex regex = new Regex(GetDirectoryListingRegexForUrl(Web_Config_URL));
+                        Regex regex = new Regex(GET_DirectoryListingRegexForUrl(Web_Config_URL));
                         MatchCollection matches = regex.Matches(html);
                         if (matches.Count > 0)
                         {
@@ -843,12 +822,11 @@ namespace SWELF
                     READ_App_Config_File();
                     Errors.Log_Error("GET_All_HTTP_Files()", "HTTP status code was not 200 ok. It was" + response.StatusCode.ToString(), Errors.LogSeverity.Warning);
                     EventLog_SWELF.WRITE_Critical_EventLog("ALERT: GET_All_Files_HTTP: GET_All_HTTP_Files status code was not 200. It was" + response.StatusCode.ToString());
-                    Errors.WRITE_Errors();
                 }
             }
         }
 
-        private static string GetDirectoryListingRegexForUrl(string url)
+        private static string GET_DirectoryListingRegexForUrl(string url)
         {
             if (url.Equals(url))
             {
@@ -872,25 +850,30 @@ Manual Located At:https://github.com/ceramicskate0/SWELF/wiki/CommandLine-Inputs
 |I/O Commands:|
 -------------------------------------------------------------
 
--EVTX_File C:\..\..\evtx.evtx
+-EVTX_File 
+     C:\..\..\evtx.evtx
      Filepath to EVTX file
 
--Output_CSV C:\..\..\Fileoutput.csv
+-Output_CSV 
+     C:\..\..\Fileoutput.csv
      Output Matchs as CSV
      If no file path provided it will output to local windows eventlog
 
--EVTX_Folder C:\..\..\EVTX Files\
-    Folder Path to EVTX files
+-EVTX_Folder 
+     C:\..\..\EVTX Files\
+     Folder Path to EVTX files
 
 -------------------------------------------------------------
 |Searching Commands:|
 -------------------------------------------------------------
 
--Search_Terms C:\..\..\Searchs.txt
+-Search_Terms 
+     C:\..\..\Searchs.txt
      FileMust be the same as Search.txt when app is installed
 
--Find SEARCHTERM
-    Search EVTX file for the single SEARCHTERM
+-Find 
+     SEARCHTERM
+     Search EVTX file for the single SEARCHTERM
 
 -------------------------------------------------------------
 |Other Commands:|
@@ -907,7 +890,7 @@ Manual Located At:https://github.com/ceramicskate0/SWELF/wiki/CommandLine-Inputs
 Example:
 SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV Findings.csv -Search_Terms C:\Filepath\Searchs.txt
 
-SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV C:\FilePath\FleName.csv -Find SEARCHTERMTOFIND detected
+SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV C:\FilePath\FleName.csv -Find SEARCHTERMTOFIND 
 
 SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV Findings.csv -Find detected -Dissolve
 '""");
@@ -932,6 +915,18 @@ SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV Findin
             }
         }
 
+        public static string GET_IP(string Hostname)
+        {
+            try
+            {
+                return Dns.GetHostEntry(Hostname).AddressList.ElementAt(0).ToString();
+            }
+            catch
+            {
+                return Hostname;
+            }
+        }
+
         public static void Stop(int error_code)
         {
             Start_Write_Errors();
@@ -940,7 +935,6 @@ SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV Findin
 
         public static void Start_Write_Errors()
         {
-            Errors.WRITE_Errors();
             Errors.SEND_Errors_To_Central_Location();
         }
     }

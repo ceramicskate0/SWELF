@@ -10,9 +10,7 @@ namespace SWELF
     class Errors
     {
         private static List<string> ErrorsLog = new List<string>();
-        private static DriveInfo Disk = new DriveInfo("C");
-        private static long Drives_Available_Space = Disk.AvailableFreeSpace;
-        private static string[] Severity_Levels = { "verbose","informataion","warning","critical","failureaudit"};
+        private static string[] Severity_Levels = { "Verbose", "Informataion", "Warning", "Critical", "","","","","","","","","","","","", "FailureAudit" };
         private static int Logging_Level_To_Report = 1;
 
         public enum  LogSeverity : int
@@ -28,8 +26,8 @@ namespace SWELF
         {
             try
             {
-                Settings.Logging_Level_To_Report = Settings.AppConfig_File_Args["logging_level"].ToLower();
-                var index = Array.FindIndex(Severity_Levels, row => row == Settings.Logging_Level_To_Report);
+                Settings.Logging_Level_To_Report = Settings.AppConfig_File_Args["logging_level"];
+                int index = Array.FindIndex(Severity_Levels, row => row == Settings.Logging_Level_To_Report);
                 Logging_Level_To_Report = Convert.ToInt32(index);
             }
             catch
@@ -38,17 +36,19 @@ namespace SWELF
             }
         }
 
-        public static void Log_Error(string MethodNameInCode, string Message, LogSeverity LogSeverity,bool LastLog=false)
+        public static void Log_Error(string MethodNameInCode, string Message, LogSeverity LogSeverity)
         {
-            ErrorLogging_Level();
-            if (Logging_Level_To_Report <= (int)LogSeverity)
+            try
+            {
+                ErrorLogging_Level();
+                if (Logging_Level_To_Report <= (int)LogSeverity)
+                {
+                    WRITE_Errors_To_Log("Date=" + DateTime.Now.ToShortDateString() + "   SourceComputer=" + Settings.ComputerName + "   LogSeverity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n", LogSeverity);
+                }
+            }
+            catch (Exception e)
             {
                 ErrorsLog.Add("Date=" + DateTime.Now.ToShortDateString() + "   SourceComputer=" + Settings.ComputerName + "   LogSeverity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n");
-                ErrorsLog = ErrorsLog.Distinct().ToList();
-                if (ErrorsLog.Count > 6 || LastLog)
-                {
-                    WRITE_Errors();
-                }
             }
         }
 
@@ -68,30 +68,12 @@ namespace SWELF
                     File.AppendAllText(Settings.GET_ErrorLog_Location, err);
                 }
                 EventLog_SWELF.WRITE_Critical_EventLog("SWELF Immediate" + "   LogSeverity=" + Severity_Levels[(int)LogSeverity] + "   Message=" + err + "\n");
-                CHECK_Error_Log_Size();
+                File_Operation.CHECK_File_Size(Settings.GET_ErrorLog_Location);
             }
         }
 
-        private static void CHECK_Error_Log_Size()
-        {
-            FileInfo Log_App_Log_File = new FileInfo(Settings.GET_ErrorLog_Location);
 
-            if (Log_App_Log_File.Length > Drives_Available_Space * .0001)
-            {
-                File_Operation.DELETE_AND_CREATE_File(Settings.GET_ErrorLog_Location);
-            }
-        }
-
-        public static void WRITE_Errors()
-        {
-            for (int x = 0; x < ErrorsLog.Count; ++x)
-            {
-                WRITE_Errors_To_Log_BATCH(ErrorsLog.ElementAt(x));
-            }
-            ErrorsLog.Clear();
-        }
-
-        private  static void WRITE_Errors_To_Log_BATCH(string msg)
+        private  static void WRITE_Errors_To_Log(string msg, LogSeverity LogSeverity)
         {
             if (File_Operation.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
             {
@@ -102,8 +84,32 @@ namespace SWELF
                 File.Create(Settings.GET_ErrorLog_Location).Close();
                 File.AppendAllText(Settings.GET_ErrorLog_Location, msg);
             }
-            EventLog_SWELF.WRITE_Warning_EventLog(msg);
-            CHECK_Error_Log_Size();
+            File_Operation.CHECK_File_Size(Settings.GET_ErrorLog_Location);
+
+            if (LogSeverity== LogSeverity.Informataion)
+            {
+                EventLog_SWELF.WRITE_Warning_EventLog(msg);
+            }
+            else if (LogSeverity == LogSeverity.Verbose)
+            {
+                EventLog_SWELF.WRITE_Verbose_EventLog(msg);
+            }
+            else if (LogSeverity == LogSeverity.Warning)
+            {
+                EventLog_SWELF.WRITE_Warning_EventLog(msg);
+            }
+            else if (LogSeverity == LogSeverity.FailureAudit)
+            {
+                EventLog_SWELF.WRITE_ERROR_EventLog(msg);
+            }
+            else if (LogSeverity == LogSeverity.Critical)
+            {
+                EventLog_SWELF.WRITE_Critical_EventLog(msg);
+            }
+            else
+            {
+                EventLog_SWELF.WRITE_Verbose_EventLog(msg);
+            }
         }
 
         public static void SEND_Errors_To_Central_Location()
@@ -114,6 +120,17 @@ namespace SWELF
                 for (int x = 0; x < Errors.Length; ++x)
                 {
                     Network_Forwarder.SEND_Data_from_File(Errors[x]);
+                }
+            }
+        }
+
+        public static void WRITE_Stored_Errors()
+        {
+            if (ErrorsLog.Count > 0)
+            {
+                for (int x = 0; x < ErrorsLog.Count; ++x)
+                {
+                    File.AppendAllText(Settings.SWELF_Log_File_Location + "\\" + Path.GetRandomFileName() + "_SWELF_HAD_IO_ERROR.log", ErrorsLog.ElementAt(x));
                 }
             }
         }
