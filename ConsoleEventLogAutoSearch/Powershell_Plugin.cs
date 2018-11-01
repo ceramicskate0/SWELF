@@ -19,7 +19,7 @@ namespace SWELF
         {
             ScriptContents = File.ReadAllText(PowershellSciptLocation);
             
-            if (CallAntimalwareScanInterface(Get_SHA256(PowershellSciptLocation), ScriptContents) <= 32768)
+            if (CallAntimalwareScanInterface(Get_SHA256(PowershellSciptLocation), ScriptContents) < 32768)
             {
                 powershellSciptLocation = PowershellSciptLocation;
                 powershellSciptArgs = PowershellSciptArgs;
@@ -37,7 +37,7 @@ namespace SWELF
                 string output = process.StandardOutput.ReadToEnd();
                 if (string.IsNullOrEmpty(output))
                 {
-                    output += "\nERROR: " + process.StandardError.ReadToEnd();
+                    output += "\nPS Plugin ERROR: " + process.StandardError.ReadToEnd();
                 }
                 Settings.WhiteList_Search_Terms_Unparsed.Add(ScriptContents+"~"+ "microsoft-windows-powershell/operational"+"~");
                 Settings.WhiteList_Search_Terms_Unparsed.Add(ScriptContents + "~" + "windows powershell" + "~");
@@ -101,7 +101,7 @@ namespace SWELF
             int returnValue;
             //AMSI_RESULT_CLEAN = 0,
             //AMSI_RESULT_NOT_DETECTED = 1,
-           // AMSI_RESULT_MALWARE_DETECTED = 32768
+            //AMSI_RESULT_MALWARE_DETECTED = 32768
             returnValue = AMSI.AmsiInitialize(PluginName, out amsiContext);
             returnValue = AMSI.AmsiOpenSession(amsiContext, out session);
             returnValue = AMSI.AmsiScanString(amsiContext, PluginContents, PluginName, session, out result);

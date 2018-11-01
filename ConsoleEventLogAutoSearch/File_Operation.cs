@@ -5,10 +5,21 @@ using System.IO;
 
 namespace SWELF
 {
-    class File_Operation
+    public class File_Operation
     {
         private static List<string> OutputFileContents = new List<string>();
+        private static DriveInfo Disk = new DriveInfo("C");
+        private static long Drives_Available_Space = Disk.AvailableFreeSpace;
 
+        public static void CHECK_File_Size(string FilePath,double MaxSizeRatio=.0001)
+        {
+            FileInfo Log_App_Log_File = new FileInfo(FilePath);
+
+            if (Log_App_Log_File.Length > Drives_Available_Space * MaxSizeRatio)
+            {
+                File_Operation.DELETE_AND_CREATE_File(FilePath);
+            }
+        }
 
         public static void Write_Ouput_CSV(string FilePath,Queue<EventLog_Entry> FileContents)
         {
@@ -40,6 +51,7 @@ namespace SWELF
                     Errors.WRITE_Errors_To_Log("Write_Hash_Output()", e.Message.ToString(), Errors.LogSeverity.Informataion);
                 }
             }
+            CHECK_File_Size(Settings.Hashs_File, .0002);
         }
 
         public static void Write_IP_Output(List<string> IPs)
@@ -57,6 +69,7 @@ namespace SWELF
                     Errors.WRITE_Errors_To_Log("Write_IP_Output()", e.Message.ToString(), Errors.LogSeverity.Informataion);
                 }
             }
+            CHECK_File_Size(Settings.IPs_File, .0002);
         }
 
         public static void Write_Contents(string FilePath, Queue<EventLog_Entry> FileContents)
@@ -81,7 +94,6 @@ namespace SWELF
 
         public static void WRITE_EventLogID_Placeholders()
         {
-            ;
             File.Delete(Settings.GET_EventLogID_PlaceHolder);
             for (int x = 0; x > Settings.EventLog_w_PlaceKeeper.Count; ++x)
             {
@@ -159,8 +171,8 @@ Logon Type:		3~Security~4624
 Logon Type:		10~Security~4624
 #~Microsoft-Windows-CodeIntegrity/Operational~3004
 #~Microsoft-Windows-CodeIntegrity/Operational~3033
-~Application~866
-~Application~1534
+#~Application~866
+#~Application~1534
 webclient~windows powershell~
 hidden~windows powershell~
 download~windows powershell~
@@ -209,7 +221,7 @@ noprofile~windows powershell~
 
         public static string WRITE_Default_Powershell_Search_File()
         {
-            string log = "" + Settings.CommentCharConfigs + @"#File Path to Powershell Script ~ SearchTerm ~ Powershell Script Arguments";
+            string log = "" + Settings.CommentCharConfigs + @"#File Path to Powershell Script ~ SearchTerm ~ Powershell Script Arguments \n\r#See this link for some ideas on plugins https://github.com/ceramicskate0/SWELF/wiki/Plugins";
             return log;
         }
 
@@ -219,7 +231,7 @@ noprofile~windows powershell~
             DELETE_AND_CREATE_File(Settings.GET_EventLogID_PlaceHolder);
             for (int x = 0; x < Settings.EventLog_w_PlaceKeeper.Count; ++x)
             {
-                File.AppendAllText(Settings.GET_EventLogID_PlaceHolder, Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + Settings.SplitChar_ConfigVariableEquals[0] + Settings.EventLog_w_PlaceKeeper[Settings.EventLog_w_PlaceKeeper_List.ElementAt(x)] + "\n");
+                File.AppendAllText(Settings.GET_EventLogID_PlaceHolder, Settings.EventLog_w_PlaceKeeper.ElementAt(x).Key + Settings.SplitChar_ConfigVariableEquals[0] + Settings.EventLog_w_PlaceKeeper.ElementAt(x).Value + "\n");
             }
             Encryptions.Lock_File(Settings.GET_EventLogID_PlaceHolder);
         }
@@ -257,11 +269,6 @@ noprofile~windows powershell~
         public static bool VERIFY_if_File_Exists(string FilePath)
         {
             return File.Exists(FilePath);
-        }
-
-        public static void GET_ErrorLog_Ready()
-        {
-            CREATE_NEW_Files_And_Dirs(Settings.SWELF_Log_File_Location, Settings.ErrorFile);
         }
 
         public static void GET_Plugin_Scripts_Ready()

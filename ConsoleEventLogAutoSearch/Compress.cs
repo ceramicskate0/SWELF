@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.IO;
 using System.IO.Compression;
 
@@ -7,39 +8,51 @@ namespace SWELF
 {
     class Compress
     {
-        public static byte[] Compress_Contents(byte[] raw)
+        //string someString = Encoding.ASCII.GetString(bytes);
+        //byte[] bytes = Encoding.ASCII.GetBytes(someString);
+
+        public static UTF8Encoding uniEncode = new UTF8Encoding();
+
+        public static byte[] Compress_Contents_Byte(byte[] ToCompress)
         {
-            using (MemoryStream memory = new MemoryStream())
+            byte[] bytesToCompress = ToCompress;
+
+            using (MemoryStream memory = new MemoryStream(bytesToCompress))
             {
-                using (GZipStream gzip = new GZipStream(memory, CompressionMode.Compress, false))
+                using (DeflateStream compressionStream = new DeflateStream(memory, CompressionMode.Compress,false))
                 {
-                    gzip.Write(raw, 0, raw.Length);
+                    compressionStream.Write(bytesToCompress, 0, bytesToCompress.Length);
                 }
-                return memory.ToArray();
             }
+            return bytesToCompress;
         }
 
-        public static byte[] DeCompress_Contents(byte[] raw)
+        public static byte[] Compress_Contents_Byte(string ToCompress)
         {
-            using (GZipStream stream = new GZipStream(new MemoryStream(raw), CompressionMode.Decompress))
+            byte[] bytesToCompress = uniEncode.GetBytes(ToCompress);
+
+            using (MemoryStream memory = new MemoryStream(bytesToCompress))
             {
-                const int size = 4096;
-                byte[] buffer = new byte[size];
-                using (MemoryStream memory = new MemoryStream())
+                using (DeflateStream compressionStream = new DeflateStream(memory, CompressionMode.Compress,false))
                 {
-                    int count = 0;
-                    do
-                    {
-                        count = stream.Read(buffer, 0, size);
-                        if (count > 0)
-                        {
-                            memory.Write(buffer, 0, count);
-                        }
-                    }
-                    while (count > 0);
-                    return memory.ToArray();
+                    compressionStream.Write(bytesToCompress, 0, bytesToCompress.Length);
                 }
             }
+            return bytesToCompress;
+        }
+
+        public static string DeCompress_Contents_String(byte[] BytesToDecompress,int Size)
+        {
+            byte[] decompressedBytes = new byte[Size];
+
+            using (MemoryStream memory = new MemoryStream(BytesToDecompress))
+            {
+                using (DeflateStream decompressionStream = new DeflateStream(memory, CompressionMode.Decompress,false))
+                {
+                    decompressionStream.Read(decompressedBytes, 0, Size);
+                }
+            }
+            return uniEncode.GetString(decompressedBytes);
         }
     }
 }
