@@ -183,7 +183,7 @@ System~Microsoft-Windows-DistributedCOM~10016
 ~Security~1108
 ~Security~7045 
 ~Security~5140
-~Security~4672
+#~Security~4672
 ~Security~4720 
 #~Security~4688
 Logon Type:		9~Security~4624 
