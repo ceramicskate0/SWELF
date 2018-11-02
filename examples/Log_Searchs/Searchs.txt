@@ -99,9 +99,10 @@ search_multiple:wscript`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:wmic`cmd~Microsoft-Windows-Sysmon/Operational~1
 #search_multiple:conhost`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:wmiprvse`powershell~Microsoft-Windows-Sysmon/Operational~1
+rename~Microsoft-Windows-Sysmon/Operational~1
 mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 mshta vbscript:~Microsoft-Windows-Sysmon/Operational~
-regsvr32.exe /s /u /i:~Microsoft-Windows-Sysmon/Operational~
+regsvr32~Microsoft-Windows-Sysmon/Operational~
 bitsadmin.exe  /transfer~Microsoft-Windows-Sysmon/Operational~
 bitsadmin.exe /download~Microsoft-Windows-Sysmon/Operational~ 
 rundll32.exe javascript:~Microsoft-Windows-Sysmon/Operational~
