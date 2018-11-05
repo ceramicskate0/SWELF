@@ -28,7 +28,7 @@ count:;:12~Microsoft-Windows-PowerShell/Operational~4104
 count:|:2~Microsoft-Windows-PowerShell/Operational~
 count:&:10~Microsoft-Windows-PowerShell/Operational~
 iwr('http~Microsoft-Windows-PowerShell/Operational~4104
-eventdata_length:10000~Microsoft-Windows-PowerShell/Operational~4104
+eventdata_length:12000~Microsoft-Windows-PowerShell/Operational~4104
 webclient~Microsoft-Windows-PowerShell/Operational~4104
 iex~Microsoft-Windows-PowerShell/Operational~
 wscript~Microsoft-Windows-PowerShell/Operational~4104
@@ -203,7 +203,7 @@ System~Microsoft-Windows-DNS-Client/Operational~1014
 
 #Commands COMMANDLINES to be run on all
 commandline_contains:rename
-commandline_length:300
+commandline_length:500
 commandline_contains:<
 commandline_contains:>
 commandline_contains:$env
