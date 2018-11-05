@@ -2,7 +2,7 @@
 #SearchTerm~EventLogName~EventID
 
 #windows-bits
-VsBitsDownloadJob~microsoft-windows-bits-client/operational~
+#VsBitsDownloadJob~microsoft-windows-bits-client/operational~
 
 #Windows Powershell
 webclient~windows powershell~
