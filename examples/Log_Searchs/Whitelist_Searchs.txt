@@ -26,3 +26,4 @@ parentimage: c:\program files (x86)\ossec-agent\ossec-agent.exe~microsoft-window
 image: c:\program files (x86)\nvidia corporation\~microsoft-windows-sysmon/operational~
 C:\WINDOWS\system32\SearchIndexer.exe~microsoft-windows-sysmon/operational~
 image: c:\windows\system32\mpsigstub.exe~microsoft-windows-sysmon/operational~
+commandline: wmic  logicaldisk where "drivetype=2 and not deviceid like "a:"" get deviceid, volumename, description, filesystem, size, volumeserialnumber~microsoft-windows-sysmon/operational~
