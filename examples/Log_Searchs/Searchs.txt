@@ -183,6 +183,9 @@ System~Microsoft-Windows-DistributedCOM~10016
 ~Security~1108
 ~Security~7045 
 ~Security~5140
+~Security~4719
+~Security~4688
+#~Security~4689
 #~Security~4672
 ~Security~4720 
 #~Security~4688
