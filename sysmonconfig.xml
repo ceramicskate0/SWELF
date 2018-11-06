@@ -44,7 +44,6 @@
 			<Image condition="contains">C:\Program Files (x86)\NVIDIA Corporation\Update Core\</Image>
 			<Image condition="is">C:\Program Files (x86)\Fortinet\FortiClient\FortiScand.exe</Image>
 			<Image condition="is">C:\Program Files (x86)\SWELF\SWELF.exe</Image>
-            <Image condition="is">c:\users\host\appdata\roaming\metadefender-local\metadefenderapp.exe</Image>
 			<Image condition="is">C:\Program Files\Common Files\microsoft shared\ink\TabTip.exe</Image>
 			<Image condition="is">C:\Program Files (x86)\Fortinet\FortiClient\update_task.exe</Image>
 			<Image condition="is">C:\Windows\system32\CompatTelRunner.exe</Image> <!--Microsoft:Windows: Customer Experience Improvement-->
