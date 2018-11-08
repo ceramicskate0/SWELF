@@ -27,3 +27,4 @@ image: c:\program files (x86)\nvidia corporation\~microsoft-windows-sysmon/opera
 C:\WINDOWS\system32\SearchIndexer.exe~microsoft-windows-sysmon/operational~
 image: c:\windows\system32\mpsigstub.exe~microsoft-windows-sysmon/operational~
 commandline: wmic  logicaldisk where "drivetype=2 and not deviceid like "a:"" get deviceid, volumename, description, filesystem, size, volumeserialnumber~microsoft-windows-sysmon/operational~
+parentcommandline: c:\windows\system32\cmd.exe /c wmic logicaldisk where "drivetype=2 and not deviceid like "a:"" get deviceid, volumename, description, filesystem, size, volumeserialnumber~microsoft-windows-sysmon/operational~
