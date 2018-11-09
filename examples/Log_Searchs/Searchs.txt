@@ -168,7 +168,7 @@ System~Microsoft-Windows-DistributedCOM~10016
 ~Microsoft-WindowsCodeIntegrity/Operational~3033
 
 #Microsoft-Windows-Kernel-Audit-API-Calls
-SetThreadContext~Microsoft-Windows-Kernel-Audit-API-Calls~
+#SetThreadContext~Microsoft-Windows-Kernel-Audit-API-Calls~
 #CreateRemoteThread~Microsoft-Windows-Kernel-Audit-API-Calls~
 #WriteProcessMemory~Microsoft-Windows-Kernel-Audit-API-Calls~
 #QueueUserAPC~Microsoft-Windows-Kernel-Audit-API-Calls~
