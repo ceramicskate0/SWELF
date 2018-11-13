@@ -269,7 +269,7 @@ namespace SWELF
                                 ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_Counts_in_Log(Search_Command_Values[1].ToString(), Convert.ToInt32(Search_Command_Values[2]), Search_Command_Values, Search_Terms_Unparsed));
                                 break;
                             }
-                        case "log_level":
+                        case "logging_level":
                             {
                                 ALL_Logs_That_Matched_Search_This_Event_Log.AddRange(SEARCH_CMD_For_Severity_EVTX_Level(Search_Command_Values[1].ToString().ToLower(), Search_Command_Values, Search_Terms_Unparsed));
                                 break;

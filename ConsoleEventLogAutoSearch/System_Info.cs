@@ -106,7 +106,7 @@ namespace SWELF
             int count = 0;
             foreach (Process theprocess in GET_Running_Processes())
             {
-                if (theprocess.ProcessName.ToLower().Equals("swelf"))
+                if (theprocess.ProcessName.ToLower().Equals(Settings.SWELF_PROC_Name.ProcessName.ToLower()))
                 {
                     ++count;
                     if (count >= thresholdvalue)
@@ -124,9 +124,9 @@ namespace SWELF
             {
                 if (Current_Memory_Dump_Retry_Number >= Max_Memory_Dump_Retry_Number)
                 {
-                    Errors.Log_Error("CHECK_Memory() ", "SWELF Detected MAXIMUM Memory useage and stopped after " + System_Info.Max_Memory_Dump_Retry_Number.ToString() + " tries to resolve issue.", Errors.LogSeverity.Critical);
-                    EventLog_SWELF.WRITE_Critical_EventLog("SWELF Detected MAXIMUM Memory useage and stopped after " + System_Info.Max_Memory_Dump_Retry_Number.ToString() + " tries to resolve issue.");
-                    Settings.Stop(1265);
+                    Errors.Log_Error("CHECK_Memory() ", "SWELF Detected MAXIMUM Memory useage and stopped after " + System_Info.Max_Memory_Dump_Retry_Number.ToString() + " tries to resolve issue.", Errors.LogSeverity.Critical,EventLog_SWELF.SWELF_MAIN_APP_ERROR_EVTID);
+                    EventLog_SWELF.WRITE_Critical_EventLog("SWELF Detected MAXIMUM Memory useage and stopped after " + System_Info.Max_Memory_Dump_Retry_Number.ToString() + " tries to resolve issue.",EventLog_SWELF.SWELF_MAIN_APP_ERROR_EVTID);
+                    Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE);
                 }
                 else
                 {

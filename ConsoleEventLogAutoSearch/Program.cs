@@ -15,8 +15,6 @@ namespace SWELF
 
         public static void Main(string[] args)
         {
-            //Reg swelfrefg = new Reg();
-
             Program_Start_Args = Environment.GetCommandLineArgs().ToList();
 
             if (Program_Start_Args.Count>1)
@@ -37,15 +35,15 @@ namespace SWELF
                     }
                     else
                     {
-                       Errors.Log_Error("System_Performance_Info.Is_SWELF_Running()","SWELF tried to run but another instance was already running. Closing this instance of SWELF.exe.", Errors.LogSeverity.Verbose);
+                       Errors.Log_Error("System_Performance_Info.Is_SWELF_Running()","SWELF tried to run but another instance was already running. Closing this instance of "+ Settings.SWELF_PROC_Name+".", Errors.LogSeverity.Verbose, EventLog_SWELF.SWELF_MAIN_APP_ERROR_EVTID);
                         Settings.Stop(0);
                     }
                 }
                 catch (Exception e)
                 {
-                    Errors.Log_Error("Start_Live_Process() ", e.Message.ToString() + ", Also the app halted.", Errors.LogSeverity.Critical);
+                    Errors.Log_Error("Start_Live_Process() ", e.Message.ToString() + ", Also the app halted.", Errors.LogSeverity.Critical, EventLog_SWELF.SWELF_MAIN_APP_ERROR_EVTID);
                     Errors.WRITE_Stored_Errors();
-                    Settings.Stop(1265);
+                    Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE);
                 }
             }
         }
@@ -79,10 +77,10 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Errors.Log_Error("Start_EVTX_Process() ", e.Message.ToString(),Errors.LogSeverity.FailureAudit);
-                EventLog_SWELF.WRITE_Critical_EventLog("Start_EVTX_Process() " + e.Message.ToString());
+                Errors.Log_Error("Start_EVTX_Process() ", e.Message.ToString(),Errors.LogSeverity.FailureAudit, EventLog_SWELF.SWELF_MAIN_APP_ERROR_EVTID);
+                EventLog_SWELF.WRITE_Critical_EventLog("Start_EVTX_Process() " + e.Message.ToString(), EventLog_SWELF.SWELF_MAIN_APP_ERROR_EVTID);
                 Errors.WRITE_Stored_Errors();
-                Settings.Stop(1265);
+                Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE);
             }
         }
 
@@ -122,8 +120,8 @@ namespace SWELF
             }
             else
             {
-                EventLog_SWELF.WRITE_Critical_EventLog("Sec_Checks.Pre_Run_Sec_Checks() && Sec_Checks.CHECK_If_Running_as_Admin(). APP FAILED Statement.");
-                Settings.Stop(1265);
+                EventLog_SWELF.WRITE_Critical_EventLog("Sec_Checks.Pre_Run_Sec_Checks() && Sec_Checks.CHECK_If_Running_as_Admin(). APP FAILED Statement.", EventLog_SWELF.SWELF_MAIN_APP_ERROR_EVTID);
+                Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE);
             }
             if (Settings.CMDLine_Dissolve)
             {
@@ -141,8 +139,8 @@ namespace SWELF
             catch (Exception e)
             {
                 Errors.Log_Error("Settings.InitializeAppSettings()", e.Message.ToString(), Errors.LogSeverity.Warning);
-                EventLog_SWELF.WRITE_Critical_EventLog("ALERT: SWELF MAIN ERROR: Settings.InitializeAppSettings() " + e.Message.ToString());
-                Settings.Stop(1265);
+                EventLog_SWELF.WRITE_Critical_EventLog("ALERT: SWELF MAIN ERROR: Settings.InitializeAppSettings() " + e.Message.ToString(),EventLog_SWELF.SWELF_MAIN_APP_ERROR_EVTID);
+                Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE);
             }
         }
 

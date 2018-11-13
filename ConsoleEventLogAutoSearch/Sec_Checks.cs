@@ -30,7 +30,6 @@ namespace SWELF
         {
             if (Check_EventLog_Service() && Check_Reg_Keys())//Event logs requirements in place
             {
-                Settings.ThreadsCount = Process.GetCurrentProcess().Threads.Count;
                 return true;
             }
             else
@@ -44,12 +43,6 @@ namespace SWELF
         {
             //TODO Fix non working algo for live run checks
             //Maybe reg values over time analysis?????
-            //Settings.ThreadsCount = Process.GetCurrentProcess().Threads.Count;
-            //Settings.SWELF_PROC = Process.GetCurrentProcess();
-            //Settings.SWELF_Starting_Dlls = Settings.SWELF_PROC.Modules.Count;
-            //Settings.SWELF_Start_currentDomain = AppDomain.CurrentDomain;
-            //Settings.SWELF_Start_asEvidence = Settings.SWELF_Start_currentDomain.Evidence;
-            //Settings.SWELF_Start_Assemblys = Settings.SWELF_Start_currentDomain.GetAssemblies();
         }
 
         public static bool Live_Run_Sec_Checks(string EVT_Log_Name)
@@ -58,10 +51,6 @@ namespace SWELF
             {
                 if (Settings.CHECK_If_EventLog_Exsits(EVT_Log_Name))
                 {
-                    if (EVT_Log_Name== "microsoft-windows-taskscheduler/operational")
-                    {
-                        //delete this staement
-                    }
                     if (Check_Event_Log_Is_Blank(EVT_Log_Name) && Check_Event_Log_Is_Blank(Settings.SWELF_EventLog_Name) && Check_Windows_Event_Log_Size(EVT_Log_Name) && Check_Windows_Event_Log_Retention_Policy(EVT_Log_Name) && Check_Event_Log_Has_Not_Recorded_Logs_In_X_Days(EVT_Log_Name))
                     {
                         GET_EventLog_Count_Before_Write(EVT_Log_Name);
@@ -309,7 +298,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                FAILED_Sec_Check("Check_Event_Log_Is_Blank()", EVT_Log_Name + " "+e.Message.ToString(), Errors.LogSeverity.Critical);
+                FAILED_Sec_Check("Check_Event_Log_Is_Blank()", EVT_Log_Name + " "+e.Message.ToString(), Errors.LogSeverity.Warning);
                 return false;//FAILED
             }
         }

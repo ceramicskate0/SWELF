@@ -110,9 +110,9 @@ log_collector" + Settings.SplitChar_ConfigVariableEquals[0] + @"127.0.0.1
 Settings.CommentCharConfigs + @"output_format: syslogxml,syslog,xml,data,keyvalue
 output_format" + Settings.SplitChar_ConfigVariableEquals[0] + @"keyvalue
 " +
-Settings.CommentCharConfigs + @"log_level: verbose,informataion,warning,critical,failureaudit
+Settings.CommentCharConfigs + @"logging_level: verbose,informataion,warning,critical,failureaudit
 " +
-"log_level" + Settings.SplitChar_ConfigVariableEquals[0] + @"critical
+"logging_level" + Settings.SplitChar_ConfigVariableEquals[0] + @"critical
 " +
 Settings.CommentCharConfigs + @"output_ips
 " +
@@ -232,6 +232,7 @@ noprofile~windows powershell~
             for (int x = 0; x < Settings.EventLog_w_PlaceKeeper.Count; ++x)
             {
                 File.AppendAllText(Settings.GET_EventLogID_PlaceHolder, Settings.EventLog_w_PlaceKeeper.ElementAt(x).Key + Settings.SplitChar_ConfigVariableEquals[0] + Settings.EventLog_w_PlaceKeeper.ElementAt(x).Value + "\n");
+                Reg.ADD_or_CHANGE_SWELF_Reg_Key(Settings.EventLog_w_PlaceKeeper.ElementAt(x).Key, Settings.EventLog_w_PlaceKeeper.ElementAt(x).Value.ToString());
             }
             Encryptions.Lock_File(Settings.GET_EventLogID_PlaceHolder);
         }
@@ -256,7 +257,7 @@ noprofile~windows powershell~
             catch (Exception e)
             {
                 Errors.WRITE_Errors_To_Log("CREATE_NEW_Files_And_Dirs() check IO restrictions on machine for app.", e.Message.ToString(), Errors.LogSeverity.Informataion);
-                Settings.Stop(1265);
+                Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE);
             }
         }
 

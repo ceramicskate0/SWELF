@@ -13,6 +13,8 @@ using System.Security.Cryptography;
 using System.Reflection;
 using System.Security.Policy;
 using System.Threading.Tasks;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 
 namespace SWELF
 {
@@ -25,7 +27,6 @@ namespace SWELF
         public static Dictionary<string, long> EventLog_w_PlaceKeeper = new Dictionary<string, long>();
         public static List<string> EventLog_w_PlaceKeeper_List = new List<string>();//Tracks Eventlog reading
         public static Dictionary<string, string> AppConfig_File_Args = new Dictionary<string, string>();//program config arguements from file
-        //public static Dictionary<string, string> AppConfig_App_Args = new Dictionary<string, string>();//app config from appconfig.conf
 
         public static Dictionary<string, string> Backup_Config_File_Args;//program config arguements
         public static string[] Backup_Config_File_Args_Array;//program config arguements
@@ -41,18 +42,27 @@ namespace SWELF
         public static List<string> Evtx_Files = new List<string>();
         public static bool output_csv = false;
 
+        //SWELF Security Check Info
+        public static Process SWELF_PROC_Name = Process.GetCurrentProcess();
+        //public static int ThreadsCount = Process.GetCurrentProcess().Threads.Count;
+        //public static int SWELF_Starting_Dlls = Settings.SWELF_PROC_Name.Modules.Count;
+       // public static AppDomain SWELF_Start_currentDomain = AppDomain.CurrentDomain;
+        //public static Evidence SWELF_Start_asEvidence = SWELF_Start_currentDomain.Evidence;
+        //public static Assembly[] SWELF_Start_Assemblys = SWELF_Start_currentDomain.GetAssemblies();
+
         //SWELF data settings
         public static string CommentCharConfigs = "#";
         public static string ComputerName = Environment.MachineName;
-        public static string SWELF_EventLog_Name = "SWELF_Events_of_Interest";
+        public static string SWELF_EventLog_Name = SWELF_PROC_Name.ProcessName + "_Events_of_Interest";
         public static int Log_Forward_Location_Port = 514;
         public static List<string> Log_Forwarders_HostNames = new List<string>();
         private static System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
         private static FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
         public static string SWELF_Version = fvi.FileVersion;
+        public static int SWELF_CRIT_ERROR_EXIT_CODE = 1265;
 
         //Thread settings
-        public static int Max_Thread_Count = 1;// Environment.ProcessorCount / 2;
+        public static int Max_Thread_Count = 1;//Environment.ProcessorCount / 2; TODO: change this to multi thread. storage structs not thread safe
         public static bool PS_PluginDone = false;
         public static int Running_Thread_Count = 0;
         public static int Total_Threads_Run = 0;
@@ -62,7 +72,7 @@ namespace SWELF
         public static string Hashs_File = Directory.GetCurrentDirectory() + "\\" + "hashs.txt";
         public static string IPs_File = Directory.GetCurrentDirectory() + "\\" + "ips.txt";
 
-        //file path info
+        //folder info
         public static string SWELF_CWD = Directory.GetCurrentDirectory();
         public static string Config_File_Location = Directory.GetCurrentDirectory() + "\\Config";
         public static string Search_File_Location = Directory.GetCurrentDirectory() + "\\Log_Searchs";
@@ -71,7 +81,7 @@ namespace SWELF
         public static string Plugin_Scripts_Location = Plugin_Files_Location + "\\Scripts";
         public static string Plugin_Search_Location = Plugin_Files_Location + "\\Plugin_Searchs";
 
-        //File name info
+        //Filename info
         public static string ErrorFile = "Error_Log.log";
         public static string AppConfigFile = "ConsoleAppConfig.conf";
         public static string EventLogID_PlaceHolder = "Eventlog_with_PlaceKeeper.txt";
@@ -81,7 +91,7 @@ namespace SWELF
         public static string Search_WhiteList = "WhiteList_Searchs.txt";
 
         //Search cmd info
-        public static string[] Search_Commands = { "count:", "eventdata_length:", "commandline_length:", "commandline_contains:", "commandline_count:", "regex:", "log_level:", "not_in_log:","search_multiple:" , "network_connect:" };
+        public static string[] Search_Commands = { "count:", "eventdata_length:", "commandline_length:", "commandline_contains:", "commandline_count:", "regex:", "logging_level:", "not_in_log:","search_multiple:" , "network_connect:" };
         public static string[] EventLogEntry_splitter = { "\n", "\r", " ", "  " };
         public static char[] SplitChar_Regex = { '~' };
         public static char[] SplitChar_SearchCommandSplit = { '~' };
@@ -95,28 +105,21 @@ namespace SWELF
 
         //Central config info
         public static string CMDLine_EVTX_File = "";
-        public static string CMDLine_Output_CSV = "SWELF_Events_Of_Interest_Output.csv";
+        public static string CMDLine_Output_CSV = SWELF_PROC_Name.ProcessName + "_Events_Of_Interest_Output.csv";
         public static string CMDLine_Search_Terms = "";
         public static string CMDLine_Find_SEARCHTERM = "";
         public static bool CMDLine_Dissolve = false;
         public static bool EVTX_Override = false;
         public static string Logging_Level_To_Report = "information";
-        public static EventLog EvtLog = new EventLog();
+        public static EventLog SWELF_EvtLog_OBJ = new EventLog();
 
         //SWELF Central config commands
         private static string SWELF_Central_App_Config_Arg = "central_app_config";
         public static string SWELF_Central_Search_Arg = "central_search_config";
-        public static string SWELF_Central_WhiteList_Search_Arg = "central_whitelist_config";
+        public static string SWELF_Central_WhiteList_Search_Arg = "central_whitelist_search_config";
         private static string SWELF_Central_Plugin_Search_Arg = "central_plugin_search_config";
 
-        //SWELF Security Check Info
-        public static int ThreadsCount = Process.GetCurrentProcess().Threads.Count;
-        public static Process SWELF_PROC = Process.GetCurrentProcess();
-        public static int SWELF_Starting_Dlls = Settings.SWELF_PROC.Modules.Count;
-        public static AppDomain SWELF_Start_currentDomain = AppDomain.CurrentDomain;
-        public static Evidence SWELF_Start_asEvidence = SWELF_Start_currentDomain.Evidence;
-		public static Assembly[] SWELF_Start_Assemblys = SWELF_Start_currentDomain.GetAssemblies();
-
+        //SWELF File Location accessors
         public static string GET_ErrorLog_Location
         {
             get
@@ -196,31 +199,35 @@ namespace SWELF
 
             File_Operation.GET_Plugin_Scripts_Ready();
 
-            //DO REG STUFF ONLY FOR CENTRAL CONFIG
-            if (AppConfig_File_Args.ContainsKey(SWELF_Central_App_Config_Arg))//central config for all the files in Config Dir
+            if (AppConfig_File_Args.ContainsKey(SWELF_Central_App_Config_Arg))//central config APP
             {
                 Backup_Config_File_Args = AppConfig_File_Args;
                 READ_CENTRAL_APP_Config_Folder();
-                AppConfig_File_Args.Clear();//all old args are now discarded
-                READ_App_Config_File();//if no match replace local files and read local file, make log of event
+                AppConfig_File_Args.Clear();
+                READ_App_Config_File();
             }
-            if (AppConfig_File_Args.ContainsKey(SWELF_Central_Search_Arg))
+            if (AppConfig_File_Args.ContainsKey(SWELF_Central_Search_Arg))//central config SEARCH
             {
                 READ_CENTRAL_SEARCH_Config_File(AppConfig_File_Args[SWELF_Central_Search_Arg]);
                 Array.Clear(Backup_Config_File_Args_Array, 0, Backup_Config_File_Args_Array.Length);
                 READ_Search_Terms_File();
-
-                READ_CENTRAL_WHITELIST_SEARCH_Config_File(AppConfig_File_Args[SWELF_Central_Search_Arg]);
+            }
+            if (AppConfig_File_Args.ContainsKey(SWELF_Central_WhiteList_Search_Arg))//central config WHITELIST SEARCH FILE
+            {
+                READ_CENTRAL_WHITELIST_SEARCH_Config_File(AppConfig_File_Args[SWELF_Central_WhiteList_Search_Arg]);
                 Array.Clear(Backup_Config_File_Args_Array, 0, Backup_Config_File_Args_Array.Length);
                 READ_WhiteList_Search_Terms_File();
             }
-            if (AppConfig_File_Args.ContainsKey(SWELF_Central_Plugin_Search_Arg))
+            if (AppConfig_File_Args.ContainsKey(SWELF_Central_Plugin_Search_Arg))//central config Plugin SEARCH
             {
                 READ_CENTRAL_PLUGINS_Folders();
                 Array.Clear(Backup_Config_File_Args_Array, 0, Backup_Config_File_Args_Array.Length);
+                //TODO Take search file parse and read in all the files on the list
                 READ_Powershell_SearchTerms();
             }
             CHECK_if_all_Search_Terms_have_Indexed_LogsSources();
+
+            //READ_REG_Config();
 
             if (Settings.AppConfig_File_Args.ContainsKey("debug"))
             {
@@ -234,18 +241,18 @@ namespace SWELF
         private static void READ_REG_Config()
         {
             Reg.READ_All_SWELF_Reg_Keys();
+
             if (Reg.Reg_Keys_and_Values.Count<=0)
             {
-                Reg.WRITE_Default_Reg_Keys();
+                Reg.WRITE_Default_SWELF_Reg_Keys();
             }
 
             if (File.Exists(GET_AppConfigFile))
             {
-                READ_App_Config_File();
-                if (Reg.READ_Reg_Key(Reg.REG_KEY.log_level).ToLower() != AppConfig_File_Args["log_level"].ToLower())
+                if (Reg.READ_SWELF_Reg_Key(Reg.REG_KEY.logging_level).ToLower() != AppConfig_File_Args["logging_level"].ToLower())
                 {
-                    Errors.Log_Error("READ_REG_Config()", "Reg.READ_Reg_Key(Reg.REG_KEY.log_level).ToLower() != AppConfig_File_Args[\"log_level\"].ToLower()", Errors.LogSeverity.Warning);
-                    Reg.CHANGE_Reg_Key(Reg.REG_KEY.log_level, AppConfig_File_Args["log_level"]);
+                    Errors.Log_Error("READ_REG_Config()", "Reg.READ_Reg_Key(Reg.REG_KEY.logging_level).ToLower() != AppConfig_File_Args[\"logging_level\"].ToLower()", Errors.LogSeverity.Warning);
+                    Reg.CHANGE_SWELF_Reg_Key(Reg.REG_KEY.logging_level, AppConfig_File_Args["logging_level"]);
                 }
             }
         }
@@ -275,7 +282,6 @@ namespace SWELF
                     }//EventLogID_PlaceHolder
                     else if (WebFiles.ElementAt(WebFiles.Count - 1).Equals(EventLogID_PlaceHolder) && !VERIFY_Central_File_Config_Hash(Config_Files_on_the_Web_Server.ElementAt(x), GET_EventLogID_PlaceHolder))//check hash of file on web server to local files
                     {
-                        //TODO: find which log was added and add it to exisiting file with =1
                         GET_Central_Config_File(Config_Files_on_the_Web_Server.ElementAt(x), GET_EventLogID_PlaceHolder, EventLogID_PlaceHolder);
                         READ_EventLogID_Placeholders(true);
                     }
@@ -307,10 +313,10 @@ namespace SWELF
                     {
                         GET_Central_Config_File(Config_Files_on_the_Web_Server.ElementAt(x), GET_SearchTermsFile_PLUGIN, SearchTermsFileName);
                     }//Plugin_search/Search_WhiteList.txt
-                    else if (WebFiles.ElementAt(WebFiles.Count - 1).Equals(Search_WhiteList) && !VERIFY_Central_File_Config_Hash(Config_Files_on_the_Web_Server.ElementAt(x), GET_WhiteList_SearchTermsFile_PLUGIN))//check hash of file on web server to local files
-                    {
-                        GET_Central_Config_File(Config_Files_on_the_Web_Server.ElementAt(x), GET_WhiteList_SearchTermsFile_PLUGIN, Search_WhiteList);
-                    }//scripts/* downlaod will not be supported
+                    //else if (WebFiles.ElementAt(WebFiles.Count - 1).Equals(Search_WhiteList) && !VERIFY_Central_File_Config_Hash(Config_Files_on_the_Web_Server.ElementAt(x), GET_WhiteList_SearchTermsFile_PLUGIN))//check hash of file on web server to local files
+                    //{
+                    //    GET_Central_Config_File(Config_Files_on_the_Web_Server.ElementAt(x), GET_WhiteList_SearchTermsFile_PLUGIN, Search_WhiteList);
+                    //}//scripts/* downlaod will not be supported
                 }
                 Config_Files_on_the_Web_Server.Clear();
             }
@@ -363,7 +369,6 @@ namespace SWELF
 
         public static void READ_CENTRAL_WHITELIST_SEARCH_Config_File(string Central_Location = "")
         {
-            //TODO VET SETTING FOR A WHITELIST
             string Central_Loc;
 
             if (string.IsNullOrEmpty(Central_Location) == false)
@@ -377,7 +382,6 @@ namespace SWELF
             try
             {
                 Backup_Config_File_Args_Array = File.ReadAllLines(GET_WhiteList_SearchTermsFile);
-
                 GET_All_Files_HTTP(Central_Loc);//get files from web server
 
                 for (int x = 0; x < Config_Files_on_the_Web_Server.Count; ++x)
@@ -402,23 +406,77 @@ namespace SWELF
 
         private static void READ_App_Config_File()
         {
+            List<string> methods_args = new List<string>();
+
             try
             {
                 Encryptions.UnLock_File(GET_AppConfigFile);
-                List<string> methods_args = new List<string>();
 
                 foreach (string ConfigFileline in File.ReadAllLines(GET_AppConfigFile))
                 {
                     if (!ConfigFileline.Contains(CommentCharConfigs) && ConfigFileline.Contains(SplitChar_ConfigVariableEquals[0]))
                     {
                         methods_args = ConfigFileline.Split(SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToList();
-                        if (methods_args.ElementAt(0).ToLower().Contains("central_app_config") == false)
+
+                        if (methods_args.ElementAt(0).ToLower().Contains(SWELF_Central_App_Config_Arg) == true)
                         {
-                            AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1).ToLower());
+                            try
+                            {
+                                AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                            }
+                            catch (Exception e)
+                            {
+                                AppConfig_File_Args.Remove(methods_args.ElementAt(0).ToLower());
+                                AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                            }
+                        }
+                        else if (methods_args.ElementAt(0).ToLower().Contains(SWELF_Central_Search_Arg) == true)
+                        {
+                            try
+                            {
+                                AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                            }
+                            catch (Exception e)
+                            {
+                                AppConfig_File_Args.Remove(methods_args.ElementAt(0).ToLower());
+                                AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                            }
+                        }
+                        else if (methods_args.ElementAt(0).ToLower().Contains(SWELF_Central_Plugin_Search_Arg) == true)
+                        {
+                            try
+                            {
+                                AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                            }
+                            catch (Exception e)
+                            {
+                                AppConfig_File_Args.Remove(methods_args.ElementAt(0).ToLower());
+                                AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                            }
+                        }
+                        else if (methods_args.ElementAt(0).ToLower().Contains(SWELF_Central_WhiteList_Search_Arg) == true)
+                        {
+                            try
+                            {
+                                AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                            }
+                            catch (Exception e)
+                            {
+                                AppConfig_File_Args.Remove(methods_args.ElementAt(0).ToLower());
+                                AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                            }
                         }
                         else
                         {
-                            AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                            try
+                            {
+                                AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                            }
+                            catch (Exception e)
+                            {
+                                AppConfig_File_Args.Remove(methods_args.ElementAt(0).ToLower());
+                                AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                            }
                         }
                         methods_args.Clear();
                     }
@@ -428,7 +486,7 @@ namespace SWELF
             catch (Exception e)
             {
                 AppConfig_File_Args = Backup_Config_File_Args;
-                Errors.WRITE_Errors_To_Log("READ_App_Config_File()", e.Message.ToString(), Errors.LogSeverity.Critical);
+                Errors.WRITE_Errors_To_Log("READ_App_Config_File()", methods_args.ElementAt(0).ToLower()+" "+ methods_args.ElementAt(1) + " "+e.Message.ToString(), Errors.LogSeverity.Critical);
                 File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, AppConfigFile, File_Operation.WRITE_Default_ConsoleAppConfig_File());
             }
         }
@@ -525,6 +583,7 @@ namespace SWELF
                         {
                             string[] lines = line.Split(Settings.SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToArray();
                             EventLog_w_PlaceKeeper.Add(lines[0].ToLower(), Convert.ToInt64(lines[1]));
+                            Reg.ADD_or_CHANGE_SWELF_Reg_Key(lines[0].ToLower(), Convert.ToInt64(lines[1]).ToString());
                             EventLog_w_PlaceKeeper_List.Add(lines[0].ToLower());
                         }
                     }
@@ -567,7 +626,7 @@ namespace SWELF
         {
             File.Delete(LocalPath);//remove old config file
             Wclient.DownloadFile(WebPath, LocalPath); //if match read local files
-            Errors.WRITE_Errors_To_Log("GET_Central_Config_File(string WebPath,string LocalPath,string FileName)", "Updated " + FileName + " from " + WebPath + ". It was downloaded to " + LocalPath, Errors.LogSeverity.Verbose);//log change
+            Errors.Log_Error("GET_Central_Config_File()", "Updated " + FileName + " from " + WebPath + ". It was downloaded to " + LocalPath, Errors.LogSeverity.Informataion,EventLog_SWELF.SWELF_Central_Config_Changed_EVTID);//log change
         }
 
         public static bool VERIFY_Central_File_Config_Hash(string HTTP_File_Path, string Local_File_Path)
@@ -596,7 +655,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Errors.WRITE_Errors_To_Log("VERIFY_Central_File_Config_Hash()", "Error " + e.Message.ToString(), Errors.LogSeverity.Critical);//log change
+                Errors.WRITE_Errors_To_Log("VERIFY_Central_File_Config_Hash()", "Error " + e.Message.ToString(), Errors.LogSeverity.Warning);//log change
                 return false;
             }
         }
@@ -694,10 +753,10 @@ namespace SWELF
 
         private static void CHECK_if_all_Search_Terms_have_Indexed_LogsSources()
         {
+            List<string> Searchs = new List<string>();
+
             try
             {
-                List<string> Searchs = new List<string>();
-
                 foreach (string SearchLogType in Search_Terms_Unparsed)//search terms
                 {
                     string[] SearchsArgs = SearchLogType.Split(Settings.SplitChar_SearchCommandSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
@@ -713,19 +772,31 @@ namespace SWELF
                                     if (Settings.CHECK_If_EventLog_Exsits(SearchsArgs[0]))
                                     {
                                         Searchs.Add(SearchsArgs[0]);
+                                        if (Reg.CHECK_SWELF_Reg_Key_Exists(SearchsArgs[0])==false)
+                                        {
+                                            Reg.ADD_or_CHANGE_SWELF_Reg_Key(SearchsArgs[0],"1");
+                                        }
                                     }
                                     else if (SearchsArgs.Length > 1 && (String.IsNullOrEmpty(SearchsArgs[1]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.CHECK_If_EventLog_Exsits(SearchsArgs[1])))
                                     {
                                         Searchs.Add(SearchsArgs[1]);
+                                        if (Reg.CHECK_SWELF_Reg_Key_Exists(SearchsArgs[1])==false)
+                                        {
+                                            Reg.ADD_or_CHANGE_SWELF_Reg_Key(SearchsArgs[1], "1");
+                                        }
                                     }
                                     else if (SearchsArgs.Length > 2 && (String.IsNullOrEmpty(SearchsArgs[2]) == false && SearchLogType.StartsWith(Settings.CommentCharConfigs) == false && Settings.CHECK_If_EventLog_Exsits(SearchsArgs[2])))
                                     {
                                         Searchs.Add(SearchsArgs[2]);
+                                        if (Reg.CHECK_SWELF_Reg_Key_Exists(SearchsArgs[2])==false)
+                                        {
+                                            Reg.ADD_or_CHANGE_SWELF_Reg_Key(SearchsArgs[2], "1");
+                                        }
                                     }
                                 }
                                 catch (Exception e)
                                 {
-                                    Errors.Log_Error("CHECK_if_all_Search_Terms_have_Indexed_LogsSources()", e.Message.ToString(), Errors.LogSeverity.Warning);
+                                    Errors.Log_Error("CHECK_if_all_Search_Terms_have_Indexed_LogsSources()", e.Message.ToString() + Searchs.Count, Errors.LogSeverity.Warning);
                                 }
                             }
                         }
@@ -736,6 +807,7 @@ namespace SWELF
                 for (int x = 0; x < MissingEventLogs.Count(); ++x)
                 {
                     EventLog_w_PlaceKeeper.Add(MissingEventLogs.ElementAt(x).ToLower(), 1);
+                    Reg.ADD_or_CHANGE_SWELF_Reg_Key(MissingEventLogs.ElementAt(x).ToLower(), "1");
                     EventLog_w_PlaceKeeper_List.Add(MissingEventLogs.ElementAt(x).ToLower());
                 }
                 EventLog_w_PlaceKeeper_List.Sort();
@@ -743,8 +815,8 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Errors.Log_Error("CHECK_if_all_Search_Terms_have_Indexed_LogsSources() " ,e.Message.ToString(),Errors.LogSeverity.Critical);
-                Stop(1265);
+                Errors.Log_Error("CHECK_if_all_Search_Terms_have_Indexed_LogsSources() " ,e.Message.ToString() + Searchs.Count, Errors.LogSeverity.Critical);
+                Stop(SWELF_CRIT_ERROR_EXIT_CODE);
             }
         }
 
@@ -757,21 +829,25 @@ namespace SWELF
         {
             try
             {
+                SWELF_EvtLog_OBJ.Source = SWELF_EventLog_Name;
+
                 if (!EventLog.SourceExists(SWELF_EventLog_Name))
                 {
-                    EventLog.CreateEventSource("SWELF", SWELF_EventLog_Name);
-                    EvtLog.Source = SWELF_EventLog_Name;
-                }
-                else
-                {
-                    EvtLog.Source = SWELF_EventLog_Name;
+                    EventLog.CreateEventSource(SWELF_EvtLog_OBJ.Source, SWELF_EventLog_Name);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                EventLog.CreateEventSource("SWELF", SWELF_EventLog_Name);
-                Errors.Log_Error("SET_WindowsEventLog_Loc() ",  e.Message.ToString(),Errors.LogSeverity.Critical);
-                EvtLog.Source = SWELF_EventLog_Name;
+                try
+                {
+                    EventLog.CreateEventSource(SWELF_PROC_Name.ProcessName, SWELF_EventLog_Name);
+                    SWELF_EvtLog_OBJ.Source = SWELF_EventLog_Name;
+                }
+                catch(Exception e)
+                {
+
+                }
+                Errors.Log_Error("SET_WindowsEventLog_Loc() ",  ex.Message.ToString(),Errors.LogSeverity.FailureAudit,EventLog_SWELF.SWELF_MAIN_APP_ERROR_EVTID);
             }
         }
 
@@ -787,41 +863,37 @@ namespace SWELF
             request.AllowAutoRedirect = false;
             request.UnsafeAuthenticatedConnectionSharing = false;
             request.Timeout = 150000;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.CheckCertificateRevocationList = false;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12| SecurityProtocolType.Tls11 | SecurityProtocolType.Tls | SecurityProtocolType.Ssl3 ;
+
+            using (CustomWebClient response = new CustomWebClient())
             {
-                if (response.StatusCode == HttpStatusCode.OK)
+                string WebContents = response.DownloadString(Web_Config_URL);
+                Regex regex = new Regex(GET_DirectoryListingRegexForUrl(WebContents));
+                MatchCollection matches = regex.Matches(WebContents);
+                if (matches.Count > 0)
                 {
-                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    if (Config_Files_on_the_Web_Server.Count > 1)
                     {
-                        reader.BaseStream.ReadTimeout = 3000;
-                        string html = reader.ReadToEnd();
-                        Regex regex = new Regex(GET_DirectoryListingRegexForUrl(Web_Config_URL));
-                        MatchCollection matches = regex.Matches(html);
-                        if (matches.Count > 0)
+                        Config_Files_on_the_Web_Server.Clear();
+                    }
+                    foreach (Match match in matches)
+                    {
+                        if (match.Success && Web_Config_URL.Contains(".txt") == false && Web_Config_URL.Contains(".conf") == false)
                         {
-                            if (Config_Files_on_the_Web_Server.Count > 1)
-                            {
-                                Config_Files_on_the_Web_Server.Clear();
-                            }
-                            foreach (Match match in matches)
-                            {
-                                if (match.Success && Web_Config_URL.Contains(".txt") == false && Web_Config_URL.Contains(".conf") == false)
-                                {
-                                    Config_Files_on_the_Web_Server.Add(Web_Config_URL + match.Groups["name"].ToString());
-                                }
-                                else
-                                {
-                                    Config_Files_on_the_Web_Server.Add(Web_Config_URL);
-                                }
-                            }
+                            Config_Files_on_the_Web_Server.Add(Web_Config_URL + match.Groups["name"].ToString());
+                        }
+                        else
+                        {
+                            Config_Files_on_the_Web_Server.Add(Web_Config_URL);
                         }
                     }
                 }
                 else
                 {
-                    READ_App_Config_File();
-                    Errors.Log_Error("GET_All_HTTP_Files()", "HTTP status code was not 200 ok. It was" + response.StatusCode.ToString(), Errors.LogSeverity.Warning);
-                    EventLog_SWELF.WRITE_Critical_EventLog("ALERT: GET_All_Files_HTTP: GET_All_HTTP_Files status code was not 200. It was" + response.StatusCode.ToString());
+                    Config_Files_on_the_Web_Server.Add(Web_Config_URL);
                 }
             }
         }
@@ -899,7 +971,7 @@ SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV Findin
         public static void Dissolve()
         {
             EventLog_SWELF.WRITE_Critical_EventLog("SWELF WAS TOLD TO SELF DELETE. After it ran.");
-            Process.Start("cmd.exe", "/C choice /C Y /N /D Y /T 3 & Del /Q " + Directory.GetCurrentDirectory() + "\\SWELF.exe");
+            Process.Start("cmd.exe", "/C choice /C Y /N /D Y /T 3 & Del /Q " + Directory.GetCurrentDirectory() + "\\"+ Settings.SWELF_PROC_Name);
             Environment.Exit(0);
         }
 
@@ -936,6 +1008,16 @@ SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV Findin
         public static void Start_Write_Errors()
         {
             Errors.SEND_Errors_To_Central_Location();
+        }
+    }
+
+    public class CustomWebClient : WebClient
+    {
+        protected override WebRequest GetWebRequest(Uri uri)
+        {
+            WebRequest w = base.GetWebRequest(uri);
+            w.Timeout = 15000;
+            return w;
         }
     }
 }

@@ -67,7 +67,7 @@ namespace SWELF
                 {
                     EVTlog_PlaceHolder = First_EventID;
                     READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder, EventLog_Log_API);
-                    EventLog_SWELF.WRITE_Critical_EventLog("Missed all logs from '"+ Eventlog_FullName+"' on machine '"+Settings.ComputerName +"' the first eventlog id was older than where app left off. "+ First_EventID+" > "+PlaceKeeper_EventRecordID);
+                    EventLog_SWELF.WRITE_Critical_EventLog("Missed all logs from '"+ Eventlog_FullName+"' on machine '"+Settings.ComputerName +"' the first eventlog id was older than where app left off. Possible log file cycle/overwrite between runs. "+ First_EventID+" > "+PlaceKeeper_EventRecordID);
                     Settings.EventLog_w_PlaceKeeper[Eventlog_FullName.ToLower()] = Last_EventID;
                 }
                 else//unknown/catch condition assume 1st run
@@ -172,7 +172,6 @@ namespace SWELF
                     {
                         SWELF_Eventlog = new EventLog_Entry();
 
-                        //TODO Fix error with read in not reseting and wrong event log source in logs
                         if (Windows_EventLog_from_API.RecordId.Value >= EventRecordID)
                         {
                             SWELF_Eventlog.CreatedTime = Windows_EventLog_from_API.TimeCreated.Value;//if this doesnt work we have issues that we cant fix
