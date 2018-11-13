@@ -21,6 +21,9 @@ hidden~windows powershell~
 ~Microsoft-Windows-Security-Mitigations/KernelMode~
 
 #Windows-PowerShell/Operational
+Remove-EventLog~Microsoft-Windows-PowerShell/Operational~
+Clear-EventLog~Microsoft-Windows-PowerShell/Operational~
+Limit-EventLog~Microsoft-Windows-PowerShell/Operational~
 count:-join:2~Microsoft-Windows-PowerShell/Operational~
 count:':21~Microsoft-Windows-PowerShell/Operational~
 count:+:5~Microsoft-Windows-PowerShell/Operational~
