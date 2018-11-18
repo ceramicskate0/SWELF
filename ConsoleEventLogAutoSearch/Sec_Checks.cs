@@ -106,7 +106,6 @@ namespace SWELF
             Eventlog_Count_Before_Write = EventLogSession.GlobalSession.GetLogInformation(Settings.SWELF_EventLog_Name, PathType.LogName).RecordCount.Value;
         }
 
-
         public static bool CHECK_If_Running_as_Admin()
         {
             if (new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))

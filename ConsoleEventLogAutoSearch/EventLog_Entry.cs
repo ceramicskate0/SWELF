@@ -370,12 +370,21 @@ namespace SWELF
         private string GET_CMDLineArgs()
         {
             string commandLine="";
+
             try
             {
-                string Eventdata = Compress.DeCompress_Contents_String(EVT_Data_Compressed, EVT_Data_Size);
+                string Eventdata = "";
+                if (EVT_Data_Size<= 0 || EVT_Data_Compressed==null)
+                {
+                    Eventdata = evntdata;
+                }
+                else
+                {
+                    Eventdata = Compress.DeCompress_Contents_String(EVT_Data_Compressed, EVT_Data_Size);
+                }
 
                 if (Eventdata.Contains("commandline: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational"))
-                {;
+                {
                     string[] delm1 = { "commandline: ", "currentdirectory: " };
 
                     string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();

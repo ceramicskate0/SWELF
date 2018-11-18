@@ -137,7 +137,7 @@ namespace SWELF
                     }
                 case "keyvalue":
                     {
-                        Data = "CreatedTime=\"" + data.CreatedTime + "\""+ "   " + "ComputerName =\"" + Settings.ComputerName + "\"" + "   " + "EventID =\"" + data.EventID.ToString() + "\"" + "   " + "EventLogName=\"" + data.LogName + "\"" + "   " + "EventRecordID=\"" + data.EventRecordID + "\"" + "   " + "DisplayName=\"" + data.TaskDisplayName + "\"" + "   " + "Severity=\"" + data.Severity + "\"" + "   " + "UserID=\"" + data.UserID + "\"" + "   " + "ComputerName=\"" + data.ComputerName + "\"" + "   " +"SearchRule=\""+ data.SearchRule + "\"   " + "EventData=\"" + data.EventData+"\"";
+                        Data = "CreatedTime=\"" + data.CreatedTime + "\""+ "   " + "SourceComputer=\"" + Settings.ComputerName + "\"" + "   " + "EventID=\"" + data.EventID.ToString() + "\"" + "   " + "EventLogName=\"" + data.LogName + "\"" + "   " + "EventRecordID=\"" + data.EventRecordID + "\"" + "   " + "DisplayName=\"" + data.TaskDisplayName + "\"" + "   " + "Severity=\"" + data.Severity + "\"" + "   " + "UserID=\"" + data.UserID + "\"" + "   " + "ComputerName=\"" + data.ComputerName + "\"" + "   " +"SearchRule=\""+ data.SearchRule + "\"   " + "EventData=\"" + data.EventData+"\"";
                         break;
                     }
                 default:

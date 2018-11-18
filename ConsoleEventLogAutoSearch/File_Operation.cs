@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Security.AccessControl;
 
 namespace SWELF
 {
@@ -10,6 +11,134 @@ namespace SWELF
         private static List<string> OutputFileContents = new List<string>();
         private static DriveInfo Disk = new DriveInfo("C");
         private static long Drives_Available_Space = Disk.AvailableFreeSpace;
+
+        public static string GET_Default_ConsoleAppConfig_File_Contents
+        {
+            get
+            {
+                string log = @"#Most Up to date example at https://github.com/ceramicskate0/SWELF/blob/master/examples/Config/ConsoleAppConfig.conf" +
+    Settings.CommentCharConfigs + @"log_collector: Must Be IPV4 : {Port num if not 514}{514 is default}
+log_collector" + Settings.SplitChar_ConfigVariableEquals[0] + @"127.0.0.1
+" +
+    Settings.CommentCharConfigs + @"output_format: syslogxml,syslog,xml,data,keyvalue
+output_format" + Settings.SplitChar_ConfigVariableEquals[0] + @"keyvalue
+" +
+    Settings.CommentCharConfigs + @"logging_level: verbose,informataion,warning,critical,failureaudit
+" +
+    "logging_level" + Settings.SplitChar_ConfigVariableEquals[0] + @"critical
+" +
+    Settings.CommentCharConfigs + @"output_ips
+" +
+    Settings.CommentCharConfigs + @"ouput_hashs
+";
+                return log;
+            }
+        }
+        public static string GET_Default_Eventlog_with_PlaceKeeper_File_Contents
+        {
+            get
+            {
+                string log = @"" + Settings.CommentCharConfigs + @"LOG NAME, START AT INDEX(1 if unknown)
+#Most Up to date example at https://github.com/ceramicskate0/SWELF/blob/master/examples/Config/Eventlog_with_PlaceKeeper.txt
+application=1
+security=1
+system=1
+windows powershell=1
+#amsi/operational=1
+#microsoft-windows-sysmon/operational=1
+#microsoft-windows-windows defender/operational=1
+#microsoft-windows-powershell/operational=1
+#microsoft-windows-deviceguard/operational=1
+microsoft-windows-wmi-activity/operational=1
+microsoft-windows-bits-client/operational=1
+Microsoft-Windows-Security-Mitigations/KernelMode=1
+Microsoft-WindowsCodeIntegrity/Operational=1
+";
+                return log;
+            }
+        }
+        public static string GET_Default_Logs_Search_File_Contents
+        {
+            get
+            {
+                string log = @"" + Settings.CommentCharConfigs + @"SearchTerm/ or Search CMD " + Settings.SplitChar_SearchCommandSplit[0] + @" EventLogName " + Settings.SplitChar_SearchCommandSplit[0] + @" EventID
+#Default SWELF Config
+#Most Up to date list at https://github.com/ceramicskate0/SWELF/examples/Log_Searchs/Searchs.txt
+#Layout of Searchs.txt File for searching:
+#SearchTerm~EventLogName~EventID
+#commandline_length:500
+~System~104
+~System~7045
+~System~7040
+~System~7022
+~System~4719
+~system~104
+~security~1102
+~security~517
+~Security~7045 
+~Security~4720 
+#~Security~4688
+Logon Type:		9~Security~4624 
+Logon Type:		3~Security~4624 
+Logon Type:		10~Security~4624
+#~Microsoft-Windows-CodeIntegrity/Operational~3004
+#~Microsoft-Windows-CodeIntegrity/Operational~3033
+#~Application~866
+#~Application~1534
+webclient~windows powershell~
+hidden~windows powershell~
+download~windows powershell~
+nowindows~windows powershell~
+-nop~windows powershell~
+noprofile~windows powershell~
+#count:+:5~windows powershell~
+#count:-join:2~windows powershell~
+#count:|:2~windows powershell~
+#~Microsoft-Windows-SoftwareRestrictionPolicies~Application~866
+#eventdata_length:10000~Microsoft-Windows-PowerShell/Operational~
+#count:-join:2~Microsoft-Windows-PowerShell/Operational~
+#count:':30~Microsoft-Windows-PowerShell/Operational~
+#count:+:5~Microsoft-Windows-PowerShell/Operational~
+#count:;:12~Microsoft-Windows-PowerShell/Operational~
+#count:|:2~Microsoft-Windows-PowerShell/Operational~
+#base64decode~Microsoft-Windows-PowerShell/Operational~
+#webclient~Microsoft-Windows-PowerShell/Operational~
+#hidden~Microsoft-Windows-PowerShell/Operational~
+#-nop~Microsoft-Windows-PowerShell/Operational~
+#~microsoft-Windows-Windows Defender/Operational~1123
+#~microsoft-Windows-Windows Defender/Operational~5007
+#~microsoft-Windows-Windows Defender/Operational~1007
+#~microsoft-Windows-Windows Defender/Operational~1008
+#~microsoft-Windows-Windows Defender/Operational~1015
+#~microsoft-Windows-Windows Defender/Operational~1116
+#~microsoft-Windows-Windows Defender/Operational~1117
+#~microsoft-Windows-Windows Defender/Operational~3007
+#~microsoft-Windows-Windows Defender/Operational~5001
+#~microsoft-Windows-Windows Defender/Operational~5007
+#~Microsoft-Windows-Sysmon/Operational~2
+#~Microsoft-Windows-Sysmon/Operational~8
+#~Microsoft-Windows-Sysmon/Operational~9
+#~Microsoft-Windows-Sysmon/Operational~10
+#~Microsoft-Windows-Sysmon/Operational~12
+#~Microsoft-Windows-Sysmon/Operational~17
+#~Microsoft-Windows-Sysmon/Operational~18
+#~Microsoft-Windows-Sysmon/Operational~19
+#~Microsoft-Windows-Sysmon/Operational~20
+#~Microsoft-Windows-Sysmon/Operational~21
+#~Microsoft-Windows-Security-Mitigations/KernelMode~3
+#~Microsoft-Windows-Security-Mitigations/KernelMode~10
+";
+                return log;
+            }
+        }
+        public static string GET_Default_Powershell_Search_File_Contents
+        {
+            get
+            {
+                string log = "" + Settings.CommentCharConfigs + @"#File Path to Powershell Script ~ SearchTerm ~ Powershell Script Arguments \n\r#See this link for some ideas on plugins https://github.com/ceramicskate0/SWELF/wiki/Plugins";
+                return log;
+            }
+        }
 
         public static void CHECK_File_Size(string FilePath,double MaxSizeRatio=.0001)
         {
@@ -92,139 +221,6 @@ namespace SWELF
             return EventLog.LogName + "," + EventLog.EventRecordID + "," + EventLog.EventID + "," + EventLog.CreatedTime + "," + EventLog.ComputerName + "," + EventLog.UserID + ","  + EventLog.Severity + "," + EventLog.TaskDisplayName + ",\"" + EventData +"\""+ '\n';
         }
 
-        public static void WRITE_EventLogID_Placeholders()
-        {
-            File.Delete(Settings.GET_EventLogID_PlaceHolder);
-            for (int x = 0; x > Settings.EventLog_w_PlaceKeeper.Count; ++x)
-            {
-                File.AppendAllText(Settings.GET_EventLogID_PlaceHolder, Settings.EventLog_w_PlaceKeeper.ElementAt(x).Key + Settings.SplitChar_ConfigVariableEquals[0] + Settings.EventLog_w_PlaceKeeper.ElementAt(x).Value.ToString() + "\n");
-            }
-        }
-
-        public static string WRITE_Default_ConsoleAppConfig_File()
-        {
-            string log = @"#Most Up to date example at https://github.com/ceramicskate0/SWELF/blob/master/examples/Config/ConsoleAppConfig.conf" +
-Settings.CommentCharConfigs + @"log_collector: Must Be IPV4 : {Port num if not 514}{514 is default}
-log_collector" + Settings.SplitChar_ConfigVariableEquals[0] + @"127.0.0.1
-" +
-Settings.CommentCharConfigs + @"output_format: syslogxml,syslog,xml,data,keyvalue
-output_format" + Settings.SplitChar_ConfigVariableEquals[0] + @"keyvalue
-" +
-Settings.CommentCharConfigs + @"logging_level: verbose,informataion,warning,critical,failureaudit
-" +
-"logging_level" + Settings.SplitChar_ConfigVariableEquals[0] + @"critical
-" +
-Settings.CommentCharConfigs + @"output_ips
-" +
-Settings.CommentCharConfigs + @"ouput_hashs
-";
-            return log;
-        }
-
-        public static string WRITE_Default_Eventlog_with_PlaceKeeper_File()
-        {
-            string log = @"" + Settings.CommentCharConfigs + @"LOG NAME, START AT INDEX(1 if unknown)
-#Most Up to date example at https://github.com/ceramicskate0/SWELF/blob/master/examples/Config/Eventlog_with_PlaceKeeper.txt
-application=1
-security=1
-system=1
-windows powershell=1
-#amsi/operational=1
-#microsoft-windows-sysmon/operational=1
-#microsoft-windows-windows defender/operational=1
-#microsoft-windows-powershell/operational=1
-#microsoft-windows-deviceguard/operational=1
-microsoft-windows-wmi-activity/operational=1
-microsoft-windows-bits-client/operational=1
-Microsoft-Windows-Security-Mitigations/KernelMode=1
-Microsoft-WindowsCodeIntegrity/Operational=1
-";
-            return log;
-        }
-
-        public static string WRITE_Default_Logs_WhiteList_Search_File()
-        {
-            return @"" + Settings.CommentCharConfigs + @"SearchTerm " + Settings.SplitChar_SearchCommandSplit[0] + @" EventLogName " + Settings.SplitChar_SearchCommandSplit[0] + @" EventID";
-        }
-
-        public static string WRITE_Default_Logs_Search_File()
-        {
-            string log = @"" + Settings.CommentCharConfigs + @"SearchTerm/ or Search CMD " + Settings.SplitChar_SearchCommandSplit[0] + @" EventLogName " + Settings.SplitChar_SearchCommandSplit[0] + @" EventID
-#Default SWELF Config
-#Most Up to date list at https://github.com/ceramicskate0/SWELF/examples/Log_Searchs/Searchs.txt
-#Layout of Searchs.txt File for searching:
-#SearchTerm~EventLogName~EventID
-#commandline_length:500
-~System~104
-~System~7045
-~System~7040
-~System~7022
-~System~4719
-~system~104
-~security~1102
-~security~517
-~Security~7045 
-~Security~4720 
-#~Security~4688
-Logon Type:		9~Security~4624 
-Logon Type:		3~Security~4624 
-Logon Type:		10~Security~4624
-#~Microsoft-Windows-CodeIntegrity/Operational~3004
-#~Microsoft-Windows-CodeIntegrity/Operational~3033
-#~Application~866
-#~Application~1534
-webclient~windows powershell~
-hidden~windows powershell~
-download~windows powershell~
-nowindows~windows powershell~
--nop~windows powershell~
-noprofile~windows powershell~
-#count:+:5~windows powershell~
-#count:-join:2~windows powershell~
-#count:|:2~windows powershell~
-#~Microsoft-Windows-SoftwareRestrictionPolicies~Application~866
-#eventdata_length:10000~Microsoft-Windows-PowerShell/Operational~
-#count:-join:2~Microsoft-Windows-PowerShell/Operational~
-#count:':30~Microsoft-Windows-PowerShell/Operational~
-#count:+:5~Microsoft-Windows-PowerShell/Operational~
-#count:;:12~Microsoft-Windows-PowerShell/Operational~
-#count:|:2~Microsoft-Windows-PowerShell/Operational~
-#base64decode~Microsoft-Windows-PowerShell/Operational~
-#webclient~Microsoft-Windows-PowerShell/Operational~
-#hidden~Microsoft-Windows-PowerShell/Operational~
-#-nop~Microsoft-Windows-PowerShell/Operational~
-#~microsoft-Windows-Windows Defender/Operational~1123
-#~microsoft-Windows-Windows Defender/Operational~5007
-#~microsoft-Windows-Windows Defender/Operational~1007
-#~microsoft-Windows-Windows Defender/Operational~1008
-#~microsoft-Windows-Windows Defender/Operational~1015
-#~microsoft-Windows-Windows Defender/Operational~1116
-#~microsoft-Windows-Windows Defender/Operational~1117
-#~microsoft-Windows-Windows Defender/Operational~3007
-#~microsoft-Windows-Windows Defender/Operational~5001
-#~microsoft-Windows-Windows Defender/Operational~5007
-#~Microsoft-Windows-Sysmon/Operational~2
-#~Microsoft-Windows-Sysmon/Operational~8
-#~Microsoft-Windows-Sysmon/Operational~9
-#~Microsoft-Windows-Sysmon/Operational~10
-#~Microsoft-Windows-Sysmon/Operational~12
-#~Microsoft-Windows-Sysmon/Operational~17
-#~Microsoft-Windows-Sysmon/Operational~18
-#~Microsoft-Windows-Sysmon/Operational~19
-#~Microsoft-Windows-Sysmon/Operational~20
-#~Microsoft-Windows-Sysmon/Operational~21
-#~Microsoft-Windows-Security-Mitigations/KernelMode~3
-#~Microsoft-Windows-Security-Mitigations/KernelMode~10
-";
-            return log;
-        }
-
-        public static string WRITE_Default_Powershell_Search_File()
-        {
-            string log = "" + Settings.CommentCharConfigs + @"#File Path to Powershell Script ~ SearchTerm ~ Powershell Script Arguments \n\r#See this link for some ideas on plugins https://github.com/ceramicskate0/SWELF/wiki/Plugins";
-            return log;
-        }
-
         public static void UPDATE_EventLog_w_PlaceKeeper_File()
         {
             Encryptions.UnLock_File(Settings.GET_EventLogID_PlaceHolder);
@@ -248,6 +244,7 @@ noprofile~windows powershell~
                 if (VERIFY_if_File_Exists(Dir + "\\" + FileName) == false)
                 {
                     File.Create(Dir + "\\" + FileName).Close();
+
                     if (string.IsNullOrEmpty(FileData) == false)
                     {
                         File.AppendAllText(Dir + "\\" + FileName, FileData);
@@ -294,6 +291,33 @@ noprofile~windows powershell~
         {
             CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.DirectoriesToMonitor);
             return Settings.GET_DirectoriesToMonitor;
+        }
+
+        public static void GET_AppConfig_Files_Ready()
+        {
+            if (!VERIFY_if_File_Exists(Settings.GET_AppConfigFile))
+            {
+                CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.AppConfigFile, GET_Default_ConsoleAppConfig_File_Contents);
+                Encryptions.Lock_File(Settings.GET_AppConfigFile);
+            }
+            if (!VERIFY_if_File_Exists(Settings.GET_EventLogID_PlaceHolder))
+            {
+                CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.EventLogID_PlaceHolder, GET_Default_Eventlog_with_PlaceKeeper_File_Contents);
+                Encryptions.Lock_File(Settings.GET_EventLogID_PlaceHolder);
+            }
+            if (!VERIFY_if_File_Exists(Settings.GET_FilesToMonitor))
+            {
+                CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.FilesToMonitor, @"#C:\MyCustomApp\LogFile.log");
+            }
+            if (!VERIFY_if_File_Exists(Settings.GET_DirectoriesToMonitor))
+            {
+                CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.DirectoriesToMonitor, @"#%SystemDrive%\inetpub\logs\LogFiles");
+            }
+        }
+
+        public static void HIDDEN_File(string path)
+        {
+         File.SetAttributes(path, FileAttributes.Hidden);
         }
 
         public static List<string> READ_File_In(string FielPath)

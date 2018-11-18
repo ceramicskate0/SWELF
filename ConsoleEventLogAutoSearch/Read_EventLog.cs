@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
-using System.Collections.Concurrent;
 
 namespace SWELF
 {
@@ -85,9 +84,9 @@ namespace SWELF
             }
         }
 
-        public void READ_EVTX_File(string Path)
+        public void READ_EVTX_File(string FilePath)
         {
-            using (var reader = new EventLogReader(Path, PathType.FilePath))
+            using (var reader = new EventLogReader(FilePath, PathType.FilePath))
             {
                 while ((Windows_EventLog_from_API = reader.ReadEvent()) != null)
                 {
@@ -106,7 +105,7 @@ namespace SWELF
                             }
                             catch
                             {
-                                Eventlog.LogName = Path;
+                                Eventlog.LogName = Settings.SWELF_EventLog_Name;
                             }
                             try
                             {
@@ -126,7 +125,7 @@ namespace SWELF
                             }
                             try
                             {
-                                Eventlog.EventData = Windows_EventLog_from_API.FormatDescription().ToLower().ToString();
+                                Eventlog.EventData = Windows_EventLog_from_API.FormatDescription().ToLower();
                                 Eventlog.GET_FileHash();
                                 Eventlog.GET_IP_FromLogFile();
                                 Eventlog.GET_XML_of_Log = Windows_EventLog_from_API.ToXml();

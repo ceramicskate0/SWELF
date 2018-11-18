@@ -11,8 +11,7 @@
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>
-    </StartArguments>
+    <StartArguments>-Evtx_folder "C:\Users\Host\Documents\Visual Studio 2015\Projects\SWELF\SWELF\bin\Debug\EVTX_Samples" -Search_Terms "C:\Users\Host\Documents\Visual Studio 2015\Projects\SWELF\SWELF\bin\Debug\Log_Searchs\Searchs.txt"</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <EnableSecurityDebugging>false</EnableSecurityDebugging>

@@ -22,7 +22,7 @@ namespace SWELF
 
         public static void WRITE_EventLog_From_SWELF_Search(string log)
         {
-            using (EventLog myLogger = new EventLog(Settings.SWELF_EvtLog_OBJ.Source, Environment.MachineName,CHECK_If_Protected_Log_Name(Settings.SWELF_EvtLog_OBJ.Source)))
+            using (EventLog myLogger = new EventLog(Settings.SWELF_EventLog_Name, Environment.MachineName, Settings.SWELF_EvtLog_OBJ.Source))
             {
                 myLogger.WriteEntry(log, EventLogEntryType.Information);
             }
@@ -30,11 +30,12 @@ namespace SWELF
 
         public static void WRITE_EventLog_From_SWELF_Search(EventLog_Entry EvntLog)
         {
-            using (EventLog myLogger = new EventLog(Settings.SWELF_EventLog_Name, Environment.MachineName, CHECK_If_Protected_Log_Name(EvntLog.LogName)))
+            using (EventLog myLogger = new EventLog(Settings.SWELF_EvtLog_OBJ.Source, Environment.MachineName, CHECK_If_Protected_Log_Name(EvntLog.LogName)))
             {
                 //TODO Have eventlog log EventLogEntryType same as original
                 //THIS is where SWELF eventlog get the severity BTW. along with alot of others
                 myLogger.WriteEntry("SearchRule="+ EvntLog.SearchRule + "\r\n\r\n" + EvntLog.EventData, EventLogEntryType.Information, EvntLog.EventID);
+                //IF ERROR For eventlog source occures it because in reg the 'source' is a sub folder uner a eventlog reg key with same name. Might want to do renaming to avoid issues.
             }
         }
 
@@ -141,7 +142,7 @@ namespace SWELF
             }
         }
 
-        private static string CHECK_If_Protected_Log_Name (string EvntLog_LogName)
+        public static string CHECK_If_Protected_Log_Name (string EvntLog_LogName)
         {
             if (Protected_Event_Log_Names.Any(s => EvntLog_LogName.ToLower().IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0))
             {

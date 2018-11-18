@@ -43,12 +43,12 @@ namespace SWELF
                 ErrorLogging_Level();
                 if (Logging_Level_To_Report <= (int)LogSeverity)
                 {
-                    WRITE_Errors_To_Log("Date=" + DateTime.Now.ToShortDateString() + "   SourceComputer=" + Settings.ComputerName + "   LogSeverity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n", LogSeverity, EventID);
+                    WRITE_Errors_To_Log("Date=" + DateTime.Now.ToShortDateString() + "   SourceComputer=" + Settings.ComputerName + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n", LogSeverity, EventID);
                 }
             }
             catch (Exception e)
             {
-                ErrorsLog.Add("Date=" + DateTime.Now.ToShortDateString() + "   SourceComputer=" + Settings.ComputerName + "   LogSeverity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n");
+                ErrorsLog.Add("Date=" + DateTime.Now.ToShortDateString() + "   SourceComputer=" + Settings.ComputerName + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n");
             }
         }
 
@@ -57,7 +57,7 @@ namespace SWELF
             ErrorLogging_Level();
             if (Logging_Level_To_Report >= (int)LogSeverity)
             {
-                string err = "Date="+DateTime.Now + "   SourceComputer=" + Settings.ComputerName + "   LogSeverity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodInCode + "   Message=" + msg + "\n";
+                string err = "Date="+DateTime.Now + "   SourceComputer=" + Settings.ComputerName + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodInCode + "   Message=" + msg + "\n";
                 if (File_Operation.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
                 {
                     File.AppendAllText(Settings.GET_ErrorLog_Location, err);
@@ -67,7 +67,7 @@ namespace SWELF
                     File.Create(Settings.GET_ErrorLog_Location).Close();
                     File.AppendAllText(Settings.GET_ErrorLog_Location, err);
                 }
-                EventLog_SWELF.WRITE_Critical_EventLog("SWELF Immediate" + "   LogSeverity=" + Severity_Levels[(int)LogSeverity] + "   Message=" + err + "\n", EventID);
+                EventLog_SWELF.WRITE_Critical_EventLog("SWELF Immediate" + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   Message=" + err + "\n", EventID);
                 File_Operation.CHECK_File_Size(Settings.GET_ErrorLog_Location);
             }
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,10 +14,11 @@ namespace SWELF
     //             Persist Sub Key,Value
     class Reg
     {
-        private static RegistryKey SWELF_KEY = Microsoft.Win32.Registry.LocalMachine.CreateSubKey("Software\\SWELF");
-        public static string Windows_Reg_For_EventLogs = @"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\";
+        private static RegistryKey SWELF_KEY = Registry.LocalMachine.CreateSubKey("Software\\SWELF");
+        public static RegistryKey EventLog_Base_Key = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\Eventlog\\");
 
         public static Dictionary<string, string> Reg_Keys_and_Values = new Dictionary<string, string>();
+        private static long Default_Size = EventLogSession.GlobalSession.GetLogInformation("security", PathType.LogName).FileSize.Value;
 
         private static string[] SWELF_Keys =
         {"First_Run", "Encryption", "logging_level", "output_format",
@@ -64,7 +66,7 @@ namespace SWELF
 
         }
 
-        public static void ADD_or_CHANGE_Non_SWELF_Reg_Key(string Key, string Value)
+        public static void ADD_or_CHANGE_Non_SWELF_Reg_Key(string Key, object Value)
         {
             SWELF_KEY.SetValue(Key, Value);
         }
@@ -88,11 +90,11 @@ namespace SWELF
             }
         }
 
-        public static string READ_Non_SWELF_Reg_Key(string Key)
+        public static object READ_Non_SWELF_Reg_Key(string Key)
         {
             if (CHECK_Non_SWELF_Reg_Key_Exists(Key))
             {
-                return SWELF_KEY.GetValue(Key).ToString();
+                return SWELF_KEY.GetValue(Key);
             }
             else
             {
@@ -215,6 +217,25 @@ namespace SWELF
             for (int x = 0; x < SWELF_KEY.ValueCount; ++x)
             {
                 Reg_Keys_and_Values.Add(KeyName[x], SWELF_KEY.GetValue(KeyName[x]).ToString());
+            }
+        }
+
+        public static void SET_Event_Log_MaxSize(string LogName,long Size = 0)
+        {
+            if (Size==0)
+            {
+                Size = Default_Size;
+            }
+            RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Eventlog\" + LogName, true);
+            if (key == null)
+            {
+                Errors.Log_Error("SET_Event_Log_MaxSize(string LogName)","Registry key for this Event Log does not exist.",Errors.LogSeverity.Warning);
+            }
+            else
+            {
+                //var data = Encoding.Unicode.GetBytes(Size.ToString());
+                key.SetValue("MaxSize", Convert.ToInt32(Size));
+                Registry.LocalMachine.Close();
             }
         }
     }

@@ -46,7 +46,7 @@ namespace SWELF
         public static Process SWELF_PROC_Name = Process.GetCurrentProcess();
         //public static int ThreadsCount = Process.GetCurrentProcess().Threads.Count;
         //public static int SWELF_Starting_Dlls = Settings.SWELF_PROC_Name.Modules.Count;
-       // public static AppDomain SWELF_Start_currentDomain = AppDomain.CurrentDomain;
+        //public static AppDomain SWELF_Start_currentDomain = AppDomain.CurrentDomain;
         //public static Evidence SWELF_Start_asEvidence = SWELF_Start_currentDomain.Evidence;
         //public static Assembly[] SWELF_Start_Assemblys = SWELF_Start_currentDomain.GetAssemblies();
 
@@ -61,7 +61,7 @@ namespace SWELF
         public static string SWELF_Version = fvi.FileVersion;
         public static int SWELF_CRIT_ERROR_EXIT_CODE = 1265;
 
-        //Thread settings
+        //MultiThread settings
         public static int Max_Thread_Count = 1;//Environment.ProcessorCount / 2; TODO: change this to multi thread. storage structs not thread safe
         public static bool PS_PluginDone = false;
         public static int Running_Thread_Count = 0;
@@ -190,7 +190,7 @@ namespace SWELF
         public static void InitializeAppSettings()
         {
             GET_ErrorLog_Ready();
-            SET_WindowsEventLog_Loc();
+            SET_WindowsEventLog_Location();
             READ_App_Config_File();
             READ_EventLogID_Placeholders();
             READ_Search_Terms_File();
@@ -233,9 +233,9 @@ namespace SWELF
             {
                 Logging_Level_To_Report = "verbose";
             }
+
+            //CHECK_SWELF_EventLog_Sources_Ready();
         }
-
-
 
 
         private static void READ_REG_Config()
@@ -408,6 +408,8 @@ namespace SWELF
         {
             List<string> methods_args = new List<string>();
 
+            File_Operation.GET_AppConfig_Files_Ready();
+
             try
             {
                 Encryptions.UnLock_File(GET_AppConfigFile);
@@ -487,15 +489,16 @@ namespace SWELF
             {
                 AppConfig_File_Args = Backup_Config_File_Args;
                 Errors.WRITE_Errors_To_Log("READ_App_Config_File()", methods_args.ElementAt(0).ToLower()+" "+ methods_args.ElementAt(1) + " "+e.Message.ToString(), Errors.LogSeverity.Critical);
-                File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, AppConfigFile, File_Operation.WRITE_Default_ConsoleAppConfig_File());
+                File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, AppConfigFile, File_Operation.GET_Default_ConsoleAppConfig_File_Contents);
             }
         }
 
         public static void READ_Search_Terms_File()
         {
+            string line = "";
+
             try
             {
-                string line="";
                 Encryptions.UnLock_File(GET_SearchTermsFile);
                 StreamReader file = new StreamReader(GET_SearchTermsFile);
                 while ((line = file.ReadLine()) != null)
@@ -511,16 +514,16 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Errors.Log_Error("READ_Search_Terms_File()" , e.Message.ToString(),Errors.LogSeverity.Critical);
-                File_Operation.CREATE_NEW_Files_And_Dirs(Search_File_Location, SearchTermsFileName, File_Operation.WRITE_Default_Logs_Search_File());
+                Errors.Log_Error("READ_Search_Terms_File()" ,"line="+ line+" "+ e.Message.ToString(),Errors.LogSeverity.Critical);
+                File_Operation.CREATE_NEW_Files_And_Dirs(Search_File_Location, SearchTermsFileName, File_Operation.GET_Default_Logs_Search_File_Contents);
             }
         }
 
         public static void READ_WhiteList_Search_Terms_File()
         {
+            string line = "";
             try
             {
-                string line="";
                 Encryptions.UnLock_File(GET_WhiteList_SearchTermsFile);
                 StreamReader file = new StreamReader(GET_WhiteList_SearchTermsFile);
                 while ((line = file.ReadLine()) != null)
@@ -535,8 +538,8 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Errors.Log_Error("READ_WhiteList_Search_Terms_File() " , e.Message.ToString(),Errors.LogSeverity.Critical);
-                File_Operation.CREATE_NEW_Files_And_Dirs(Search_File_Location, Search_WhiteList, File_Operation.WRITE_Default_Logs_WhiteList_Search_File());
+                Errors.Log_Error("READ_WhiteList_Search_Terms_File() " , "line=" + line + " " + e.Message.ToString(),Errors.LogSeverity.Critical);
+                File_Operation.CREATE_NEW_Files_And_Dirs(Search_File_Location, Search_WhiteList, "#SearchTerm ~ EventLogName ~ EventID");
             }
         }
 
@@ -544,13 +547,13 @@ namespace SWELF
         {
             if (Clear_PlaceKeepers_and_Restart_Log_Query)//do this for central config read
             {
+                string line = "";
                 try
                 {
                     Encryptions.UnLock_File(GET_EventLogID_PlaceHolder);
                     EventLog_w_PlaceKeeper.Clear();
                     EventLog_w_PlaceKeeper_List.Clear();
 
-                    string line;
                     StreamReader file = new StreamReader(GET_EventLogID_PlaceHolder);
                     while ((line = file.ReadLine()) != null)
                     {
@@ -566,16 +569,16 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    Errors.Log_Error("READ_EventLogID_Placeholders()"," if (Clear_PlaceKeepers_and_Restart_Log_Query)" + e.Message.ToString(),Errors.LogSeverity.Critical);
-                    File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, EventLogID_PlaceHolder, File_Operation.WRITE_Default_Eventlog_with_PlaceKeeper_File());
+                    Errors.Log_Error("READ_EventLogID_Placeholders()"," if (Clear_PlaceKeepers_and_Restart_Log_Query) line=" +line +" "+ e.Message.ToString(),Errors.LogSeverity.Critical);
+                    File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, EventLogID_PlaceHolder, File_Operation.GET_Default_Eventlog_with_PlaceKeeper_File_Contents);
                 }
             }
             else//reading local file not central config
             {
+                string line = "";
                 try
                 {
                     Encryptions.UnLock_File(GET_EventLogID_PlaceHolder);
-                    string line;
                     StreamReader file = new StreamReader(GET_EventLogID_PlaceHolder);
                     while ((line = file.ReadLine()) != null)
                     {
@@ -592,17 +595,17 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    EventLog_SWELF.WRITE_Critical_EventLog("READ_EventLogID_Placeholders() " + e.Message.ToString());
-                    File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, EventLogID_PlaceHolder, File_Operation.WRITE_Default_Eventlog_with_PlaceKeeper_File());
+                    EventLog_SWELF.WRITE_Critical_EventLog("READ_EventLogID_Placeholders() line=" + line + " " + e.Message.ToString());
+                    File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, EventLogID_PlaceHolder, File_Operation.GET_Default_Eventlog_with_PlaceKeeper_File_Contents);
                 }
             }
         }
 
         private static void READ_Powershell_SearchTerms()
         {
+            string line = "";
             try
             {
-                string line;
                 Encryptions.UnLock_File(Plugin_Search_Location + "\\" + SearchTermsFileName);
                 StreamReader file = new StreamReader(Plugin_Search_Location + "\\" + SearchTermsFileName);
                 while ((line = file.ReadLine()) != null)
@@ -617,8 +620,8 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                EventLog_SWELF.WRITE_Critical_EventLog("READ_Powershell_SearchTerms() " + e.Message.ToString());
-                File_Operation.CREATE_NEW_Files_And_Dirs(Plugin_Search_Location, SearchTermsFileName, File_Operation.WRITE_Default_Powershell_Search_File());
+                EventLog_SWELF.WRITE_Critical_EventLog("READ_Powershell_SearchTerms() line="+line+ " " + e.Message.ToString());
+                File_Operation.CREATE_NEW_Files_And_Dirs(Plugin_Search_Location, SearchTermsFileName, "#File Path to Powershell Script~ SearchTerm~ Powershell Script Arguments");
             }
         }
 
@@ -825,29 +828,30 @@ namespace SWELF
             return EventLogs_List_Of_Avaliable.Any(s => string.Equals(s, EventLog_ToFind, StringComparison.OrdinalIgnoreCase));
         }
 
-        private static void SET_WindowsEventLog_Loc()
+        private static void SET_WindowsEventLog_Location()
         {
             try
             {
-                SWELF_EvtLog_OBJ.Source = SWELF_EventLog_Name;
-
                 if (!EventLog.SourceExists(SWELF_EventLog_Name))
-                {
-                    EventLog.CreateEventSource(SWELF_EvtLog_OBJ.Source, SWELF_EventLog_Name);
-                }
-            }
-            catch (Exception ex)
-            {
-                try
                 {
                     EventLog.CreateEventSource(SWELF_PROC_Name.ProcessName, SWELF_EventLog_Name);
                     SWELF_EvtLog_OBJ.Source = SWELF_EventLog_Name;
-                }
-                catch(Exception e)
-                {
 
+                    if (Reg.CHECK_Non_SWELF_Reg_Key_Exists(Reg.EventLog_Base_Key+ "\\"+SWELF_EventLog_Name))
+                    {
+                        Reg.SET_Event_Log_MaxSize(SWELF_EventLog_Name);
+                    }
                 }
-                Errors.Log_Error("SET_WindowsEventLog_Loc() ",  ex.Message.ToString(),Errors.LogSeverity.FailureAudit,EventLog_SWELF.SWELF_MAIN_APP_ERROR_EVTID);
+                else
+                {
+                    SWELF_EvtLog_OBJ.Source = SWELF_EventLog_Name;
+                }
+            }
+            catch (Exception e)
+            {
+                EventLog.CreateEventSource(SWELF_PROC_Name.ProcessName, SWELF_EventLog_Name);
+                Errors.Log_Error("SET_WindowsEventLog_Loc() ", e.Message.ToString(), Errors.LogSeverity.Critical);
+                SWELF_EvtLog_OBJ.Source = SWELF_EventLog_Name;
             }
         }
 
