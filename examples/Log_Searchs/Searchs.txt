@@ -208,8 +208,8 @@ Logon Type:		3~Security~4624
 Logon Type:		10~Security~4624
 
 #Microsoft-Windows-TaskScheduler/Operational
-~Microsoft-Windows-TaskScheduler/Operational~106
-~Microsoft-Windows-TaskScheduler/Operational~141
+#~Microsoft-Windows-TaskScheduler/Operational~106
+#~Microsoft-Windows-TaskScheduler/Operational~141
 
 #DNS-Client
 System~Microsoft-Windows-DNS-Client/Operational~1014
