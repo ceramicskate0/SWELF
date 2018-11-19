@@ -50,6 +50,7 @@ Gzipstream~Microsoft-Windows-PowerShell/Operational~4104
 encodedcommand~Microsoft-Windows-PowerShell/Operational~4104
 noprofile~Microsoft-Windows-PowerShell/Operational~41044104
 invoke-shellcode~Microsoft-Windows-PowerShell/Operational~4104
+adodb.stream~Microsoft-Windows-PowerShell/Operational~4104
 
 #Application
 ~Application~866
