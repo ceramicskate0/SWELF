@@ -24,7 +24,7 @@ namespace SWELF
                 {
                     string FileContent = File.ReadAllText(FilePaths.ElementAt(z));
                     File.Delete(FilePaths.ElementAt(z));
-                    FileContents_From_FileReads.Add(FileContent);
+                    FileContents_From_FileReads.Add("DateTime=" + DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) +"  "+ FileContent);
                 }
             }
             catch (Exception e)
@@ -88,7 +88,7 @@ namespace SWELF
                             {
                                 string FileContent = File.ReadAllText(FilePaths.ElementAt(c));
                                 File.Delete(FilePaths.ElementAt(c));
-                                FileContents_From_FileReads.Add(FileContent);
+                                FileContents_From_FileReads.Add("DateTime=" + DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "  " + FileContent);
                             }
                         }
                     }

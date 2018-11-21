@@ -10,7 +10,7 @@ namespace SWELF
     class Errors
     {
         private static List<string> ErrorsLog = new List<string>();
-        private static string[] Severity_Levels = { "Verbose", "Informataion", "Warning", "Critical", "","","","","","","","","","","","", "FailureAudit" };
+        private static string[] Severity_Levels = { "verbose", "informataion", "warning", "critical", "","","","","","","","","","","","", "failureaudit" };
         private static int Logging_Level_To_Report = 1;
 
         public enum  LogSeverity : int
@@ -30,7 +30,7 @@ namespace SWELF
                 int index = Array.FindIndex(Severity_Levels, row => row == Settings.Logging_Level_To_Report);
                 Logging_Level_To_Report = Convert.ToInt32(index);
             }
-            catch
+            catch (Exception e)
             {
                 Logging_Level_To_Report = 1;
             }
@@ -43,12 +43,12 @@ namespace SWELF
                 ErrorLogging_Level();
                 if (Logging_Level_To_Report <= (int)LogSeverity)
                 {
-                    WRITE_Errors_To_Log("Date=" + DateTime.Now.ToShortDateString() + "   SourceComputer=" + Settings.ComputerName + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n", LogSeverity, EventID);
+                    WRITE_Errors_To_Log("DateTime=" + DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   SourceComputer=" + Settings.ComputerName + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n", LogSeverity, EventID);
                 }
             }
             catch (Exception e)
             {
-                ErrorsLog.Add("Date=" + DateTime.Now.ToShortDateString() + "   SourceComputer=" + Settings.ComputerName + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n");
+                ErrorsLog.Add("DateTime=" + DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "    SourceComputer=" + Settings.ComputerName + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n");
             }
         }
 
@@ -57,7 +57,7 @@ namespace SWELF
             ErrorLogging_Level();
             if (Logging_Level_To_Report >= (int)LogSeverity)
             {
-                string err = "Date="+DateTime.Now + "   SourceComputer=" + Settings.ComputerName + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodInCode + "   Message=" + msg + "\n";
+                string err = "DateTime=" + DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   SourceComputer=" + Settings.ComputerName + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodInCode + "   Message=" + msg + "\n";
                 if (File_Operation.VERIFY_if_File_Exists(Settings.GET_ErrorLog_Location))
                 {
                     File.AppendAllText(Settings.GET_ErrorLog_Location, err);
@@ -67,7 +67,7 @@ namespace SWELF
                     File.Create(Settings.GET_ErrorLog_Location).Close();
                     File.AppendAllText(Settings.GET_ErrorLog_Location, err);
                 }
-                EventLog_SWELF.WRITE_Critical_EventLog("SWELF Immediate" + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   Message=" + err + "\n", EventID);
+                EventLog_SWELF.WRITE_Critical_EventLog("DateTime=" + DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + " SWELF Immediate" + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   Message=" + err + "\n", EventID);
                 File_Operation.CHECK_File_Size(Settings.GET_ErrorLog_Location);
             }
         }
@@ -114,13 +114,26 @@ namespace SWELF
 
         public static void SEND_Errors_To_Central_Location()
         {
-            string[]  Errors = File.ReadAllLines(Settings.GET_ErrorLog_Location);
-            if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == false && String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)
+            bool Data_Sent = false;
+            try
             {
-                for (int x = 0; x < Errors.Length; ++x)
+                string[] Errors = File.ReadAllLines(Settings.GET_ErrorLog_Location);
+                if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == false && String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)
                 {
-                    Network_Forwarder.SEND_Data_from_File(Errors[x]);
+                    for (int x = 0; x < Errors.Length; ++x)
+                    {
+                        Data_Sent=Network_Forwarder.SEND_Logs(Errors[x], Settings.GET_ErrorLog_Location,true);
+                    }
+                    if (Data_Sent == true && File.Exists(Settings.GET_ErrorLog_Location) && Settings.AppConfig_File_Args.ContainsKey("delete_local_log_files_when_done"))
+                    {
+                        File.Delete(Settings.GET_ErrorLog_Location);
+                        File.Create(Settings.GET_ErrorLog_Location).Close();
+                    }
                 }
+            }
+            catch(Exception e)
+            {
+                Settings.Log_Storage_Location_Unavailable("SEND_Errors_To_Central_Location() "+e.Message.ToString());
             }
         }
 

@@ -157,7 +157,7 @@ namespace SWELF
             }
         }
 
-        private static void READ_WindowsEventLog_API(string Eventlog_FullName, long EventRecordID, EventLog_File EventLogName)
+        private static void READ_WindowsEventLog_API(string Eventlog_FullName, long RecordID_From_Last_Read, EventLog_File EventLogName)
         {
             try
             {
@@ -171,7 +171,7 @@ namespace SWELF
                     {
                         SWELF_Eventlog = new EventLog_Entry();
 
-                        if (Windows_EventLog_from_API.RecordId.Value >= EventRecordID)
+                        if (Windows_EventLog_from_API.RecordId.Value > RecordID_From_Last_Read)
                         {
                             SWELF_Eventlog.CreatedTime = Windows_EventLog_from_API.TimeCreated.Value;//if this doesnt work we have issues that we cant fix
                             SWELF_Eventlog.EventLog_Seq_num = Windows_EventLog_from_API.RecordId.Value; ;//if this doesnt work we have issues that we cant fix
@@ -303,7 +303,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Errors.Log_Error("READ_WindowsEventLog_API() Missing All Event Log(s) Due To Exception. ", "EventLog='" + Eventlog_FullName + "' " + e.Message.ToString() + " " + Eventlog_FullName + " " + EventRecordID + " " + EventLogName.First_EventLogID_From_Check + " " +EventLogName.Last_EventLogID_From_Check + " " + EventLogName.Contents_of_EventLog.Count, Errors.LogSeverity.FailureAudit);
+                Errors.Log_Error("READ_WindowsEventLog_API() Missing All Event Log(s) Due To Exception. ", "EventLog='" + Eventlog_FullName + "' " + e.Message.ToString() + " " + Eventlog_FullName + " " + RecordID_From_Last_Read + " " + EventLogName.First_EventLogID_From_Check + " " +EventLogName.Last_EventLogID_From_Check + " " + EventLogName.Contents_of_EventLog.Count, Errors.LogSeverity.FailureAudit);
                 MissingLogInFileDueToException = true;
                 GC.Collect();
             }
