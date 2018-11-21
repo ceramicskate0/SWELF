@@ -97,17 +97,14 @@ namespace SWELF
 
                 Thread PS_Plugins_Thread = new Thread(() => Start_Run_Plugins());
                 PS_Plugins_Thread.Start();
-                //Start_Run_Plugins();
 
                 Thread Local_Logs_Thread = new Thread(() => Start_ReadLocal_Logs());
                 Local_Logs_Thread.Start();
-                //Start_ReadLocal_Logs();
 
                 Start_Read_Search_Write_Forward_EventLogs();
 
                 Start_Send_File_Based_Logs();
 
-                Settings.Start_Write_Errors();
                 Write_HashFile_IPsFile();
                 Encryptions.Lock_File(Settings.GET_EventLogID_PlaceHolder);
 
@@ -148,11 +145,12 @@ namespace SWELF
         {
             try
             {
+                Settings.Plugin_Search_Terms_Unparsed=Settings.Plugin_Search_Terms_Unparsed.Distinct().ToList();
                 for (int x = 0; x < Settings.Plugin_Search_Terms_Unparsed.Count; ++x)
                 {
                     EventLog_Entry PSLog = new EventLog_Entry();
                     PSLog.ComputerName = Settings.ComputerName;
-                    PSLog.EventID = 993;
+                    PSLog.EventID = EventLog_SWELF.Powershell_Plugin;
                     PSLog.LogName = "SWELF PowerShell Plugin Output";
                     PSLog.Severity = "Information";
                     PSLog.CreatedTime = DateTime.Now;
@@ -164,23 +162,16 @@ namespace SWELF
 
                     if (PSLog.EventData.ToLower().Contains(Settings.Plugin_Search_Terms_Unparsed.ElementAt(x).Split(Settings.SplitChar_SearchCommandSplit[0]).ElementAt(1).ToLower()))
                     {
-                        Settings.SWELF_Events_Of_Interest_Matching_EventLogs.Enqueue(PSLog);
+                        Settings.PS_Plugin_SWELF_Events_Of_Interest_Matching_EventLogs.Enqueue(PSLog);
 
                         try
                         {
-                            EventLog_SWELF.WRITE_EventLog_From_SWELF_Search(Settings.SWELF_Events_Of_Interest_Matching_EventLogs.ElementAt(0));
-
-                            if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == false || String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)//Does admin want to send off logs?
-                            {
-                                for (int z = 0; z < Settings.SWELF_Events_Of_Interest_Matching_EventLogs.Count; ++z)
-                                {
-                                    Network_Forwarder.SEND_Logs(Settings.SWELF_Events_Of_Interest_Matching_EventLogs.Dequeue());
-                                }
-                            }
+                            EventLog_SWELF.WRITE_EventLog_From_SWELF_Search(Settings.PS_Plugin_SWELF_Events_Of_Interest_Matching_EventLogs.ElementAt(0));
+                            Network_Forwarder.SEND_Logs(Settings.PS_Plugin_SWELF_Events_Of_Interest_Matching_EventLogs);
                         }
                         catch (Exception e)
                         {
-                            Errors.Log_Error("Start_Run_Plugins()", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " HostEventLogAgent_Eventlog.WRITE_EventLog " + e.Message.ToString(), Errors.LogSeverity.Verbose);
+                            Errors.Log_Error("Network_Forwarder.SEND_Logs() or EventLog_SWELF.WRITE_EventLog_From_SWELF_Search()", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " HostEventLogAgent_Eventlog.WRITE_EventLog " + e.Message.ToString(), Errors.LogSeverity.Warning);
                         }
                     }
                 }
@@ -190,8 +181,7 @@ namespace SWELF
             catch (Exception e)
             {
                 Errors.Log_Error("Powershell_Plugin.Run_PS_Script() " , e.Message.ToString(), Errors.LogSeverity.Warning);
-                Network_Forwarder.SEND_Data_from_File("Powershell_Plugin.Run_PS_Script() - " + e.Message.ToString());
-                Settings.Start_Write_Errors();
+                Errors.SEND_Errors_To_Central_Location();
                 Settings.PS_PluginDone = true;
                 GC.Collect();
             }
@@ -249,7 +239,7 @@ namespace SWELF
             {
                 if (e.Message == "Object reference not set to an instance of an object.")
                 {
-                    Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs() ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(Settings.Total_Threads_Run) + " Event Log Empty.", Errors.LogSeverity.Verbose);
+                    Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs() ", Settings.EventLog_w_PlaceKeeper_List.ElementAt(Settings.Total_Threads_Run-1) + e.Message.ToString(), Errors.LogSeverity.Verbose);
                 }
                 else if (e.Message.ToString().Contains("The process cannot access the file"))
                 {
@@ -276,12 +266,12 @@ namespace SWELF
                     }
                     else
                     {
-                        Start_Send_EventLogs();
+                        Network_Forwarder.SEND_Logs(Settings.SWELF_Events_Of_Interest_Matching_EventLogs);
                     }
                 }
                 catch (Exception e)
                 {
-                    Errors.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", e.Message.ToString(), Errors.LogSeverity.Warning);
+                    Errors.Log_Error("Start_Output_Post_Run()", e.Message.ToString(), Errors.LogSeverity.Warning);
                 }
                 Sec_Checks.Post_Run_Sec_Checks();
             }
@@ -309,19 +299,9 @@ namespace SWELF
             }
         }
 
-        private static void Start_Send_EventLogs()
-        {
-            if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == false || String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)//Does admin want to send off logs?
-            {
-                for (int x = 0; x < Settings.SWELF_Events_Of_Interest_Matching_EventLogs.Count; ++x)
-                {
-                    Network_Forwarder.SEND_Logs(Settings.SWELF_Events_Of_Interest_Matching_EventLogs.Dequeue());
-                }
-            }
-        }
-
         private static void Start_Send_File_Based_Logs()
         {
+            bool Data_Sent = false;
             try
             {
                 if (Settings.GET_LogCollector_Location().ToString().Contains("127.0.0.1") == false || String.IsNullOrWhiteSpace(Settings.GET_LogCollector_Location().ToString()) == false)
@@ -329,13 +309,18 @@ namespace SWELF
                     for (int z = 0; z < Read_LocalFiles.FileContents_From_FileReads.Count; ++z)
                     {
                         EventLog_SWELF.WRITE_EventLog_From_SWELF_Search(Read_LocalFiles.FileContents_From_FileReads.ElementAt(z));
-                        Network_Forwarder.SEND_Data_from_File(Read_LocalFiles.FileContents_From_FileReads.ElementAt(z));
+                        Data_Sent=Network_Forwarder.SEND_Logs(Read_LocalFiles.FileContents_From_FileReads.ElementAt(z));//TODO Add here the admins desire to delete logs after read or not
+                        if (Data_Sent == true && File.Exists(Settings.GET_ErrorLog_Location) && Settings.AppConfig_File_Args.ContainsKey("delete_local_log_files_when_done"))
+                        {
+                            File.Delete(Read_LocalFiles.FileContents_From_FileReads.ElementAt(z));
+                            File.Create(Read_LocalFiles.FileContents_From_FileReads.ElementAt(z)).Close();
+                        }
                     }
                 }
             }
             catch (Exception e)//network resource unavailable. Dont send data and try again next run. No logs will be queued by app only re read
             {
-                Settings.Log_Storage_Location_Unavailable(e.Message.ToString());
+                Settings.Log_Storage_Location_Unavailable(" Start_Send_File_Based_Logs() "+e.Message.ToString());
             }
         }
 

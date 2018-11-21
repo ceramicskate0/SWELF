@@ -8,10 +8,7 @@ namespace SWELF
 {
     class Compress
     {
-        //string someString = Encoding.ASCII.GetString(bytes);
-        //byte[] bytes = Encoding.ASCII.GetBytes(someString);
-
-        public static UTF8Encoding uniEncode = new UTF8Encoding();
+        public static UTF8Encoding utfEncode = new UTF8Encoding();
 
         public static byte[] Compress_Contents_Byte(byte[] ToCompress)
         {
@@ -29,7 +26,7 @@ namespace SWELF
 
         public static byte[] Compress_Contents_Byte(string ToCompress)
         {
-            byte[] bytesToCompress = uniEncode.GetBytes(ToCompress);
+            byte[] bytesToCompress = utfEncode.GetBytes(ToCompress);
 
             using (MemoryStream memory = new MemoryStream(bytesToCompress))
             {
@@ -52,7 +49,7 @@ namespace SWELF
                     decompressionStream.Read(decompressedBytes, 0, Size);
                 }
             }
-            return uniEncode.GetString(decompressedBytes);
+            return utfEncode.GetString(decompressedBytes);
         }
     }
 }

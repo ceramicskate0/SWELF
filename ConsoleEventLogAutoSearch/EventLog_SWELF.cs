@@ -13,6 +13,7 @@ namespace SWELF
 
         //SWELF EVENT LOG ERRORS LIST
         public static int SWELF_MAIN_APP_ERROR_EVTID = 990;
+        public static int Powershell_Plugin = 993;
         public static int SWELF_Central_Config_Changed_EVTID = 994;
         private static int SWELF_SuccessAudit_EVTID = 995;
         private static int SWELF_Information_EVTID = 996;

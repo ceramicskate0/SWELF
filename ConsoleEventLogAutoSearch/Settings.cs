@@ -10,23 +10,19 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
-using System.Reflection;
-using System.Security.Policy;
-using System.Threading.Tasks;
-using System.Security.Cryptography.X509Certificates;
-using System.Net.Security;
 
 namespace SWELF
 {
     public class Settings
     {
         public static Queue<EventLog_Entry> SWELF_Events_Of_Interest_Matching_EventLogs = new Queue<EventLog_Entry>();
+        public static Queue<EventLog_Entry> PS_Plugin_SWELF_Events_Of_Interest_Matching_EventLogs = new Queue<EventLog_Entry>();
 
         //SWELF MEM Storage central for app
         public static List<string> EventLogs_List_Of_Avaliable = EventLogSession.GlobalSession.GetLogNames().ToList();
         public static Dictionary<string, long> EventLog_w_PlaceKeeper = new Dictionary<string, long>();
         public static List<string> EventLog_w_PlaceKeeper_List = new List<string>();//Tracks Eventlog reading
-        public static Dictionary<string, string> AppConfig_File_Args = new Dictionary<string, string>();//program config arguements from file
+        public static Dictionary<string, string> AppConfig_File_Args = new Dictionary<string, string>();//program config arguements from file. consoleconfig.conf
 
         public static Dictionary<string, string> Backup_Config_File_Args;//program config arguements
         public static string[] Backup_Config_File_Args_Array;//program config arguements
@@ -112,7 +108,7 @@ namespace SWELF
         public static bool EVTX_Override = false;
         public static string Logging_Level_To_Report = "information";
         public static EventLog SWELF_EvtLog_OBJ = new EventLog();
-
+        public static string SWELF_Date_Time_Format = "MMM dd yyyy HH:mm:ss";
         //SWELF Central config commands
         private static string SWELF_Central_App_Config_Arg = "central_app_config";
         public static string SWELF_Central_Search_Arg = "central_search_config";
@@ -679,7 +675,7 @@ namespace SWELF
                 {
                     Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector"]));
                 }
-                catch
+                catch (Exception e)
                 {
                     Log_Forwarders_HostNames.Add(AppConfig_File_Args["log_collector"]);
                 }
@@ -691,9 +687,9 @@ namespace SWELF
                 {
                     Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector1"]));
                 }
-                catch
+                catch (Exception e)
                 {
-                    Log_Forwarders_HostNames.Add(AppConfig_File_Args["log_collector"]);
+                    Log_Forwarders_HostNames.Add(AppConfig_File_Args["log_collector1"]);
                 }
             }
             if (AppConfig_File_Args.ContainsKey("log_collector2") == true && !String.IsNullOrEmpty(AppConfig_File_Args["log_collector2"]))
@@ -703,7 +699,7 @@ namespace SWELF
                 {
                     Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector2"]));
                 }
-                catch
+                catch (Exception e)
                 {
                     Log_Forwarders_HostNames.Add(AppConfig_File_Args["log_collector2"]);
                 }
@@ -715,7 +711,7 @@ namespace SWELF
                 {
                     Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector3"]));
                 }
-                catch
+                catch (Exception e)
                 {
                     Log_Forwarders_HostNames.Add(AppConfig_File_Args["log_collector3"]);
                 }
@@ -727,7 +723,7 @@ namespace SWELF
                 {
                     Log_Forwarders_HostNames.Add(GET_HostName(AppConfig_File_Args["log_collector4"]));
                 }
-                catch
+                catch(Exception e)
                 {
                     Log_Forwarders_HostNames.Add(AppConfig_File_Args["log_collector4"]);
                 }
@@ -745,6 +741,7 @@ namespace SWELF
                 }
             }
 
+            Log_Forwarders_HostNames.Distinct();
             if (IPAddr.Count <= 0)
             {
                 IPAddr.Add("127.0.0.1");
@@ -980,14 +977,14 @@ SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV Findin
         }
 
         public static string GET_HostName(string IP)
-        {
+        { 
             try
             {
-                return Dns.GetHostEntry(IPAddress.Parse(IP)).HostName.ToString();
+                return Dns.GetHostEntry(IPAddress.Parse(Network_Forwarder.Get_IP_from_Socket_string(IP))).HostName.ToString();
             }
-            catch
+            catch (Exception e)
             {
-                return IPAddress.Parse(IP).ToString();
+                return Network_Forwarder.Get_IP_from_Socket_string(IP);
             }
         }
 
@@ -1005,13 +1002,8 @@ SWELF.exe -EVTX_File C:\Filepath\SuspiciousWindowsEvntLog.evtx -OutputCSV Findin
 
         public static void Stop(int error_code)
         {
-            Start_Write_Errors();
-            Environment.Exit(error_code);
-        }
-
-        public static void Start_Write_Errors()
-        {
             Errors.SEND_Errors_To_Central_Location();
+            Environment.Exit(error_code);
         }
     }
 

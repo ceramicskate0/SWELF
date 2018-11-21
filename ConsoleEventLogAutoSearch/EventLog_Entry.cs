@@ -53,7 +53,7 @@ namespace SWELF
                 {
                     if (string.IsNullOrEmpty(evntdata))
                     {
-                        EVT_Data_Size = Compress.uniEncode.GetBytes(value).Length;
+                        EVT_Data_Size = Compress.utfEncode.GetBytes(value).Length;
                         EVT_Data_Compressed = Compress.Compress_Contents_Byte(value);
                     }
                     else
@@ -93,7 +93,7 @@ namespace SWELF
                 {
                     if (string.IsNullOrEmpty(xml_evntdata))
                     {
-                        XML_Data_Size = Compress.uniEncode.GetBytes(value).Length;
+                        XML_Data_Size = Compress.utfEncode.GetBytes(value).Length;
                         XML_Data_Compressed = Compress.Compress_Contents_Byte(value);
                     }
                     else
