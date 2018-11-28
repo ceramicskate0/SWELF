@@ -21,6 +21,7 @@ hidden~windows powershell~
 ~Microsoft-Windows-Security-Mitigations/KernelMode~
 
 #Windows-PowerShell/Operational
+amsi~Microsoft-Windows-PowerShell/Operational~
 InvoKE-expResSioN~Microsoft-Windows-PowerShell/Operational~
 .Download~Microsoft-Windows-PowerShell/Operational~
 Remove-EventLog~Microsoft-Windows-PowerShell/Operational~
