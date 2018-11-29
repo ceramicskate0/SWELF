@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace SWELF
 {
-    class Network_Forwarder
+    internal class Network_Forwarder
     {
         private static List<string> IPAddr = Settings.GET_LogCollector_Location();
         private static int Dst_port = Settings.Log_Forward_Location_Port;
@@ -37,11 +37,14 @@ namespace SWELF
                             }
                         }
                         catch (Exception e)
-                        {
+                        { 
+                        //todo retry connection 3 times
+                            Settings.Logs_Sent_to_ALL_Collectors = false;
                             Errors.Log_Error("SEND_Logs() TCP", e.Message.ToString(), Errors.LogSeverity.Critical);
                         }
                     }
                 }
+
                 else//Default send logs UDP
                 {
                     for (int x = 0; x < IPAddr.Count; ++x)
@@ -51,13 +54,14 @@ namespace SWELF
                             while (Event_logs.Count > 0)
                             {
                                 UdpClient client = new UdpClient(Get_Port_from_Socket(IPAddr.ElementAt(x).ToString()));
-                                SEND_Logs_UDP(Event_logs.Dequeue(), client);
+                                var data = GET_Encoding_to_Return(Event_logs.Dequeue());
+                                client.Send(data, data.Length);
                                 client.Close();
-
                             }
                         }
                         catch (Exception e)
                         {
+                            Settings.Logs_Sent_to_ALL_Collectors = false;
                             Errors.Log_Error("SEND_Logs() UDP", e.Message.ToString(), Errors.LogSeverity.Critical);
                         }
                     }
@@ -87,6 +91,7 @@ namespace SWELF
                         catch (Exception e)
                         {
                             Data_Sent = false;
+                            Settings.Logs_Sent_to_ALL_Collectors = false;
                             Errors.Log_Error("SEND_Logs_TCP_from_File()", e.Message.ToString(), Errors.LogSeverity.Warning);
                         }
                     }
@@ -104,19 +109,6 @@ namespace SWELF
             return Data_Sent;
         }
 
-        private static void SEND_Logs_UDP(EventLog_Entry Data,UdpClient client)
-        {
-            try
-            {
-                byte[] sendBytes = GET_Encoding_to_Return(Data);
-                client.Send(sendBytes, sendBytes.Length);
-            }
-            catch (Exception e)
-            {
-                Errors.Log_Error("SEND_Data_from_File(Log_File_Data)", "SWELF NETWORK ERROR: Check output command Syntax in consoleappconfig.conf. " + e.Message.ToString(), Errors.LogSeverity.Warning);
-            }
-        }
-
         private static bool SEND_Data_from_File_UDP(string Log_File_Data, UdpClient client)
         {
             bool Data_Sent = true;
@@ -132,6 +124,7 @@ namespace SWELF
                     catch (Exception e)
                     {
                         Data_Sent = false;
+                        Settings.Logs_Sent_to_ALL_Collectors = false;
                         Errors.Log_Error("SEND_Data_from_File(Log_File_Data)", "SWELF NETWORK ERROR: " + e.Message.ToString(), Errors.LogSeverity.Warning);
                     }
                 }
@@ -139,6 +132,7 @@ namespace SWELF
             catch (Exception e)
             {
                 Data_Sent = false;
+                Settings.Logs_Sent_to_ALL_Collectors = false;
                 Errors.Log_Error("SEND_Data_from_File(string Log_File_Data)", e.Message.ToString(),Errors.LogSeverity.Warning);
             }
             return Data_Sent;
@@ -205,7 +199,7 @@ namespace SWELF
                     }
                 case "keyvalue":
                     {
-                        Data = "DateTime=\"" + data.CreatedTime + "\"" + "   " + "SourceComputer=\"" + Settings.ComputerName + "\"" + "   " + "EventID=\"" + data.EventID.ToString() + "\"" + "   " + "EventLogName=\"" + data.LogName + "\"" + "   " + "EventRecordID=\"" + data.EventRecordID + "\"" + "   " + "DisplayName=\"" + data.TaskDisplayName + "\"" + "   " + "Severity=\"" + data.Severity + "\"" + "   " + "UserID=\"" + data.UserID + "\"" + "   " +"SearchRule=\""+ data.SearchRule + "\"   " + "EventData=\"" + Regex.Replace(data.EventData, @"\n|\r|\t|\r\n|\n\r", "")+" \"";
+                        Data = "DateTime=\"" + data.CreatedTime + "\"" + "   " + "SourceComputer=\"" + Settings.ComputerName + "\"" + "   " + "EventID=\"" + data.EventID.ToString() + "\"" + "   " + "EventLogName=\"" + data.LogName + "\"" + "   " + "EventRecordID=\"" + data.EventRecordID + "\"" + "   " + "DisplayName=\"" + data.TaskDisplayName + "\"" + "   " + "Severity=\"" + data.Severity + "\"" + "   " + "UserID=\"" + data.UserID + "\"" + "   " +"SearchRule=\""+ data.SearchRule + "\"   " + "ParentCommandLine=\"" + Regex.Replace(data.ParentCMDLine, @"\n|\r|\t|\r\n|\n\r", "    ") + "\"   " + "ChildCommandLine=\"" + Regex.Replace(data.ChildCMDLine, @"\n|\r|\t|\r\n|\n\r", "    ")  + "\"   " + "EventData=\"" + Regex.Replace(data.EventData, @"\n|\r|\t|\r\n|\n\r", "    ") + " \"";
                         break;
                     }
                 default:

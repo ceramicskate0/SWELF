@@ -1,4 +1,6 @@
-﻿using System;
+﻿//Written by Ceramicskate0
+//Copyright 2018
+using System;
 using System.Runtime.InteropServices;
 
 namespace SWELF
@@ -10,7 +12,7 @@ namespace SWELF
         AMSI_RESULT_DETECTED = 32768
     }
 
-    public static class AMSI
+    internal static class AMSI
     {
         [DllImport("Amsi.dll", EntryPoint = "AmsiInitialize", CallingConvention = CallingConvention.StdCall)]
         public static extern int AmsiInitialize([MarshalAs(UnmanagedType.LPWStr)]string appName, out IntPtr amsiContext);

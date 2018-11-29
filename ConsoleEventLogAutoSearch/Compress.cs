@@ -1,4 +1,6 @@
-﻿using System;
+﻿//Written by Ceramicskate0
+//Copyright 2018
+using System;
 using System.Text;
 using System.IO;
 using System.IO.Compression;
@@ -6,7 +8,7 @@ using System.IO.Compression;
 
 namespace SWELF
 {
-    class Compress
+    internal class Compress
     {
         public static UTF8Encoding utfEncode = new UTF8Encoding();
 

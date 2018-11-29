@@ -17,7 +17,7 @@ namespace SWELF
         private int eventID = 0;
         private string computerName = null;
         private string userID = null;
-
+        private string searchrule = null;
         private byte[] EVT_Data_Compressed;
         private int EVT_Data_Size=0;
 
@@ -234,9 +234,34 @@ namespace SWELF
                 }
             }
         }
+        public string ParentCMDLine = "";
+        public string ChildCMDLine = "";
 
         public DateTime CreatedTime { get; set; }
-        public string SearchRule { get; set; }
+        public string SearchRule {
+            get
+            {
+                return searchrule;
+            }
+            set
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(searchrule))
+                    {
+                        searchrule = value;
+                    }
+                    else
+                    {
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    searchrule = value;
+                }
+            }
+        }
         public static int CommandLineArgLength { get; set; }
         public static string CommandLineArgs { get; set; }
         public static string Sysmon_DST_Port { get; set; }
@@ -392,6 +417,7 @@ namespace SWELF
                     if (datA[1].Length>commandLine.Length && (!string.IsNullOrEmpty(datA[1])))
                     {
                         commandLine = "Target-CommandLine: " + datA[1];
+                        ChildCMDLine = datA[1];
                     }
                 }
 
@@ -404,6 +430,7 @@ namespace SWELF
                     if ((datA[1].Length + "Target-CommandLine: ".Length) > commandLine.Length && (!string.IsNullOrEmpty(datA[1])))
                     {
                         commandLine += "\nParent-CommandLine: " + datA[1];
+                        ParentCMDLine = datA[1];
                     }
                 }
 
@@ -418,6 +445,7 @@ namespace SWELF
                         if (datA[1].Length > commandLine.Length)
                         {
                             commandLine = "Target-CommandLine: " + datA[1];
+                            ChildCMDLine = datA[1];
                         }
                     }
                 }
@@ -433,6 +461,7 @@ namespace SWELF
                         if (datA[1].Length > commandLine.Length)
                         {
                             commandLine = "process command line: " + datA[1];
+                            ParentCMDLine = datA[1];
                         }
                     }
                 }

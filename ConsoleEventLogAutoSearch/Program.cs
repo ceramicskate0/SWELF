@@ -58,7 +58,7 @@ namespace SWELF
 
                 Search_EventLogs search_Obj = new Search_EventLogs(EvntLogSearch.EVTX_File_Logs);
 
-                Settings.SWELF_Events_Of_Interest_Matching_EventLogs = search_Obj.Search(Settings.CMDLine_EVTX_File);
+                Settings.SWELF_Events_Of_Interest_Matching_EventLogs = search_Obj.Search_EventLog(Settings.CMDLine_EVTX_File);
 
                 if (Settings.output_csv)
                 {
@@ -216,7 +216,7 @@ namespace SWELF
                 }
                 Start_Output_Post_Run();
             }
-            File_Operation.UPDATE_EventLog_w_PlaceKeeper_File();
+            Settings.UPDATE_EventLog_w_PlaceKeeper_File();
         }
 
         private static void Start_Threaded_Search(int Index)
@@ -233,7 +233,7 @@ namespace SWELF
 
                 Search_EventLogs search_Obj = new Search_EventLogs(EVNT_Log.EventLog_Log_API.Contents_of_EventLog);
 
-                Settings.SWELF_Events_Of_Interest_Matching_EventLogs = search_Obj.Search(Settings.EventLog_w_PlaceKeeper_List.ElementAt(Index));
+                Settings.SWELF_Events_Of_Interest_Matching_EventLogs = search_Obj.Search_EventLog(Settings.EventLog_w_PlaceKeeper_List.ElementAt(Index));
             }
             catch (Exception e)
             {
@@ -271,7 +271,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    Errors.Log_Error("Start_Output_Post_Run()", e.Message.ToString(), Errors.LogSeverity.Warning);
+                    Errors.Log_Error("Start_Output_Post_Run()  Network_Forwarder.SEND_Logs() File_Operation.Write_Ouput_CSV()", e.Message.ToString(), Errors.LogSeverity.Warning);
                 }
                 Sec_Checks.Post_Run_Sec_Checks();
             }

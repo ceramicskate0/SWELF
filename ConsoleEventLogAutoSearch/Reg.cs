@@ -1,10 +1,8 @@
-﻿using System;
+﻿//Written by Ceramicskate0
+//Copyright 2018
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Win32;
 
 namespace SWELF
@@ -12,7 +10,7 @@ namespace SWELF
     //SWELF KEYS SYSTEM:
     //HKLM/Software/SWELF
     //             Persist Sub Key,Value
-    class Reg
+    internal class Reg
     {
         private static RegistryKey SWELF_KEY = Registry.LocalMachine.CreateSubKey("Software\\SWELF");
         public static RegistryKey EventLog_Base_Key = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\Eventlog\\");

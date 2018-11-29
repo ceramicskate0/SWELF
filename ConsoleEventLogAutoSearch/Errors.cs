@@ -7,7 +7,7 @@ using System.IO;
 
 namespace SWELF
 {
-    class Errors
+    internal class Errors
     {
         private static List<string> ErrorsLog = new List<string>();
         private static string[] Severity_Levels = { "verbose", "informataion", "warning", "critical", "","","","","","","","","","","","", "failureaudit" };

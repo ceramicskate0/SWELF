@@ -22,7 +22,7 @@ namespace SWELF
             Read_In_EventLogs_From_WindowsAPI = Contents_of_EventLog;
         }
 
-        public Queue<EventLog_Entry> Search(string Current_EventLog)
+        public Queue<EventLog_Entry> Search_EventLog(string Current_EventLog)
         {
             int temp_int_stor_for_Errors = 0;
             Filtered_Matched_Logs_This_SWELF_Run = new List<EventLog_Entry>();
@@ -42,7 +42,7 @@ namespace SWELF
                     }
                     else
                     {
-                        //TOD FIX ERROR BELOW on if statement
+                        //TODO FIX ERROR BELOW on if statement
                         if (Settings.Search_Commands.Any(s => Settings.Search_Terms_Unparsed.ElementAt(x).IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0))
                         {
                             if ((Search_String_Parsed.Length > 1 && (string.IsNullOrEmpty(Search_String_Parsed[1]) == false) && Search_String_Parsed[1] == Current_EventLog) || Search_String_Parsed.Length == 1)
@@ -346,7 +346,7 @@ namespace SWELF
                 }
         }
 
-        private List<EventLog_Entry> ADD_Search_Tagging(List<EventLog_Entry> MacthedList, string SearchTerm_Or_Command)
+        private List<EventLog_Entry> ADD_Search_Tagging(List<EventLog_Entry> MacthedList, string SearchTerm_Or_Command)//SEARCHRULE ADDED HERE
         {
             try
             {
@@ -387,7 +387,7 @@ namespace SWELF
             return ADD_Search_Tagging(results.ToList(), SearchTerm);
         }
 
-        private List<EventLog_Entry> SEARCH_Eventlog_For_SearchTerm(string SearchTerm, string EventLogName,string SearchRule)
+        private List<EventLog_Entry> SEARCH_Eventlog_For_SearchTerm(string SearchTerm, string EventLogName, string SearchRule)
         {
             IList<EventLog_Entry> results = Read_In_EventLogs_From_WindowsAPI.Where(s => s.EventData.Contains(SearchTerm) && s.LogName.ToLower().Equals(EventLogName.ToLower())).ToList();
             return ADD_Search_Tagging(results.ToList(), SearchRule);

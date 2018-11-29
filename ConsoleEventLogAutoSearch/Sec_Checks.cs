@@ -1,4 +1,6 @@
-﻿using System;
+﻿//Written by Ceramicskate0
+//Copyright 2018
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceProcess;
@@ -9,7 +11,7 @@ using System.Security.Principal;
 
 namespace SWELF
 {
-    class Sec_Checks
+    internal class Sec_Checks
     {
         public static int UpTime
         {
@@ -28,7 +30,8 @@ namespace SWELF
 
         public static bool Pre_Run_Sec_Checks()
         {
-            if (Check_EventLog_Service() && Check_Reg_Keys())//Event logs requirements in place
+            //TODO place check for running services here based on eventlog
+            if (Check_Service_Running("EventLog") && Check_Reg_Keys())//Event logs requirements in place
             {
                 return true;
             }
@@ -43,6 +46,16 @@ namespace SWELF
         {
             //TODO Fix non working algo for live run checks
             //Maybe reg values over time analysis?????
+            if (Settings.Services_To_Check_Up.Count > 0)//CHECK logging thrid party eventlog services are running
+            {
+                for (int x = 0; x < Settings.Services_To_Check_Up.Count; ++x)
+                {
+                    if (Check_Service_Running(Settings.Services_To_Check_Up.ElementAt(x)) == false)
+                    {
+                        FAILED_Sec_Check("Pre_Live_Run_Sec_Checks() && Check_Service_Running()", "The windows service " + Settings.Services_To_Check_Up.ElementAt(x) + " is not running or not a service on " + Settings.ComputerName, Errors.LogSeverity.Critical);
+                    }
+                }
+            }
         }
 
         public static bool Live_Run_Sec_Checks(string EVT_Log_Name)
@@ -149,21 +162,21 @@ namespace SWELF
             return true;
         }
 
-        private static bool Check_EventLog_Service()
+        private static bool Check_Service_Running(string ServiceName)
         {
             try
             {
-                using (ServiceController sc = new ServiceController("EventLog"))
+                using (ServiceController sc = new ServiceController(ServiceName))
                 {
                     if (sc.Status == ServiceControllerStatus.Running)
-                        return true;
+                        return true;//service up
                     else
-                        return false;
+                        return false;//service down
                 }
             }
-            catch
+            catch (Exception E)
             {
-                FAILED_Sec_Check("Check_EventLog_Service()", "Failed Check for running service.", Errors.LogSeverity.Critical);
+                FAILED_Sec_Check("Check_Service_Running()", E.Message.ToString(), Errors.LogSeverity.Critical);
                 return false;
             }
         }

@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Security.AccessControl;
 
 namespace SWELF
 {
-    public class File_Operation
+    internal class File_Operation
     {
         private static List<string> OutputFileContents = new List<string>();
         private static DriveInfo Disk = new DriveInfo("C");
@@ -146,7 +145,7 @@ noprofile~windows powershell~
 
             if (Log_App_Log_File.Length > Drives_Available_Space * MaxSizeRatio)
             {
-                File_Operation.DELETE_AND_CREATE_File(FilePath);
+                DELETE_AND_CREATE_File(FilePath);
             }
         }
 
@@ -219,18 +218,6 @@ noprofile~windows powershell~
             EventData=EventData.Replace("\r\n", " ");
 
             return EventLog.LogName + "," + EventLog.EventRecordID + "," + EventLog.EventID + "," + EventLog.CreatedTime + "," + EventLog.ComputerName + "," + EventLog.UserID + ","  + EventLog.Severity + "," + EventLog.TaskDisplayName + ",\"" + EventData +"\""+ '\n';
-        }
-
-        public static void UPDATE_EventLog_w_PlaceKeeper_File()
-        {
-            Encryptions.UnLock_File(Settings.GET_EventLogID_PlaceHolder);
-            DELETE_AND_CREATE_File(Settings.GET_EventLogID_PlaceHolder);
-            for (int x = 0; x < Settings.EventLog_w_PlaceKeeper.Count; ++x)
-            {
-                File.AppendAllText(Settings.GET_EventLogID_PlaceHolder, Settings.EventLog_w_PlaceKeeper.ElementAt(x).Key + Settings.SplitChar_ConfigVariableEquals[0] + Settings.EventLog_w_PlaceKeeper.ElementAt(x).Value + "\n");
-                Reg.ADD_or_CHANGE_SWELF_Reg_Key(Settings.EventLog_w_PlaceKeeper.ElementAt(x).Key, Settings.EventLog_w_PlaceKeeper.ElementAt(x).Value.ToString());
-            }
-            Encryptions.Lock_File(Settings.GET_EventLogID_PlaceHolder);
         }
 
         public static void CREATE_NEW_Files_And_Dirs(string Dir, string FileName, string FileData = "")

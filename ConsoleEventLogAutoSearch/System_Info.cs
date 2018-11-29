@@ -1,4 +1,6 @@
-﻿using System;
+﻿//Written by Ceramicskate0
+//Copyright 2018
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
