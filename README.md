@@ -3,8 +3,9 @@
 
 ## Summary:
 
-> Having the to many log issue? Or maybe just cant find what you want from a log forwarder? Want to quickly get the logs you want from local evtx files or IR and them get them in the order they where made? Maybe the other log forwarders are just too complicated and you want something simple that can do it all? 
-> SWELF might be able to help you. You tell SWELF the the key words and/or Event Log Name and/or the event ID and it will find it for you. You can event tell it things like the minimum number of characters in log, or the maximum length of the commandline arguemtns, or the length of the log itself, then the SWELF app will send just that log to your Log Collection location from a windows machine in a variety of formats. 
+> Having the to many log issue? Or maybe just cant find what you want from a log forwarder? Want to quickly get the logs you want from local evtx files or IR and them get them in the order they where made? Maybe the other log forwarders are just too complicated and you want something simple that can do it all? SWELF might be able to help you. You tell SWELF the the key words and/or Event Log Name and/or the event ID and it will find it for you. You can event tell it things like the minimum number of characters in log, or the maximum length of the command-line arguments, or the length of the log itself, then the SWELF app will send just that log to your Log Collection location from a windows machine in a variety of formats. SWELF is designed to be as small,lightweight, and windows native as possible with very low requirements and setup and still be a powerful and useful tool.
+SWELF is designed to put you back in control of your log data and your log forwarder as much as possible. Also, an interesting case has come up recently, that red teamers could use this to help simulate a SIEM on a VM for testing on an endpoint.
+
 > SWELF is designed to be as small,lightweight, and  windows native as possible with very low requirements and setup and still be a powerful and useful tool.  
 >SWELF is designed to put you back in control of your log data adn your log forwarder as much as possible.
 >Also, an interesting case has come up recently, that red teamers could use this to help simulate a SIEM on a VM for testing on an endpoint. 
