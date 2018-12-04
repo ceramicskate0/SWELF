@@ -74,6 +74,7 @@ Win32_Bios~Microsoft-Windows-WMI-Activity/Operational~
 ~Microsoft-Windows-Sysmon/Operational~19
 ~Microsoft-Windows-Sysmon/Operational~20
 ~Microsoft-Windows-Sysmon/Operational~21
+search_multiple:wscript`acrord32~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:cscript`.js~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:dwm.exe`cmd.exe~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:cmd`sc.exe~Microsoft-Windows-Sysmon/Operational~1
