@@ -190,6 +190,16 @@ System~Microsoft-Windows-DistributedCOM~10016
 #QueueUserAPC~Microsoft-Windows-Kernel-Audit-API-Calls~
 #NTMapViewOfSection~Microsoft-Windows-Kernel-Audit-API-Calls~
 
+#AppLocker
+8000~Microsoft-Windows-AppLocker/EXE and DLL~
+8000~Microsoft-Windows-AppLocker/MSI and Script~
+log_level:warning~Microsoft-Windows-AppLocker/EXE and DLL~
+log_level:warning~Microsoft-Windows-AppLocker/MSI and Script~
+
+#Microsoft-Windows-CodeIntegrity/Operational
+log_level:error~Microsoft-Windows-CodeIntegrity/Operational~
+log_level:warning~Microsoft-Windows-CodeIntegrity/Operational~
+
 #System
 ~System~104
 ~System~7045
