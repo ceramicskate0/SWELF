@@ -21,6 +21,7 @@ hidden~windows powershell~
 ~Microsoft-Windows-Security-Mitigations/KernelMode~
 
 #Windows-PowerShell/Operational
+wp-content~Microsoft-Windows-PowerShell/Operational~
 rename~Microsoft-Windows-PowerShell/Operational~
 -ep bypass~Microsoft-Windows-PowerShell/Operational~
 amsi~Microsoft-Windows-PowerShell/Operational~
