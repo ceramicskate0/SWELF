@@ -182,6 +182,10 @@ System~Microsoft-Windows-DistributedCOM~10016
 
 #Microsoft-WindowsCodeIntegrity/Operational
 ~Microsoft-WindowsCodeIntegrity/Operational~3033
+~Microsoft-Windows-CodeIntegrity/Operational~3076
+~Microsoft-Windows-CodeIntegrity/Operational~3099
+log_level:error~Microsoft-Windows-CodeIntegrity/Operational~
+log_level:warning~Microsoft-Windows-CodeIntegrity/Operational~
 
 #Microsoft-Windows-Kernel-Audit-API-Calls
 #SetThreadContext~Microsoft-Windows-Kernel-Audit-API-Calls~
@@ -195,12 +199,6 @@ System~Microsoft-Windows-DistributedCOM~10016
 8000~Microsoft-Windows-AppLocker/MSI and Script~
 log_level:warning~Microsoft-Windows-AppLocker/EXE and DLL~
 log_level:warning~Microsoft-Windows-AppLocker/MSI and Script~
-
-#Microsoft-Windows-CodeIntegrity/Operational
-log_level:error~Microsoft-Windows-CodeIntegrity/Operational~
-log_level:warning~Microsoft-Windows-CodeIntegrity/Operational~
-3076~Microsoft-Windows-CodeIntegrity/Operational~
-3099~Microsoft-Windows-CodeIntegrity/Operational~
 
 #System
 ~System~104
