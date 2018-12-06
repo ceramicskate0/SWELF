@@ -199,6 +199,8 @@ log_level:warning~Microsoft-Windows-AppLocker/MSI and Script~
 #Microsoft-Windows-CodeIntegrity/Operational
 log_level:error~Microsoft-Windows-CodeIntegrity/Operational~
 log_level:warning~Microsoft-Windows-CodeIntegrity/Operational~
+3076~Microsoft-Windows-CodeIntegrity/Operational~
+3099~Microsoft-Windows-CodeIntegrity/Operational~
 
 #System
 ~System~104
