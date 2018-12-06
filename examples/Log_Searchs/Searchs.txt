@@ -268,8 +268,16 @@ network_connect:443:powershell
 network_connect:80:powershell
 network_connect:443:cmd
 network_connect:80:cmd
-network_connect:80:javaw
 network_connect:443:javaw
+network_connect:80:javaw
+network_connect:443:wmic
+network_connect:80:wmic
+network_connect:443:bitsadmin
+network_connect:80:bitsadmin
+network_connect:443:wscript
+network_connect:80:wscript
+network_connect:443:explorer
+network_connect:80:explorer
 search_multiple:vbc`.txt
 search_multiple:%COMPSPEC%`cmd~~7045
 search_multiple:%COMPSPEC%`powershell~~7045
@@ -305,3 +313,4 @@ installutil.exe
 at.exe
 netsh advfirewall
 appvlp.exe
+timeout.exe
