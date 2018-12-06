@@ -281,6 +281,7 @@ network_connect:80:explorer
 search_multiple:vbc`.txt
 search_multiple:%COMPSPEC%`cmd~~7045
 search_multiple:%COMPSPEC%`powershell~~7045
+search_multiple:rundll32`.dat
 
 #KEYWORD SEARCHS to be run on all
 sc.exe
@@ -301,6 +302,7 @@ ftp.exe
 mshta
 #regedit
 .bgi
+.scr
 rundll32.exe javascript:
 rundll32.exe http:
 .SettingContent-ms
