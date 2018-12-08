@@ -349,6 +349,8 @@
 
 		<!--DATA: UtcTime, SourceProcessGuid, SourceProcessId, SourceThreadId, SourceImage, TargetProcessGuid, TargetProcessId, TargetImage, GrantedAccess, CallTrace-->
 		<ProcessAccess onmatch="include">
+			         <TargetImage condition="is">C:\Windows\system32\lsass.exe</TargetImage>
+                                 <SourceImage condition="end with">powershell.exe</SourceImage>
 		</ProcessAccess>
 		
 		<ProcessAccess onmatch="exclude">
