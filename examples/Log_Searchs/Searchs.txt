@@ -210,6 +210,9 @@ log_level:warning~Microsoft-Windows-AppLocker/MSI and Script~
 
 #Security
 ~Security~517
+#~Security~576
+#~Security~577
+#~Security~578
 ~Security~1100
 ~Security~1101
 ~Security~1102 
