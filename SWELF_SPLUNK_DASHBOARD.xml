@@ -1,0 +1,212 @@
+<form theme="dark">
+  <label>SWELF</label>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="dropdown" token="machine" searchWhenChanged="true">
+      <label>Computer</label>
+
+      <fieldForLabel>SourceComputer</fieldForLabel>
+      <fieldForValue>ComputerName</fieldForValue>
+      <search>
+        <query>SourceType=SWELF</query>
+        <earliest>-7d@h</earliest>
+        <latest>now</latest>
+      </search>
+      <default> </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>IP</title>
+      <table>
+        <search>
+          <query>sourcetype=SWELF $machine$ | stats count by host</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>TimeLine Most Common</title>
+      <viz type="timeline_app.timeline">
+        <title>EventsTimeLine</title>
+        <search>
+          <query>sourcetype=SWELF $machine$ | stats count by DateTime,SearchRule,EventID,EventLogName |  table DateTime,SearchRule,EventID,EventLogName</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="height">987</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="timeline_app.timeline.axisTimeFormat">DAYS</option>
+        <option name="timeline_app.timeline.colorMode">categorical</option>
+        <option name="timeline_app.timeline.maxColor">#DA5C5C</option>
+        <option name="timeline_app.timeline.minColor">#006d9c</option>
+        <option name="timeline_app.timeline.numOfBins">9</option>
+        <option name="timeline_app.timeline.tooltipTimeFormat">DAYS</option>
+        <option name="timeline_app.timeline.useColors">1</option>
+      </viz>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>TimeLine Least Common</title>
+      <viz type="timeline_app.timeline">
+        <title>EventsTimeLine</title>
+        <search>
+          <query>sourcetype=SWELF $machine$  | stats count by DateTime,SearchRule,EventID,EventLogName | rare DateTime,SearchRule,EventID,EventLogName  | table DateTime,SearchRule,EventID,EventLogName</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="height">321</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="timeline_app.timeline.axisTimeFormat">DAYS</option>
+        <option name="timeline_app.timeline.colorMode">categorical</option>
+        <option name="timeline_app.timeline.maxColor">#DA5C5C</option>
+        <option name="timeline_app.timeline.minColor">#006d9c</option>
+        <option name="timeline_app.timeline.numOfBins">9</option>
+        <option name="timeline_app.timeline.tooltipTimeFormat">DAYS</option>
+        <option name="timeline_app.timeline.useColors">1</option>
+      </viz>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>EventIDs</title>
+      <table>
+        <title>EventIDs</title>
+        <search>
+          <query>sourcetype=SWELF $machine$  | stats count by EventID,EventLogName</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+      </table>
+    </panel>
+    <panel>
+      <title>EventID</title>
+      <chart>
+        <title>EventID</title>
+        <search>
+          <query>sourcetype=SWELF $machine$ | table EventID | stats count by EventID</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">389</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>SearchRule Hits</title>
+      <table>
+        <title>SearchRule Hits</title>
+        <search>
+          <query>sourcetype=SWELF $machine$ | table EventLogName,SearchRule,EventID | stats count by SearchRule | sort by _count</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">cell</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">true</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>SearchRule Hits</title>
+      <chart>
+        <title>SearchRule Hits</title>
+        <search>
+          <query>sourcetype=SWELF $machine$ | table SearchRule, ComputerName | stats count by SearchRule</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.axisY.scale">log</option>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.showDataLabels">minmax</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="height">389</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>SearchRule Distro Hit</title>
+        <search>
+          <query>sourcetype=SWELF $machine$ | table EventLogName,SearchRule,EventID | stats count by EventLogName,SearchRule,EventID | sort by _count</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">25</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">true</option>
+        <option name="refresh.display">preview</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>ComputerName Logs Sent</title>
+      <chart>
+        <title>ComputerName Logs Sent</title>
+        <search>
+          <query>sourcetype=SWELF $machine$ | table * | stats count by SourceComputer</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.chart">bar</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>DisplayName</title>
+      <chart>
+        <title>DisplayName</title>
+        <search>
+          <query>sourcetype=SWELF $machine$ | table DisaplyName, ComputerName | stats count by DisplayName</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>ERRORS</title>
+        <search>
+          <query>sourcetype=SWELF $machine$ MethodInCode=* | table ComputerName,MethodInCode,Severity,LogSeverity | stats count by MethodInCode</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">cell</option>
+      </table>
+    </panel>
+  </row>
+</form>
