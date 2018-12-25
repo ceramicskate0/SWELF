@@ -328,5 +328,5 @@ timeout.exe
 logman
 wpr.exe
 HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\
-Remove-EtwTraceProvider
 ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
+EtwTraceProvider
