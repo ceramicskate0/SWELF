@@ -322,3 +322,4 @@ at.exe
 netsh advfirewall
 appvlp.exe
 timeout.exe
+logman
