@@ -197,6 +197,9 @@ WriteProcessMemory~Microsoft-Windows-Kernel-Audit-API-Calls~
 QueueUserAPC~Microsoft-Windows-Kernel-Audit-API-Calls~
 NTMapViewOfSection~Microsoft-Windows-Kernel-Audit-API-Calls~
 
+#Microsoft-Windows-Kernel-EventTracing/Analytic 
+~Microsoft-Windows-Kernel-EventTracing/Analytic~12
+
 #AppLocker
 8000~Microsoft-Windows-AppLocker/EXE and DLL~
 8000~Microsoft-Windows-AppLocker/MSI and Script~
@@ -323,3 +326,7 @@ netsh advfirewall
 appvlp.exe
 timeout.exe
 logman
+wpr.exe
+HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\
+Remove-EtwTraceProvider
+ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
