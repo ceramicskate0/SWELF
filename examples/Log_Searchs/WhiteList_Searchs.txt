@@ -30,5 +30,5 @@ image: c:\windows\system32\mpsigstub.exe~microsoft-windows-sysmon/operational~
 commandline: wmic  logicaldisk where "drivetype=2 and not deviceid like "a:"" get deviceid, volumename, description, filesystem, size, volumeserialnumber~microsoft-windows-sysmon/operational~
 parentcommandline: c:\windows\system32\cmd.exe /c wmic logicaldisk where "drivetype=2 and not deviceid like "a:"" get deviceid, volumename, description, filesystem, size, volumeserialnumber~microsoft-windows-sysmon/operational~
 (@jaredcatkinson)~Microsoft-Windows-PowerShell/Operational~
-(@mattifestation)~Microsoft-Windows-PowerShell/Operational~
+#(@mattifestation)~Microsoft-Windows-PowerShell/Operational~
 windows defender antivirus has removed history of malware and other potentially unwanted software.~microsoft-windows-windows defender/operational~1013
