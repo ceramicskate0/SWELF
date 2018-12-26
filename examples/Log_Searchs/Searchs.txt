@@ -322,7 +322,8 @@ vbc.exe
 #vbc
 installutil.exe
 at.exe
-netsh advfirewall
+netsh 
+advfirewall
 appvlp.exe
 timeout.exe
 logman
