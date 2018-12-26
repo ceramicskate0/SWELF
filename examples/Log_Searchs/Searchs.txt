@@ -330,3 +330,4 @@ wpr.exe
 HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\
 ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
 EtwTraceProvider
+auditpol 
