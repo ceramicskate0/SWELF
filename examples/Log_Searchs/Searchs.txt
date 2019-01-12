@@ -81,6 +81,7 @@ search_multiple:wscript`AcroRd32~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:cscript`.js~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:csc`appdata~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:dwm.exe`cmd.exe~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:cmd`timeout~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:cmd`sc.exe~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:cmd`wscript~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:cmd`cscript~Microsoft-Windows-Sysmon/Operational~1
@@ -146,6 +147,7 @@ commandline_contains:http~Microsoft-Windows-Sysmon/Operational~
 commandline_contains:rename~Microsoft-Windows-Sysmon/Operational~
 commandline_contains:/Create~Microsoft-Windows-Sysmon/Operational~1
 commandline_contains:/stext~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:& del~Microsoft-Windows-Sysmon/Operational~1
 count:|:2~Microsoft-Windows-Sysmon/Operational~
 #commandline_contains:C:\Windows\System32\wmiprvse.exe -secured -Embedding~Microsoft-Windows-Sysmon/Operational~1
 #commandline_contains:==~Microsoft-Windows-Sysmon/Operational~1
