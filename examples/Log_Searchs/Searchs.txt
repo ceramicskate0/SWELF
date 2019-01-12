@@ -263,6 +263,7 @@ commandline_contains:vbscript
 commandline_contains:sc create
 commandline_contains:java.exe -jar 
 commandline_contains:vssadmin delete shadows
+commandline_contains:-ep bypass -w hidden -file
 
 #Command COUNT to be run on all
 count:+:12
