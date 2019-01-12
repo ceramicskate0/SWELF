@@ -262,6 +262,7 @@ commandline_contains:javascript
 commandline_contains:vbscript
 commandline_contains:sc create
 commandline_contains:java.exe -jar 
+commandline_contains:vssadmin delete shadows
 
 #Command COUNT to be run on all
 count:+:12
@@ -334,3 +335,4 @@ HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\
 ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
 EtwTraceProvider
 auditpol 
+vssadmin.exe
