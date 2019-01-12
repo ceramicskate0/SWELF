@@ -144,6 +144,7 @@ commandline_contains:-urlcache~Microsoft-Windows-Sysmon/Operational~
 commandline_contains:/format~Microsoft-Windows-Sysmon/Operational~
 commandline_contains:http~Microsoft-Windows-Sysmon/Operational~
 commandline_contains:rename~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:/Create~Microsoft-Windows-Sysmon/Operational~1
 count:|:2~Microsoft-Windows-Sysmon/Operational~
 #commandline_contains:C:\Windows\System32\wmiprvse.exe -secured -Embedding~Microsoft-Windows-Sysmon/Operational~1
 #commandline_contains:==~Microsoft-Windows-Sysmon/Operational~1
