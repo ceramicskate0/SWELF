@@ -114,6 +114,8 @@ search_multiple:wmic`cmd~Microsoft-Windows-Sysmon/Operational~1
 #search_multiple:conhost`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:wmiprvse`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:java`reg~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:rundll32`appdata~Microsoft-Windows-Sysmon/Operational~1
+#search_multiple:rundll32`.exe~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:java`cmd~Microsoft-Windows-Sysmon/Operational~1
 rename~Microsoft-Windows-Sysmon/Operational~1
 mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
@@ -264,6 +266,7 @@ commandline_contains:sc create
 commandline_contains:java.exe -jar 
 commandline_contains:vssadmin delete shadows
 commandline_contains:-ep bypass -w hidden -file
+commandline_contains:Split(
 
 #Command COUNT to be run on all
 count:+:12
