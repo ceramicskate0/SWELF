@@ -341,9 +341,11 @@ appvlp.exe
 timeout.exe
 logman
 wpr.exe
-HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\
 ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
 EtwTraceProvider
-auditpol 
+auditpol
+
+#Everything Search REG Keys
+HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\
 HKCU\SOFTWARE\MICROSOFT\WINDOWS\CURRENTVERSION\RUN
 HKLM\SOFTWARE\MICROSOFT\WINDOWS NT\CURRENTVERSION\WINLOGON
