@@ -253,6 +253,8 @@ commandline_contains:rename
 commandline_length:500
 commandline_contains:<
 commandline_contains:>
+commandline_contains:^
+commandline_contains:*
 commandline_contains:$env
 commandline_contains:print /D:
 commandline_contains:expand
@@ -290,6 +292,9 @@ count:-join:5
 count:^:10
 count:;:50
 count:,:25
+count:*:8
+count:?:7
+count:^:1
 network_connect:443:powershell
 network_connect:80:powershell
 network_connect:443:cmd
