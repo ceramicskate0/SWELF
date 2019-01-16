@@ -279,6 +279,7 @@ commandline_contains:/shellexec
 commandline_contains:& del
 commandline_contains:/download
 commandline_contains:/transfer
+commandline_contains:/shtml
 
 #Command COUNT to be run on all
 count:+:12
