@@ -295,6 +295,8 @@ count:,:25
 count:*:8
 count:?:7
 count:^:1
+
+#Network Connections
 network_connect:443:powershell
 network_connect:80:powershell
 network_connect:443:cmd
@@ -309,6 +311,8 @@ network_connect:443:wscript
 network_connect:80:wscript
 network_connect:443:explorer
 network_connect:80:explorer
+
+#Search all for Multiple
 search_multiple:vbc`.txt
 search_multiple:%COMPSPEC%`cmd~~7045
 search_multiple:%COMPSPEC%`powershell~~7045
