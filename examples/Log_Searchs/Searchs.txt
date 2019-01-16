@@ -274,6 +274,7 @@ commandline_contains:java.exe -jar
 commandline_contains:vssadmin delete shadows
 commandline_contains:-ep bypass -w hidden -file
 commandline_contains:Split(
+commandline_contains:-wddisable
 
 #Command COUNT to be run on all
 count:+:12
