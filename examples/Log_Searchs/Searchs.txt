@@ -23,6 +23,7 @@ invoke-item~windows powershell~
 ~Microsoft-Windows-Security-Mitigations/KernelMode~
 
 #Windows-PowerShell/Operational
+encoding-~Microsoft-Windows-PowerShell/Operational~
 invoke-~Microsoft-Windows-PowerShell/Operational~
 wp-content~Microsoft-Windows-PowerShell/Operational~
 rename~Microsoft-Windows-PowerShell/Operational~
