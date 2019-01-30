@@ -360,6 +360,7 @@ wpr.exe
 ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
 EtwTraceProvider
 auditpol
+scrobj.dll,NI,
 
 #Everything Search REG Keys
 \SYSTEM\CurrentControlSet\Control\WMI\Autologger\
