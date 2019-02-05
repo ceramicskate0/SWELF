@@ -12,10 +12,8 @@
   - "ProcessGuid" is randomly generated, assigned, and tracked by Sysmon to assist in tracing individual process launches. Cleared on service restart.
   - "LoginGuid" is randomly generated, assigned, and tracked by Sysmon to assist in tracing individual user sessions. Cleared on service restart.
   - Sysmon does not track which rule caused an event to be logged.
-
   FILTERING: Filter conditions available for use are: is, is not, contains, excludes, begin with, end with, less than, more than, image
   - The "image" filter is usable with any field. Same as "is" but can either match the entire string, or only the text after the last "\" in the string. Credit: @mattifestation
-
   PERFORMANCE: By using "end with" you can save performance by starting a string match at the end of a line, which usually triggers earlier.
 -->
 
@@ -257,9 +255,6 @@
 		<!-- https://www.first.org/resources/papers/conf2017/APT-Log-Analysis-Tracking-Attack-Tools-by-Audit-Policy-and-Sysmon.pdf -->
 
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, User, Protocol, Initiated, SourceIsIpv6, SourceIp, SourceHostname, SourcePort, SourcePortName, DestinationIsIpV6, DestinationIp, DestinationHostname, DestinationPort, DestinationPortName-->
-		<NetworkConnect onmatch="include">			
-		</NetworkConnect>
-
 		<NetworkConnect onmatch="exclude">
 			<!--COMMENT: Unfortunately, these exclusions are very broad and easily abused, but it's a limitation of Sysmon rules that they can't be more specific as they're in user folders-->
 			<Image condition="image">g2ax_comm_expert.exe</Image> <!--GoToMeeting-->
@@ -279,9 +274,6 @@
 		<!--COMMENT:	Useful data in building infection timelines.-->
 
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image-->
-		<ProcessTerminate onmatch="include">
-		</ProcessTerminate>
-
 		<ProcessTerminate onmatch="exclude">
 		</ProcessTerminate>
 
@@ -298,23 +290,6 @@
 			<Signature condition="begin with">Intel </Signature> <!--Exclude signed Intel drivers-->
 		</DriverLoad>
 
-	<!--SYSMON EVENT ID 7 : DLL (IMAGE) LOADED BY PROCESS [ImageLoad]-->
-		<!--COMMENT:	Can cause high system load, disabled by default.-->
-		<!--COMMENT:	[ https://attack.mitre.org/wiki/Technique/T1073 ] [ https://attack.mitre.org/wiki/Technique/T1038 ] [ https://attack.mitre.org/wiki/Technique/T1034 ] -->
-
-		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, ImageLoaded, Hashes, Signed, Signature, SignatureStatus-->
-		<ImageLoad onmatch="include">
-		</ImageLoad>
-		<ImageLoad onmatch="exclude">
-		</ImageLoad>
-	<!--SYSMON EVENT ID 8 : REMOTE THREAD CREATED [CreateRemoteThread]-->
-		<!--COMMENT:	Monitor for processes injecting code into other processes. Often used by malware to cloak their actions. Also when Firefox loads Flash.
-		[ https://attack.mitre.org/wiki/Technique/T1055 ] -->
-
-		<!--DATA: UtcTime, SourceProcessGuid, SourceProcessId, SourceImage, TargetProcessId, TargetImage, NewThreadId, StartAddress, StartModule, StartFunction-->
-		<CreateRemoteThread onmatch="include">
-		</CreateRemoteThread>
-		
 		<CreateRemoteThread onmatch="exclude">
 			<!--COMMENT: Exclude mostly-safe sources and log anything else.-->
 			<SourceImage condition="is">C:\Windows\system32\svchost.exe</SourceImage>
@@ -337,9 +312,6 @@
 		<!--COMMENT:	You will likely want to set this to a full capture on domain controllers, where no process should be doing raw reads.-->
 
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, Device-->
-		<RawAccessRead onmatch="include">
-		</RawAccessRead>
-		
 		<RawAccessRead onmatch="exclude">
 		</RawAccessRead>
 	<!--SYSMON EVENT ID 10 : INTER-PROCESS ACCESS [ProcessAccess]-->
@@ -348,11 +320,6 @@
 		<!--COMMENT:	Monitor for processes accessing other process' memory.-->
 
 		<!--DATA: UtcTime, SourceProcessGuid, SourceProcessId, SourceThreadId, SourceImage, TargetProcessGuid, TargetProcessId, TargetImage, GrantedAccess, CallTrace-->
-		<ProcessAccess onmatch="include">
-			         <TargetImage condition="is">C:\Windows\system32\lsass.exe</TargetImage>
-                                 <SourceImage condition="end with">powershell.exe</SourceImage>
-		</ProcessAccess>
-		
 		<ProcessAccess onmatch="exclude">
 		</ProcessAccess>
 	<!--SYSMON EVENT ID 11 : FILE CREATED [FileCreate]-->
@@ -361,9 +328,6 @@
 		<!--NOTE:	You may not see files detected by antivirus. Other filesystem minifilters, like antivirus, can act before Sysmon receives the alert a file was written.-->
 
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, TargetFilename, CreationUtcTime-->
-		<FileCreate onmatch="include">
-		</FileCreate>
-
 		<FileCreate onmatch="exclude">
 			<!--SECTION: Microsoft-->
 			<Image condition="is">C:\Program Files (x86)\EMET 5.5\EMET_Service.exe</Image> <!--Microsoft:EMET: Writes to C:\Windows\AppPatch\-->
@@ -633,8 +597,7 @@
 		<!--NOTE: Other filesystem minifilters can make it appear to Sysmon that some files are being written twice. This is not a Sysmon issue, per Mark Russinovich.-->
 
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, TargetFilename, CreationUtcTime, Hash-->
-		<FileCreateStreamHash onmatch="include">
-		</FileCreateStreamHash>
+
 
 		<FileCreateStreamHash onmatch="exclude">
 		</FileCreateStreamHash>
@@ -654,8 +617,7 @@
 		<!--ADDITIONAL REFERENCE: [ https://blog.cobaltstrike.com/2015/10/07/named-pipe-pivoting/ ] -->
 
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, PipeName, Image-->
-		<PipeEvent onmatch="include">
-		</PipeEvent>
+
 		<PipeEvent onmatch="exclude">
 		</PipeEvent>
 	<!--SYSMON EVENT ID 19 & 20 & 21 : WMI EVENT MONITORING [WmiEvent]-->
@@ -667,8 +629,6 @@
 		<!--ADDITIONAL REFERENCE: [ https://rawsec.lu/blog/posts/2017/Sep/19/sysmon-v610-vs-wmi-persistence/ ] -->
 
 		<!--DATA: EventType, UtcTime, Operation, User, Name, Type, Destination, Consumer, Filter-->
-		<WmiEvent onmatch="include">
-		</WmiEvent>
 		<WmiEvent onmatch="exclude">
 		</WmiEvent>
 	<!--SYSMON EVENT ID 255 : ERROR-->
