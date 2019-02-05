@@ -321,21 +321,16 @@
 
 		<!--DATA: UtcTime, SourceProcessGuid, SourceProcessId, SourceThreadId, SourceImage, TargetProcessGuid, TargetProcessId, TargetImage, GrantedAccess, CallTrace-->
 		<ProcessAccess onmatch="exclude">
+			<SourceImage condition="is">C:\Program Files (x86)\Fortinet\FortiClient\FortiProxy.exe</SourceImage>
+			<SourceImage condition="is">C:\WINDOWS\system32\svchost.exe</SourceImage> 
+			<SourceImage condition="is">C:\Program Files (x86)\VMware\VMware Player\vmware-authd.exe</SourceImage> 
+			<SourceImage condition="is">C:\ProgramData\Microsoft\Windows Defender\platform\4.18.1812.3-0\MsMpEng.exe</SourceImage> 
 		</ProcessAccess>
-	<!--SYSMON EVENT ID 11 : FILE CREATED [FileCreate]-->
-		<!--EVENT 11: "File created"-->
-		<!--NOTE:	Other filesystem "minifilters" can make it appear to Sysmon that some files are being written twice. This is not a Sysmon issue, per Mark Russinovich.-->
-		<!--NOTE:	You may not see files detected by antivirus. Other filesystem minifilters, like antivirus, can act before Sysmon receives the alert a file was written.-->
 
-		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, TargetFilename, CreationUtcTime-->
 		<FileCreate onmatch="exclude">
-			<!--SECTION: Microsoft-->
 			<Image condition="is">C:\Program Files (x86)\EMET 5.5\EMET_Service.exe</Image> <!--Microsoft:EMET: Writes to C:\Windows\AppPatch\-->
-			<!--SECTION: Microsoft:Office-->
 			<TargetFilename condition="is">C:\Windows\System32\Tasks\OfficeSoftwareProtectionPlatform\SvcRestartTask</TargetFilename>
-			<!--SECTION: Microsoft:Office:Click2Run-->
-			<Image condition="is">C:\Program Files\Common Files\Microsoft Shared\ClickToRun\OfficeC2RClient.exe</Image> <!-- Microsoft:Office Click2Run-->
-			<!--SECTION: Microsoft:Windows-->
+			<Image condition="is">C:\Program Files\Common Files\Microsoft Shared\ClickToRun\OfficeC2RClient.exe</Image> 
 			<Image condition="is">C:\Windows\system32\smss.exe</Image> <!-- Microsoft:Windows: Session Manager SubSystem: Creates swapfile.sys,pagefile.sys,hiberfile.sys-->
 			<Image condition="is">C:\Windows\system32\CompatTelRunner.exe</Image> <!-- Microsoft:Windows: Windows 10 app, creates tons of cache files-->
 			<Image condition="is">\\?\C:\Windows\system32\wbem\WMIADAP.EXE</Image> <!-- Microsoft:Windows: WMI Performance updates-->
@@ -346,14 +341,10 @@
 			<TargetFilename condition="end with">.cdownload</TargetFilename> 
 			<TargetFilename condition="end with">.tmp</TargetFilename> 
 			<TargetFilename condition="begin with">C:\Windows\Installer\</TargetFilename> <!--Microsoft:Windows:Installer: Ignore MSI installer files caching-->
-			<!--SECTION: Microsoft:Windows:Updates-->
 			<TargetFilename condition="begin with">C:\$WINDOWS.~BT\Sources\</TargetFilename> <!-- Microsoft:Windows: Feature updates containing lots of .exe and .sys-->
 			<Image condition="begin with">C:\Windows\winsxs\amd64_microsoft-windows</Image> <!-- Microsoft:Windows: Windows update-->
-			<!--SECTION: Dell-->
 			<Image condition="is">C:\Program Files (x86)\Dell\CommandUpdate\InvColPC.exe</Image>
-			<!--SECTION: Intel-->
 			<Image condition="is">C:\Windows\system32\igfxCUIService.exe</Image> <!--Intel: Drops bat and other files in \Windows in normal operation-->
-			<!--SECTION: Adobe-->
 			<TargetFilename condition="is">C:\Windows\System32\Tasks\Adobe Acrobat Update Task</TargetFilename>
 			<TargetFilename condition="is">C:\Windows\System32\Tasks\Adobe Flash Player Updater</TargetFilename>
 			<TargetFilename condition="is">C:\Tools\SysinternalsSuite\Sysmon64.exe</TargetFilename> 
