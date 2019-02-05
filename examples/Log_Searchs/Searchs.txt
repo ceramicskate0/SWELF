@@ -158,6 +158,7 @@ Filter Manager~Microsoft-Windows-Sysmon/Operational~1
 file system filter~Microsoft-Windows-Sysmon/Operational~1
 commandline: c:\windows\system32\cmd.exe /c~Microsoft-Windows-Sysmon/Operational~1
 netsh.exe~Microsoft-Windows-Sysmon/Operational~1
+Image: <unknown process>~Microsoft-Windows-Sysmon/Operational~
 
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
