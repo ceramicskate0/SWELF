@@ -22,6 +22,33 @@ invoke-item~windows powershell~
 #Microsoft-Windows-Security-Mitigations/KernelMode
 ~Microsoft-Windows-Security-Mitigations/KernelMode~
 
+#Microsoft-Windows-Win32k/Concurrency
+~Microsoft-Windows-Win32k/Concurrency~
+
+#Microsoft-Windows-Win32k/Contention
+~Microsoft-Windows-Win32k/Contention~
+
+#Microsoft-Windows-Win32k/Messages
+~Microsoft-Windows-Win32k/Messages~
+
+#Microsoft-Windows-Win32k/Operational
+~Microsoft-Windows-Win32k/Operational~
+
+#Microsoft-Windows-Security-Mitigations/UserMode
+~Microsoft-Windows-Security-Mitigations/UserMode~
+
+#Microsoft-Windows-Win32k/UIPI
+~Microsoft-Windows-Win32k/UIPI~
+
+#Microsoft-Windows-Win32k/Tracing
+~Microsoft-Windows-Win32k/Tracing~
+
+#Microsoft-Windows-Win32k/Render
+~Microsoft-Windows-Win32k/Render~
+
+#Microsoft-Windows-Win32k/Power
+~Microsoft-Windows-Win32k/Power~
+
 #Windows-PowerShell/Operational
 encoding-~Microsoft-Windows-PowerShell/Operational~
 invoke-~Microsoft-Windows-PowerShell/Operational~
@@ -166,7 +193,6 @@ detection~microsoft-Windows-Windows Defender/Operational~
 malware~microsoft-Windows-Windows Defender/Operational~
 disabled~microsoft-Windows-Windows Defender/Operational~
 windows defender antivirus configuration has changed.~microsoft-Windows-Windows Defender/Operational~
-~microsoft-Windows-Windows Defender/Operational~1123
 ~microsoft-Windows-Windows Defender/Operational~5007
 windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
 ~microsoft-Windows-Windows Defender/Operational~1007
@@ -177,6 +203,18 @@ windows defender antivirus scanning for spyware and other potentially unwanted s
 ~microsoft-Windows-Windows Defender/Operational~3007
 #~microsoft-Windows-Windows Defender/Operational~5001
 #~microsoft-Windows-Windows Defender/Operational~5007
+~Microsoft-Windows-Windows Defender/Operational~1121
+~Microsoft-Windows-Windows Defender/Operational~1122
+~Microsoft-Windows-Windows Defender/Operational~1123
+~Microsoft-Windows-Windows Defender/Operational~1125
+~Microsoft-Windows-Windows Defender/Operational~1126
+
+#Microsoft-Windows-Windows Defender/WHC
+~Microsoft-Windows-Windows Defender/WHC~1123
+~Microsoft-Windows-Windows Defender/WHC~1125
+~Microsoft-Windows-Windows Defender/WHC~1126
+~Microsoft-Windows-Windows Defender/WHC~1124
+~Microsoft-Windows-Windows Defender/WHC~5007
 
 #DistributedCOM
 System~Microsoft-Windows-DistributedCOM~10016
