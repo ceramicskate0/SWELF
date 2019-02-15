@@ -357,6 +357,7 @@
 			<TargetFilename condition="end with">.cdownload</TargetFilename> 
 			<TargetFilename condition="end with">.tmp</TargetFilename> 
 			<TargetFilename condition="end with">.rslc</TargetFilename> 
+			<TargetFilename condition="begin with">C:\Windows\SoftwareDistribution\Download\</TargetFilename>
 			<TargetFilename condition="begin with">C:\Windows\Installer\</TargetFilename> <!--Microsoft:Windows:Installer: Ignore MSI installer files caching-->
 			<TargetFilename condition="begin with">C:\$WINDOWS.~BT\Sources\</TargetFilename> <!-- Microsoft:Windows: Feature updates containing lots of .exe and .sys-->
 			<Image condition="begin with">C:\Windows\winsxs\amd64_microsoft-windows</Image> <!-- Microsoft:Windows: Windows update-->
