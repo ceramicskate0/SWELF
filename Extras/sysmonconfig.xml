@@ -58,6 +58,7 @@
 			<Image condition="is">C:\Windows\System32\dllhost.exe</Image>			<!--Microsoft:Windows: Wireless Background Task-->
 			<Image condition="is">C:\Program Files (x86)\Common Files\microsoft shared\ink\TabTip32.exe</Image> <!--Microsoft:Windows: Touch Keyboard and Handwriting Panel Helper-->
 			<Image condition="is">C:\Windows\System32\TokenBrokerCookies.exe</Image> <!--Microsoft:Windows: SSO sign-in assistant for MicrosoftOnline.com-->
+			<CommandLine condition="is">c:\windows\system32\svchost.exe -k localservicenetworkrestricted -p -s winhttpautoproxysvc</CommandLine>
 			<CommandLine condition="is">C:\windows\system32\wermgr.exe -queuereporting</CommandLine><!--Microsoft:Windows:Windows error reporting/telemetry-->
 			<CommandLine condition="is">C:\WINDOWS\system32\svchost.exe -k appmodel -p -s camsvc</CommandLine>
 			<ParentCommandLine condition="is">C:\windows\system32\wermgr.exe -queuereporting</ParentCommandLine> <!--Microsoft:Windows:Windows error reporting/telemetry-->
@@ -243,6 +244,7 @@
 			<Image condition="contains">Update\</Image> <!--Ignore setups-->
 			<Image condition="end with">redist.exe</Image> <!--Ignore setups-->
 			<Image condition="is">TrustedInstaller.exe</Image> <!--Ignore setups-->
+			<Image condition="contains">notepad++.exe</Image> <!--Ignore setups-->
 		</FileCreateTime>
 
 	<!--SYSMON EVENT ID 3 : NETWORK CONNECTION INITIATED [NetworkConnect]-->
@@ -256,10 +258,9 @@
 
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, User, Protocol, Initiated, SourceIsIpv6, SourceIp, SourceHostname, SourcePort, SourcePortName, DestinationIsIpV6, DestinationIp, DestinationHostname, DestinationPort, DestinationPortName-->
 		<NetworkConnect onmatch="exclude">
-			<!--COMMENT: Unfortunately, these exclusions are very broad and easily abused, but it's a limitation of Sysmon rules that they can't be more specific as they're in user folders-->
 			<Image condition="image">g2ax_comm_expert.exe</Image> <!--GoToMeeting-->
 			<Image condition="image">g2mcomm.exe</Image> <!--GoToMeeting-->
-			<!--SECTION: Microsoft-->
+			<Image condition="image">SWELF.exe</Image>
 			<DestinationHostname condition="end with">microsoft.com</DestinationHostname> <!--Microsoft:Update delivery-->
 			<DestinationHostname condition="end with">microsoft.com.akadns.net</DestinationHostname> <!--Microsoft:Update delivery-->
 			<DestinationHostname condition="end with">microsoft.com.nsatc.net</DestinationHostname> <!--Microsoft:Update delivery-->
@@ -275,6 +276,7 @@
 
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image-->
 		<ProcessTerminate onmatch="exclude">
+			<Image condition="is">C:\Windows\System32\SearchProtocolHost.exe</Image>
 		</ProcessTerminate>
 
 	<!--SYSMON EVENT ID 6 : DRIVER LOADED INTO KERNEL [DriverLoad]-->
@@ -301,6 +303,7 @@
 			<StartModule condition="is">C:\Windows\system32\kernel32.dll</StartModule>
 			<TargetImage condition="end with">Google\Chrome\Application\chrome.exe</TargetImage>
 			<SourceImage condition="is">C:\Program Files (x86)\Webroot\WRSA.exe</SourceImage>
+			<SourceImage condition="contains">C:\Program Files (x86)\Fortinet\FortiClient\</SourceImage>
 		</CreateRemoteThread>
 
 	<!--SYSMON EVENT ID 9 : RAW DISK ACCESS [RawAccessRead]-->
@@ -313,6 +316,7 @@
 
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, Device-->
 		<RawAccessRead onmatch="exclude">
+			<Image condition="is">c:\windows\system32\svchost.exe</Image>
 		</RawAccessRead>
 	<!--SYSMON EVENT ID 10 : INTER-PROCESS ACCESS [ProcessAccess]-->
 		<!--EVENT 10: "Process accessed"-->
@@ -323,8 +327,17 @@
 		<ProcessAccess onmatch="exclude">
 			<SourceImage condition="is">C:\Program Files (x86)\Fortinet\FortiClient\FortiProxy.exe</SourceImage>
 			<SourceImage condition="is">C:\WINDOWS\system32\svchost.exe</SourceImage> 
+			<SourceImage condition="is">C:\Program Files (x86)\Google\Update\GoogleUpdate.exe</SourceImage>
+			<SourceImage condition="is">C:\Program Files (x86)\Fortinet\FortiClient\FortiTray.exe</SourceImage>
+			<SourceImage condition="is">C:\Program Files (x86)\Fortinet\FortiClient\update_task.exe</SourceImage>
 			<SourceImage condition="is">C:\Program Files (x86)\VMware\VMware Player\vmware-authd.exe</SourceImage> 
 			<SourceImage condition="is">C:\ProgramData\Microsoft\Windows Defender\platform\4.18.1812.3-0\MsMpEng.exe</SourceImage> 
+			<SourceImage condition="is">C:\WINDOWS\Explorer.EXE</SourceImage> 
+			<SourceImage condition="is">C:\Windows\System32\RuntimeBroker.exe</SourceImage>
+			<SourceImage condition="is">C:\WINDOWS\system32\csrss.exe</SourceImage> 
+			<SourceImage condition="is">C:\WINDOWS\system32\SearchIndexer.exe</SourceImage> 
+			<SourceImage condition="is">C:\WINDOWS\system32\AUDIODG.EXE</SourceImage> 
+			<SourceImage condition="is">C:\WINDOWS\system32\conhost.exe</SourceImage>
 		</ProcessAccess>
 
 		<FileCreate onmatch="exclude">
@@ -332,7 +345,7 @@
 			<TargetFilename condition="is">C:\Windows\System32\Tasks\OfficeSoftwareProtectionPlatform\SvcRestartTask</TargetFilename>
 			<Image condition="is">C:\Program Files\Common Files\Microsoft Shared\ClickToRun\OfficeC2RClient.exe</Image> 
 			<Image condition="is">C:\Windows\system32\smss.exe</Image> <!-- Microsoft:Windows: Session Manager SubSystem: Creates swapfile.sys,pagefile.sys,hiberfile.sys-->
-			<Image condition="is">C:\Windows\system32\CompatTelRunner.exe</Image> <!-- Microsoft:Windows: Windows 10 app, creates tons of cache files-->
+			<Image condition="is">C:\Windows\system32\CompatTelRunner.exe</Image> 
 			<Image condition="is">\\?\C:\Windows\system32\wbem\WMIADAP.EXE</Image> <!-- Microsoft:Windows: WMI Performance updates-->
 			<Image condition="is">C:\Windows\system32\mobsync.exe</Image> <!--Microsoft:Windows: Network file syncing-->
 			<TargetFilename condition="begin with">C:\Windows\system32\DriverStore\Temp\</TargetFilename> <!-- Microsoft:Windows: Temp files by DrvInst.exe-->
@@ -608,8 +621,14 @@
 		<!--ADDITIONAL REFERENCE: [ https://blog.cobaltstrike.com/2015/10/07/named-pipe-pivoting/ ] -->
 
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, PipeName, Image-->
-
+		
 		<PipeEvent onmatch="exclude">
+			<Image condition="begin with">c:\program files (x86)\opendns updater\</Image> 
+			<Image condition="is">c:\windows\system32\smartscreen.exe</Image> 
+			<Image condition="begin with">c:\programdata\microsoft\windows defender\</Image> 
+			<Image condition="is">c:\windows\system32\logonui.exe</Image>
+			<Image condition="is">c:\program files (x86)\google\update\googleupdate.exe</Image>
+			<Image condition="begin with">C:\Program Files (x86)\Fortinet\FortiClient\</Image>
 		</PipeEvent>
 	<!--SYSMON EVENT ID 19 & 20 & 21 : WMI EVENT MONITORING [WmiEvent]-->
 		<!--EVENT 19: "WmiEventFilter activity detected"-->
