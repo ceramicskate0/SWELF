@@ -625,6 +625,7 @@
 		<PipeEvent onmatch="exclude">
 			<Image condition="begin with">c:\program files (x86)\opendns updater\</Image> 
 			<Image condition="is">c:\windows\system32\smartscreen.exe</Image> 
+			<Image condition="is">c:\windows\system32\sppsvc.exe</Image> 
 			<Image condition="begin with">c:\programdata\microsoft\windows defender\</Image> 
 			<Image condition="is">c:\windows\system32\logonui.exe</Image>
 			<Image condition="is">c:\program files (x86)\google\update\googleupdate.exe</Image>
