@@ -92,6 +92,7 @@ adodb.stream~Microsoft-Windows-PowerShell/Operational~4104
 #Application
 ~Application~866
 ~Application~1534
+http~Application~1040
 
 #Microsoft-Windows-WMI-Activity/Operational
 ~Microsoft-Windows-WMI-Activity/Operational~5861
@@ -149,6 +150,7 @@ search_multiple:wmic`cmd~Microsoft-Windows-Sysmon/Operational~1
 #search_multiple:conhost`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:wmiprvse`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:java`reg~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:powershell`netsvcs~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:rundll32`appdata~Microsoft-Windows-Sysmon/Operational~1
 #search_multiple:rundll32`.exe~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:java`cmd~Microsoft-Windows-Sysmon/Operational~1
