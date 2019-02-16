@@ -137,6 +137,7 @@ search_multiple:chrome`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:chrome`cmd~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:firefox`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:firefox`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:3389`127.0.0.1`svchost.exe~Microsoft-Windows-Sysmon/Operational~3
 search_multiple:mshta`cmd~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:mshta`jscript~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:mshta`powershell~Microsoft-Windows-Sysmon/Operational~1
