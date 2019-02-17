@@ -286,6 +286,9 @@ log_level:warning~Microsoft-Windows-AppLocker/MSI and Script~
 Logon Type:		9~Security~4624 
 Logon Type:		3~Security~4624 
 Logon Type:		10~Security~4624
+IPC$~Security~5145
+ADMIN$~Security~5145
+C$~Security~5145
 
 #Microsoft-Windows-TaskScheduler/Operational
 #~Microsoft-Windows-TaskScheduler/Operational~106
