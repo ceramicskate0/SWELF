@@ -104,7 +104,6 @@ Win32_Bios~Microsoft-Windows-WMI-Activity/Operational~
 ~Microsoft-Windows-Sysmon/Operational~2
 ~Microsoft-Windows-Sysmon/Operational~8
 ~Microsoft-Windows-Sysmon/Operational~9
-~Microsoft-Windows-Sysmon/Operational~10
 ~Microsoft-Windows-Sysmon/Operational~12
 ~Microsoft-Windows-Sysmon/Operational~16
 ~Microsoft-Windows-Sysmon/Operational~17
@@ -112,6 +111,8 @@ Win32_Bios~Microsoft-Windows-WMI-Activity/Operational~
 ~Microsoft-Windows-Sysmon/Operational~19
 ~Microsoft-Windows-Sysmon/Operational~20
 ~Microsoft-Windows-Sysmon/Operational~21
+#powershell.exe~Microsoft-Windows-Sysmon/Operational~10
+#wmiprvse.exe~Microsoft-Windows-Sysmon/Operational~10
 search_multiple:wscript`AcroRd32~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:cscript`.js~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:csc`appdata~Microsoft-Windows-Sysmon/Operational~1
