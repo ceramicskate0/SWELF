@@ -233,6 +233,8 @@
 
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, TargetFilename, CreationUtcTime, PreviousCreationUtcTime-->
 		<FileCreateTime onmatch="include">
+			<Image condition="begin with">C:\Windows\Temp</Image>
+			<Image condition="begin with">C:\Program Data</Image>
 			<Image condition="begin with">C:\Users</Image> <!--Look for timestomping in user area-->
 		</FileCreateTime>
 
@@ -245,6 +247,7 @@
 			<Image condition="end with">redist.exe</Image> <!--Ignore setups-->
 			<Image condition="is">TrustedInstaller.exe</Image> <!--Ignore setups-->
 			<Image condition="contains">notepad++.exe</Image> <!--Ignore setups-->
+			<Image condition="contains">SWELF.exe</Image> <!--Ignore setups-->
 		</FileCreateTime>
 
 	<!--SYSMON EVENT ID 3 : NETWORK CONNECTION INITIATED [NetworkConnect]-->
@@ -279,6 +282,7 @@
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image-->
 		<ProcessTerminate onmatch="exclude">
 			<Image condition="is">C:\Windows\System32\SearchProtocolHost.exe</Image>
+			<Image condition="image">SWELF.exe</Image>
 		</ProcessTerminate>
 
 	<!--SYSMON EVENT ID 6 : DRIVER LOADED INTO KERNEL [DriverLoad]-->
@@ -326,7 +330,11 @@
 		<!--COMMENT:	Monitor for processes accessing other process' memory.-->
 
 		<!--DATA: UtcTime, SourceProcessGuid, SourceProcessId, SourceThreadId, SourceImage, TargetProcessGuid, TargetProcessId, TargetImage, GrantedAccess, CallTrace-->
-		<ProcessAccess onmatch="exclude">
+		<ProcessAccess onmatch="include">
+			
+		</ProcessAccess>
+		
+		<!--<ProcessAccess onmatch="exclude">
 			<SourceImage condition="is">C:\Program Files (x86)\Fortinet\FortiClient\FortiProxy.exe</SourceImage>
 			<SourceImage condition="is">C:\WINDOWS\system32\svchost.exe</SourceImage> 
 			<SourceImage condition="is">C:\Program Files (x86)\Google\Update\GoogleUpdate.exe</SourceImage>
@@ -340,7 +348,7 @@
 			<SourceImage condition="is">C:\WINDOWS\system32\SearchIndexer.exe</SourceImage> 
 			<SourceImage condition="is">C:\WINDOWS\system32\AUDIODG.EXE</SourceImage> 
 			<SourceImage condition="is">C:\WINDOWS\system32\conhost.exe</SourceImage>
-		</ProcessAccess>
+		</ProcessAccess>-->
 
 		<FileCreate onmatch="exclude">
 			<Image condition="is">C:\Program Files (x86)\EMET 5.5\EMET_Service.exe</Image> <!--Microsoft:EMET: Writes to C:\Windows\AppPatch\-->
@@ -609,6 +617,7 @@
 
 
 		<FileCreateStreamHash onmatch="exclude">
+			<Image condition="image">SWELF.exe</Image>
 		</FileCreateStreamHash>
 
 	<!--SYSMON EVENT ID 16 : SYSMON CONFIGURATION CHANGE-->
