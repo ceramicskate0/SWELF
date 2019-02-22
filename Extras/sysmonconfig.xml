@@ -331,10 +331,10 @@
 
 		<!--DATA: UtcTime, SourceProcessGuid, SourceProcessId, SourceThreadId, SourceImage, TargetProcessGuid, TargetProcessId, TargetImage, GrantedAccess, CallTrace-->
 		<ProcessAccess onmatch="include">
-			
+			<TargetImage condition="is">C:\WINDOWS\system32\lsass.exe</TargetImage>
 		</ProcessAccess>
 		
-		<!--<ProcessAccess onmatch="exclude">
+		<ProcessAccess onmatch="exclude">
 			<SourceImage condition="is">C:\Program Files (x86)\Fortinet\FortiClient\FortiProxy.exe</SourceImage>
 			<SourceImage condition="is">C:\WINDOWS\system32\svchost.exe</SourceImage> 
 			<SourceImage condition="is">C:\Program Files (x86)\Google\Update\GoogleUpdate.exe</SourceImage>
@@ -348,10 +348,12 @@
 			<SourceImage condition="is">C:\WINDOWS\system32\SearchIndexer.exe</SourceImage> 
 			<SourceImage condition="is">C:\WINDOWS\system32\AUDIODG.EXE</SourceImage> 
 			<SourceImage condition="is">C:\WINDOWS\system32\conhost.exe</SourceImage>
-		</ProcessAccess>-->
+			<SourceImage condition="is">C:\Program Files (x86)\VMware\VMware Player\vmware-authd.exe</SourceImage>
+		</ProcessAccess>
 
 		<FileCreate onmatch="exclude">
 			<Image condition="is">C:\Program Files (x86)\EMET 5.5\EMET_Service.exe</Image> <!--Microsoft:EMET: Writes to C:\Windows\AppPatch\-->
+			<Image condition="is">C:\Program Files (x86)\Notepad++\notepad++.exe</Image> 
 			<TargetFilename condition="is">C:\Windows\System32\Tasks\OfficeSoftwareProtectionPlatform\SvcRestartTask</TargetFilename>
 			<Image condition="is">C:\Program Files\Common Files\Microsoft Shared\ClickToRun\OfficeC2RClient.exe</Image> 
 			<Image condition="is">C:\Windows\system32\smss.exe</Image> <!-- Microsoft:Windows: Session Manager SubSystem: Creates swapfile.sys,pagefile.sys,hiberfile.sys-->
