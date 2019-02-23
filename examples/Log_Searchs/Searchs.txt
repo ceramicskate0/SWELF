@@ -413,6 +413,7 @@ ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
 EtwTraceProvider
 auditpol
 scrobj.dll,NI,
+RunAs 
 
 #Everything Search REG Keys
 \CurrentControlSet\Control\WMI\Autologger\
