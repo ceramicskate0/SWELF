@@ -375,6 +375,7 @@
 			<Image condition="is">C:\Windows\system32\igfxCUIService.exe</Image> <!--Intel: Drops bat and other files in \Windows in normal operation-->
 			<TargetFilename condition="is">C:\Windows\System32\Tasks\Adobe Acrobat Update Task</TargetFilename>
 			<TargetFilename condition="is">C:\Windows\System32\Tasks\Adobe Flash Player Updater</TargetFilename>
+			<TargetFilename condition="begin with">C:\Windows\System32\LogFiles\</TargetFilename>
 			<TargetFilename condition="is">C:\Tools\SysinternalsSuite\Sysmon64.exe</TargetFilename> 
 		</FileCreate>
 
