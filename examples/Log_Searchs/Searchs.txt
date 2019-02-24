@@ -52,38 +52,38 @@ invoke-item~windows powershell~
 ~Microsoft-Windows-Win32k/Power~
 
 #Windows-PowerShell/Operational
-encoding-~Microsoft-Windows-PowerShell/Operational~
-invoke-~Microsoft-Windows-PowerShell/Operational~
-wp-content~Microsoft-Windows-PowerShell/Operational~
-rename~Microsoft-Windows-PowerShell/Operational~
--ep bypass~Microsoft-Windows-PowerShell/Operational~
-amsi~Microsoft-Windows-PowerShell/Operational~
-InvoKE-expResSioN~Microsoft-Windows-PowerShell/Operational~
-.Download~Microsoft-Windows-PowerShell/Operational~
-Remove-EventLog~Microsoft-Windows-PowerShell/Operational~
-Clear-EventLog~Microsoft-Windows-PowerShell/Operational~
-Limit-EventLog~Microsoft-Windows-PowerShell/Operational~
-count:-join:2~Microsoft-Windows-PowerShell/Operational~
-count:':21~Microsoft-Windows-PowerShell/Operational~
-count:+:5~Microsoft-Windows-PowerShell/Operational~
+encoding-~Microsoft-Windows-PowerShell/Operational~4104
+invoke-~Microsoft-Windows-PowerShell/Operational~4104
+wp-content~Microsoft-Windows-PowerShell/Operational~4104
+rename~Microsoft-Windows-PowerShell/Operational~4104
+-ep bypass~Microsoft-Windows-PowerShell/Operational~4104
+amsi~Microsoft-Windows-PowerShell/Operational~4104
+InvoKE-expResSioN~Microsoft-Windows-PowerShell/Operational~4104
+.Download~Microsoft-Windows-PowerShell/Operational~4104
+Remove-EventLog~Microsoft-Windows-PowerShell/Operational~4104
+Clear-EventLog~Microsoft-Windows-PowerShell/Operational~4104
+Limit-EventLog~Microsoft-Windows-PowerShell/Operational~4104
+count:-join:2~Microsoft-Windows-PowerShell/Operational~4104
+count:':21~Microsoft-Windows-PowerShell/Operational~4104
+count:+:8~Microsoft-Windows-PowerShell/Operational~4104
 count:;:12~Microsoft-Windows-PowerShell/Operational~4104
-count:|:2~Microsoft-Windows-PowerShell/Operational~
-count:&:10~Microsoft-Windows-PowerShell/Operational~
+count:|:3~Microsoft-Windows-PowerShell/Operational~4104
+count:&:10~Microsoft-Windows-PowerShell/Operational~4104
 iwr('http~Microsoft-Windows-PowerShell/Operational~4104
 eventdata_length:12000~Microsoft-Windows-PowerShell/Operational~4104
 webclient~Microsoft-Windows-PowerShell/Operational~4104
-iex~Microsoft-Windows-PowerShell/Operational~
+iex~Microsoft-Windows-PowerShell/Operational~4104
 wscript~Microsoft-Windows-PowerShell/Operational~4104
 powershell New-Service~Microsoft-Windows-PowerShell/Operational~4104
-$env~Microsoft-Windows-PowerShell/Operational~
+$env~Microsoft-Windows-PowerShell/Operational~4104
 http~Microsoft-Windows-PowerShell/Operational~4104
 base64decode~Microsoft-Windows-PowerShell/Operational~4104
-|iex~Microsoft-Windows-PowerShell/Operational~
+|iex~Microsoft-Windows-PowerShell/Operational~4104
 frombase64string~Microsoft-Windows-PowerShell/Operational~4104
 [System.Reflection.Assembly]::Load~Microsoft-Windows-PowerShell/Operational~4104
 Invoke-Item~Microsoft-Windows-PowerShell/Operational~4104
 Gzipstream~Microsoft-Windows-PowerShell/Operational~4104
--nop~Microsoft-Windows-PowerShell/Operational~
+-nop~Microsoft-Windows-PowerShell/Operational~4104
 encodedcommand~Microsoft-Windows-PowerShell/Operational~4104
 noprofile~Microsoft-Windows-PowerShell/Operational~41044104
 invoke-shellcode~Microsoft-Windows-PowerShell/Operational~4104
@@ -163,34 +163,35 @@ regsvr32~Microsoft-Windows-Sysmon/Operational~
 bitsadmin.exe  /transfer~Microsoft-Windows-Sysmon/Operational~
 bitsadmin.exe /download~Microsoft-Windows-Sysmon/Operational~ 
 rundll32.exe javascript:~Microsoft-Windows-Sysmon/Operational~
-count:;:2~Microsoft-Windows-Sysmon/Operational~
+count:;:2~Microsoft-Windows-Sysmon/Operational~1
 Signed: false~Microsoft-Windows-Sysmon/Operational~6
-commandline_contains:msiexec /q /i~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:-nop~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:hidden~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:-windowstyle~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:msiexec /quiet /i~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:mshta -Enbedding~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:mshta javascript~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:rundll32.exe javascript~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:ATBroker /start~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:ATBroker.exe /start~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:EQNEDT32.EXE -Embedding~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:pcalua.exe -a~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:regasm.exe /U~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:msiexec /q /i~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:-nop~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:hidden~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:-windowstyle~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:msiexec /quiet /i~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:mshta -Enbedding~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:mshta javascript~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:rundll32.exe javascript~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:ATBroker /start~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:ATBroker.exe /start~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:EQNEDT32.EXE -Embedding~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:pcalua.exe -a~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:regasm.exe /U~Microsoft-Windows-Sysmon/Operational~1
 commandline_contains:+~Microsoft-Windows-Sysmon/Operational~1
-commandline_contains:-urlcache~Microsoft-Windows-Sysmon/Operational~
-commandline_contains:http~Microsoft-Windows-Sysmon/Operational~
-count:|:2~Microsoft-Windows-Sysmon/Operational~
+commandline_contains:-urlcache~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:http~Microsoft-Windows-Sysmon/Operational~1
+count:|:3~Microsoft-Windows-Sysmon/Operational~1
 #commandline_contains:C:\Windows\System32\wmiprvse.exe -secured -Embedding~Microsoft-Windows-Sysmon/Operational~1
 #commandline_contains:==~Microsoft-Windows-Sysmon/Operational~1
 sc.exe~Microsoft-Windows-Sysmon/Operational~1
 netsh.exe~Microsoft-Windows-Sysmon/Operational~
-ParentCommandLine: C:\Windows\System32\wbem\WmiPrvSE.exe~Microsoft-Windows-Sysmon/Operational~
+ParentCommandLine: C:\Windows\System32\wbem\WmiPrvSE.exe~Microsoft-Windows-Sysmon/Operational~1
 #Below will log unloading of Sysmon Driver
 Filter Manager~Microsoft-Windows-Sysmon/Operational~1
 file system filter~Microsoft-Windows-Sysmon/Operational~1
-commandline: c:\windows\system32\cmd.exe /chit-block.opendns.com
+commandline: c:\windows\system32\cmd.exe /c~Microsoft-Windows-Sysmon/Operational~1
+hit-block.opendns.com~Microsoft-Windows-Sysmon/Operational~3
 netsh.exe~Microsoft-Windows-Sysmon/Operational~1
 \start menu~Microsoft-Windows-Sysmon/Operational~11
 Image: <unknown process>~Microsoft-Windows-Sysmon/Operational~
@@ -338,7 +339,7 @@ commandline_contains:/shtml
 #Command COUNT to be run on all
 count:+:12
 count:&:10
-count:-split:3
+count:-split:4
 count:^:9
 count:`:9
 count:call:4
