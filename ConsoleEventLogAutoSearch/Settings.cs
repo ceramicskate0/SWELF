@@ -880,7 +880,7 @@ namespace SWELF
         public static void Log_Storage_Location_Unavailable(string e)
         {
             EventLog_w_PlaceKeeper = EventLog_w_PlaceKeeper_Backup;
-            Errors.WRITE_Errors_To_Log("Log_Storage_Location_Unavailable(string e)", e + " Access to log storage location may not be available.", Errors.LogSeverity.Warning);
+            //Errors.WRITE_Errors_To_Log("Log_Storage_Location_Unavailable(string e)", e + " Access to log storage location may not be available.", Errors.LogSeverity.Warning);
         }
 
         private static void GET_All_Files_HTTP(string Web_Config_URL)

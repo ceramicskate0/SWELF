@@ -143,7 +143,14 @@ namespace SWELF
             {
                 for (int x = 0; x < ErrorsLog.Count; ++x)
                 {
-                    File.AppendAllText(Settings.SWELF_Log_File_Location + "\\" + Path.GetRandomFileName() + "_SWELF_HAD_IO_ERROR.log", ErrorsLog.ElementAt(x));
+                    try
+                    {
+                        File.AppendAllText(Settings.SWELF_Log_File_Location + "\\" + Path.GetRandomFileName() + "_SWELF_HAD_IO_ERROR.log", ErrorsLog.ElementAt(x));
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
         }
