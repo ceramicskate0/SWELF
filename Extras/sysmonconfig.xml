@@ -321,8 +321,8 @@
 		<!--COMMENT:	You will likely want to set this to a full capture on domain controllers, where no process should be doing raw reads.-->
 
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, Device-->
-		<RawAccessRead onmatch="exclude">
-			<Image condition="is">c:\windows\system32\svchost.exe</Image>
+		<RawAccessRead onmatch="include">
+			<!--<Image condition="is">c:\windows\system32\svchost.exe</Image>-->
 		</RawAccessRead>
 	<!--SYSMON EVENT ID 10 : INTER-PROCESS ACCESS [ProcessAccess]-->
 		<!--EVENT 10: "Process accessed"-->
@@ -335,11 +335,9 @@
 		</ProcessAccess>
 		
 		<ProcessAccess onmatch="exclude">
-			<SourceImage condition="is">C:\Program Files (x86)\Fortinet\FortiClient\FortiProxy.exe</SourceImage>
+			<SourceImage condition="begin with">C:\Program Files (x86)\Fortinet\FortiClient\</SourceImage>
 			<SourceImage condition="is">C:\WINDOWS\system32\svchost.exe</SourceImage> 
 			<SourceImage condition="is">C:\Program Files (x86)\Google\Update\GoogleUpdate.exe</SourceImage>
-			<SourceImage condition="is">C:\Program Files (x86)\Fortinet\FortiClient\FortiTray.exe</SourceImage>
-			<SourceImage condition="is">C:\Program Files (x86)\Fortinet\FortiClient\update_task.exe</SourceImage>
 			<SourceImage condition="is">C:\Program Files (x86)\VMware\VMware Player\vmware-authd.exe</SourceImage> 
 			<SourceImage condition="is">C:\ProgramData\Microsoft\Windows Defender\platform\4.18.1812.3-0\MsMpEng.exe</SourceImage> 
 			<SourceImage condition="is">C:\WINDOWS\Explorer.EXE</SourceImage> 
