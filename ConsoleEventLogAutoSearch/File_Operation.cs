@@ -285,12 +285,12 @@ noprofile~windows powershell~
             if (!VERIFY_if_File_Exists(Settings.GET_AppConfigFile))
             {
                 CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.AppConfigFile, GET_Default_ConsoleAppConfig_File_Contents);
-                Encryptions.Lock_File(Settings.GET_AppConfigFile);
+                File.Encrypt(Settings.GET_AppConfigFile);
             }
             if (!VERIFY_if_File_Exists(Settings.GET_EventLogID_PlaceHolder))
             {
                 CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.EventLogID_PlaceHolder, GET_Default_Eventlog_with_PlaceKeeper_File_Contents);
-                Encryptions.Lock_File(Settings.GET_EventLogID_PlaceHolder);
+                File.Encrypt(Settings.GET_EventLogID_PlaceHolder);
             }
             if (!VERIFY_if_File_Exists(Settings.GET_FilesToMonitor))
             {

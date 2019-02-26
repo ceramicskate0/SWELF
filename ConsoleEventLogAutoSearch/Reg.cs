@@ -194,7 +194,7 @@ namespace SWELF
             key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey("Software\\SWELF");
             SWELF_KEY.SetValue("first_run", false);
             SWELF_KEY.SetValue("log_collecter", "127.0.0.1");
-            SWELF_KEY.SetValue("encryption", Encryptions.Generate_Decrypt());
+            //SWELF_KEY.SetValue("encryption", Encryptions.Generate_Decrypt());
             SWELF_KEY.SetValue("logging_level", Settings.Logging_Level_To_Report);
             SWELF_KEY.SetValue("output_format", Settings.AppConfig_File_Args["output_format"]);
             SWELF_KEY.SetValue("SWELF_Current_Version", Settings.SWELF_Version);

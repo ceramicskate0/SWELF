@@ -106,7 +106,7 @@ namespace SWELF
                 Start_Send_File_Based_Logs();
 
                 Write_HashFile_IPsFile();
-                Encryptions.Lock_File(Settings.GET_EventLogID_PlaceHolder);
+                File.Encrypt(Settings.GET_EventLogID_PlaceHolder);
 
                 int TOut = 0;
                 while (Settings.PS_PluginDone != true && TOut!=5)

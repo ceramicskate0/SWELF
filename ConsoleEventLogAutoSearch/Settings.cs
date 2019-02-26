@@ -408,7 +408,7 @@ namespace SWELF
 
             try
             {
-                Encryptions.UnLock_File(GET_AppConfigFile);
+                File.Decrypt(GET_AppConfigFile);
 
                 foreach (string ConfigFileline in File.ReadAllLines(GET_AppConfigFile))//AppConfig_File_Args are set here
                 {
@@ -489,7 +489,7 @@ namespace SWELF
                         methods_args.Clear();
                     }
                 }
-                Encryptions.Lock_File(GET_AppConfigFile);
+                File.Encrypt(GET_AppConfigFile);
             }
             catch (Exception e)
             {
@@ -505,7 +505,7 @@ namespace SWELF
 
             try
             {
-                Encryptions.UnLock_File(GET_SearchTermsFile);
+                File.Decrypt(GET_SearchTermsFile);
                 StreamReader file = new StreamReader(GET_SearchTermsFile);
                 while ((line = file.ReadLine()) != null)
                 {
@@ -516,7 +516,7 @@ namespace SWELF
                 }
                 file.Close();
                 Search_Terms_Unparsed = Search_Terms_Unparsed.Distinct().ToList();
-                Encryptions.Lock_File(GET_SearchTermsFile);
+                File.Encrypt(GET_SearchTermsFile);
             }
             catch (Exception e)
             {
@@ -530,7 +530,7 @@ namespace SWELF
             string line = "";
             try
             {
-                Encryptions.UnLock_File(GET_WhiteList_SearchTermsFile);
+                File.Decrypt(GET_WhiteList_SearchTermsFile);
                 StreamReader file = new StreamReader(GET_WhiteList_SearchTermsFile);
                 while ((line = file.ReadLine()) != null)
                 {
@@ -540,7 +540,7 @@ namespace SWELF
                     }
                 }
                 file.Close();
-                Encryptions.Lock_File(GET_WhiteList_SearchTermsFile);
+                File.Encrypt(GET_WhiteList_SearchTermsFile);
             }
             catch (Exception e)
             {
@@ -556,7 +556,7 @@ namespace SWELF
                 string line = "";
                 try
                 {
-                    Encryptions.UnLock_File(GET_EventLogID_PlaceHolder);
+                    File.Decrypt(GET_EventLogID_PlaceHolder);
                     EventLog_w_PlaceKeeper.Clear();
                     EventLog_w_PlaceKeeper_List.Clear();
 
@@ -571,7 +571,7 @@ namespace SWELF
                         }
                     }
                     file.Close();
-                    Encryptions.Lock_File(GET_EventLogID_PlaceHolder);
+                    File.Encrypt(GET_EventLogID_PlaceHolder);
                 }
                 catch (Exception e)
                 {
@@ -584,7 +584,7 @@ namespace SWELF
                 string line = "";
                 try
                 {
-                    Encryptions.UnLock_File(GET_EventLogID_PlaceHolder);
+                    File.Decrypt(GET_EventLogID_PlaceHolder);
                     StreamReader file = new StreamReader(GET_EventLogID_PlaceHolder);
                     while ((line = file.ReadLine()) != null)
                     {
@@ -597,7 +597,7 @@ namespace SWELF
                         }
                     }
                     file.Close();
-                    Encryptions.Lock_File(GET_EventLogID_PlaceHolder);
+                    File.Encrypt(GET_EventLogID_PlaceHolder);
                 }
                 catch (Exception e)
                 {
@@ -612,7 +612,7 @@ namespace SWELF
             string line = "";
             try
             {
-                Encryptions.UnLock_File(Plugin_Search_Location + "\\" + SearchTermsFileName);
+                File.Decrypt(Plugin_Search_Location + "\\" + SearchTermsFileName);
                 StreamReader file = new StreamReader(Plugin_Search_Location + "\\" + SearchTermsFileName);
                 while ((line = file.ReadLine()) != null)
                 {
@@ -622,7 +622,7 @@ namespace SWELF
                     }
                 }
                 file.Close();
-                Encryptions.Lock_File(Plugin_Search_Location + "\\" + SearchTermsFileName);
+                File.Encrypt(Plugin_Search_Location + "\\" + SearchTermsFileName);
             }
             catch (Exception e)
             {
@@ -642,14 +642,14 @@ namespace SWELF
         {
             if (Logs_Sent_to_ALL_Collectors == true)
             {
-                Encryptions.UnLock_File(GET_EventLogID_PlaceHolder);
+                File.Decrypt(GET_EventLogID_PlaceHolder);
                 File_Operation.DELETE_AND_CREATE_File(GET_EventLogID_PlaceHolder);
                 for (int x = 0; x < EventLog_w_PlaceKeeper.Count; ++x)
                 {
                     File.AppendAllText(GET_EventLogID_PlaceHolder, EventLog_w_PlaceKeeper.ElementAt(x).Key + SplitChar_ConfigVariableEquals[0] + EventLog_w_PlaceKeeper.ElementAt(x).Value + "\n");
                     Reg.ADD_or_CHANGE_SWELF_Reg_Key(EventLog_w_PlaceKeeper.ElementAt(x).Key, EventLog_w_PlaceKeeper.ElementAt(x).Value.ToString());
                 }
-                Encryptions.Lock_File(GET_EventLogID_PlaceHolder);
+                File.Encrypt(GET_EventLogID_PlaceHolder);
             }
         }
 

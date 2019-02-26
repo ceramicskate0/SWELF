@@ -171,7 +171,7 @@ namespace SWELF
 
         private static string GET_Log_Output_Format(EventLog_Entry data)
         {
-            string format=Settings.AppConfig_File_Args[Settings.SWELF_AppConfig_Args[10]];
+            string format = Settings.AppConfig_File_Args["output_format"];
             string Data;
             switch (format.ToLower())
             {
