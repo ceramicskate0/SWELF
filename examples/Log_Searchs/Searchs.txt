@@ -340,7 +340,7 @@ commandline_contains:/transfer
 commandline_contains:/shtml
 
 #Command COUNT to be run on all
-count:+:12
+#count:+:12
 count:&:10
 count:-split:4
 count:^:9
