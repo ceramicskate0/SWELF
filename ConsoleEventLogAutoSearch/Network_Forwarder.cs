@@ -171,18 +171,18 @@ namespace SWELF
 
         private static string GET_Log_Output_Format(EventLog_Entry data)
         {
-            string format=Settings.AppConfig_File_Args["output_format"];
+            string format=Settings.AppConfig_File_Args[Settings.SWELF_AppConfig_Args[10]];
             string Data;
             switch (format.ToLower())
             {
                 case  "data":
                     {
-                        Data = DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   " + data.EventData;
+                        Data = DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   " + Regex.Replace(data.EventData, @"\n|\r|\t|\r\n|\n\r", "    ");
                         break;
                     }
                 case "syslog":
                     {
-                        Data = DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.LogName + "   " + data.CreatedTime + "   " + data.EventRecordID + "   " + data.TaskDisplayName + "   " +data.SearchRule + "   " + data.EventData;
+                        Data = DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.LogName + "   " + data.CreatedTime + "   " + data.EventRecordID + "   " + data.TaskDisplayName + "   " +data.SearchRule + "   " + Regex.Replace(data.EventData, @"\n|\r|\t|\r\n|\n\r", "    ");
                         break;
 
                     }
@@ -209,7 +209,7 @@ namespace SWELF
                     }
             }
             return Data;
-        }       
+        }   
 
         private static int FIND_Open_SourcePort()
         {
