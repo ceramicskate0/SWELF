@@ -334,8 +334,9 @@
 			<TargetImage condition="is">C:\WINDOWS\system32\lsass.exe</TargetImage>
 		</ProcessAccess>
 		
-		<ProcessAccess onmatch="exclude">
+		<ProcessAccess onmatch="exclude">c
 			<SourceImage condition="begin with">C:\Program Files (x86)\Fortinet\FortiClient\</SourceImage>
+			<SourceImage condition="begin with">C:\programdata\microsoft\windows defender\platform\</SourceImage>
 			<SourceImage condition="is">C:\WINDOWS\system32\svchost.exe</SourceImage> 
 			<SourceImage condition="is">C:\Program Files (x86)\Google\Update\GoogleUpdate.exe</SourceImage>
 			<SourceImage condition="is">C:\Program Files (x86)\VMware\VMware Player\vmware-authd.exe</SourceImage> 
