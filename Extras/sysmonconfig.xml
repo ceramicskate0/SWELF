@@ -282,6 +282,8 @@
 		<!--DATA: UtcTime, ProcessGuid, ProcessId, Image-->
 		<ProcessTerminate onmatch="exclude">
 			<Image condition="is">C:\Windows\System32\SearchProtocolHost.exe</Image>
+			<Image condition="begin with">C:\Program Files (x86)\</Image>
+			<Image condition="begin with">C:\Program Files\</Image>
 			<Image condition="image">SWELF.exe</Image>
 		</ProcessTerminate>
 
