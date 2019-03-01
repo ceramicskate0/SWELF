@@ -422,6 +422,12 @@ auditpol
 scrobj.dll,NI,
 RunAs 
 
+#Search everything your looking at for mimikatz
+mimikatz
+sekurlsa::logonpasswords
+privilege::debug
+mimilib
+
 #Everything Search REG Keys
 \CurrentControlSet\Control\WMI\Autologger\
 \WINDOWS\CURRENTVERSION\RUN
