@@ -293,6 +293,7 @@ Destination Port:  445~Security~5156
 #~Security~4689
 #~Security~4672
 #~Security~4688
+0xC000015B~Security~4625
 search_multiple:Logon Type:		9`seclogo~Security~4624
 Logon Type:		9~Security~4624 
 Logon Type:		3~Security~4624 
