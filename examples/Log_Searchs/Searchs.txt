@@ -421,6 +421,7 @@ EtwTraceProvider
 auditpol
 scrobj.dll,NI,
 RunAs 
+pastebin
 
 #Search everything your looking at for mimikatz
 mimikatz
