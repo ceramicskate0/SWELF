@@ -38,5 +38,10 @@ Since SWELF is early release software this means there may be bugs that exist.
 ## SWELF Design (After Central Configuration is Pushed)
 ![swelf design](https://user-images.githubusercontent.com/6934294/41071314-a6c5be2e-69bc-11e8-803a-03fcebab5981.PNG)
 
+## SWELF Sub Projects
+  - ![Offical Plugin Repo] (https://github.com/ceramicskate0/SWELF-PluginHelpers)
+  - ![SWELF Desktop Alerting App] (https://github.com/ceramicskate0/App_to_Fire_Balloon_Tip_on_passed_CMD_Args)
+
+
 # Legal Disclaimer:
 > THIS IS OPEN SOURCE SOFTWARE AND NOT READY FOR PRODUCTION, YET! If you choose to run the software on your machine, you accept the terms of use and any potential adverse actions that may befall your system. If you use this software you do so at your own risk and the liability is then accepted by you on execution. Note that the author is not responsible for the way the product software is used and the software comes without any warrenty. If you use the software (this means execution of it on a system) you acknowledge that you accept any risk or any outcome the use of the software causes. I have NEVER authorized, condoned, or recommend the use of anything in any of my repos for any malicious reason. Do not use for evil, malicious purposes, or on machines you do not own. I recommend that you always TEST it before you use it or deploy it. Use at your own risk. 
