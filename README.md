@@ -39,8 +39,9 @@ Since SWELF is early release software this means there may be bugs that exist.
 ![swelf design](https://user-images.githubusercontent.com/6934294/41071314-a6c5be2e-69bc-11e8-803a-03fcebab5981.PNG)
 
 ## SWELF Sub Projects
-  - ![Offical Plugin Repo] (https://github.com/ceramicskate0/SWELF-PluginHelpers)
-  - ![SWELF Desktop Alerting App] (https://github.com/ceramicskate0/App_to_Fire_Balloon_Tip_on_passed_CMD_Args)
+- [Offical Plugin Repo](https://github.com/ceramicskate0/SWELF-PluginHelpers)
+
+- [SWELF Desktop Alerting App](https://github.com/ceramicskate0/App_to_Fire_Balloon_Tip_on_passed_CMD_Args)
 
 
 # Legal Disclaimer:
