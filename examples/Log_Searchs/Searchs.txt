@@ -196,7 +196,10 @@ hit-block.opendns.com~Microsoft-Windows-Sysmon/Operational~3
 netsh.exe~Microsoft-Windows-Sysmon/Operational~1
 \start menu~Microsoft-Windows-Sysmon/Operational~11
 Image: <unknown process>~Microsoft-Windows-Sysmon/Operational~
+
+#Sysmon Connections to watch
 .opendns.com~Microsoft-Windows-Sysmon/Operational~3
+ddns.net~Microsoft-Windows-Sysmon/Operational~3
 
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
