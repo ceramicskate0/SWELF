@@ -347,6 +347,7 @@ commandline_contains:& del
 commandline_contains:/download
 commandline_contains:/transfer
 commandline_contains:/shtml
+commandline_contains:.php.exe
 
 #Command COUNT to be run on all
 #count:+:12
