@@ -435,6 +435,7 @@ mimikatz
 sekurlsa::logonpasswords
 privilege::debug
 mimilib
+~~5145
 
 #Everything Search REG Keys
 \CurrentControlSet\Control\WMI\Autologger\
