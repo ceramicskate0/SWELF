@@ -280,6 +280,9 @@ powershell~System~7045
 ~System~7009
 #~System~1014
 
+#Microsoft-Windows-SoftwareRestrictionPolicies
+~Microsoft-Windows-SoftwareRestrictionPolicies~866
+
 #Security
 ~Security~517
 #~Security~576
