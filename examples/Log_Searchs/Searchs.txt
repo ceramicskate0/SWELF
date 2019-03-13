@@ -445,7 +445,10 @@ mimilib
 
 #Everything Search REG Keys
 \CurrentControlSet\Control\WMI\Autologger\
-\WINDOWS\CURRENTVERSION\RUN
-\SOFTWARE\MICROSOFT\WINDOWS NT\CURRENTVERSION\WINLOGON
+\WINDOWS\CURRENTVERSION\RUN\
+\SOFTWARE\MICROSOFT\WINDOWS NT\CURRENTVERSION\WINLOGON\
+\Windows\CurrentVersion\RunOnceEx\
 \Shell\
 \CLSID\
+Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders
+Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
