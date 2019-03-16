@@ -435,6 +435,7 @@ auditpol
 scrobj.dll,NI,
 RunAs 
 pastebin
+msinfo32.exe
 
 #Search everything your looking at for mimikatz
 mimikatz
