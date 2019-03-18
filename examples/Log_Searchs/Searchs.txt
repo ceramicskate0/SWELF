@@ -313,6 +313,7 @@ Logon Type:		10~Security~4624
 IPC$~Security~5145
 ADMIN$~Security~5145
 C$~Security~5145
+RPCSS~Security~4648
 
 #Microsoft-Windows-TaskScheduler/Operational
 #~Microsoft-Windows-TaskScheduler/Operational~106
