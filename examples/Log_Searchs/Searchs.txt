@@ -454,3 +454,4 @@ mimilib
 \CLSID\
 Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders
 Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
+\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run
