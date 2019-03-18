@@ -158,6 +158,7 @@ search_multiple:powershell`netsvcs~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:rundll32`appdata~Microsoft-Windows-Sysmon/Operational~1
 #search_multiple:rundll32`.exe~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:java`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:C:\Windows\AppPatch\`sdbinst.exe~Microsoft-Windows-Sysmon/Operational~1
 rename~Microsoft-Windows-Sysmon/Operational~1
 takeown~Microsoft-Windows-Sysmon/Operational~1
 mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
@@ -196,7 +197,7 @@ commandline: c:\windows\system32\cmd.exe /c~Microsoft-Windows-Sysmon/Operational
 netsh.exe~Microsoft-Windows-Sysmon/Operational~1
 \start menu~Microsoft-Windows-Sysmon/Operational~11
 Image: <unknown process>~Microsoft-Windows-Sysmon/Operational~
-
+C:\WINDOWS\system32\wbem\scrcons.exe~Microsoft-Windows-Sysmon/Operational~11
 
 #Sysmon Connections to watch
 .opendns.com~Microsoft-Windows-Sysmon/Operational~3
@@ -437,6 +438,7 @@ scrobj.dll,NI,
 RunAs 
 pastebin
 msinfo32.exe
+C:\$Recycle.bin\
 
 #Search everything your looking at for mimikatz
 mimikatz
@@ -455,3 +457,4 @@ mimilib
 Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders
 Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
 \Microsoft\Windows\CurrentVersion\Policies\Explorer\Run
+\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce\
