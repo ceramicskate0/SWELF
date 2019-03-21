@@ -92,7 +92,7 @@ adodb.stream~Microsoft-Windows-PowerShell/Operational~4104
 
 #Application
 ~Application~866
-~Application~1534
+#~Application~1534
 http~Application~1040
 
 #Microsoft-Windows-WMI-Activity/Operational
