@@ -443,6 +443,9 @@ pastebin
 msinfo32.exe
 C:\$Recycle.bin\
 C:\WINDOWS\system32\wbem\scrcons.exe
+arp.exe
+systeminfo.exe
+net.exe
 
 #Search everything your looking at for mimikatz
 mimikatz
