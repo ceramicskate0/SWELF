@@ -470,3 +470,5 @@ Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
 \SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce\
 \SOFTWARE\Wow6432Node\Google\Update\ClientState\
 \StartupItems
+CurrentControlSet\Control\Lsa\Security Packages
+\CurrentControlSet\Control\Lsa\OSConfig\Security Packages
