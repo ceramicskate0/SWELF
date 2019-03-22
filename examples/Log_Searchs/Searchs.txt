@@ -446,6 +446,7 @@ C:\WINDOWS\system32\wbem\scrcons.exe
 arp.exe
 systeminfo.exe
 net.exe
+ping.exe 0x
 
 #Search everything your looking at for mimikatz
 mimikatz
