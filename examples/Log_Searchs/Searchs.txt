@@ -357,6 +357,8 @@ commandline_contains:/download
 commandline_contains:/transfer
 commandline_contains:/shtml
 commandline_contains:.php.exe
+commandline_contains:cl Microsoft-Windows-WMI-Activity/Trace
+commandline_contains:process call create 
 
 #Command COUNT to be run on all
 #count:+:12
@@ -440,6 +442,7 @@ RunAs
 pastebin
 msinfo32.exe
 C:\$Recycle.bin\
+C:\WINDOWS\system32\wbem\scrcons.exe
 
 #Search everything your looking at for mimikatz
 mimikatz
@@ -461,3 +464,4 @@ Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
 \Microsoft\Windows\CurrentVersion\Policies\Explorer\Run
 \SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce\
 \SOFTWARE\Wow6432Node\Google\Update\ClientState\
+\StartupItems
