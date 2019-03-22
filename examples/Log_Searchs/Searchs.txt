@@ -447,6 +447,7 @@ arp.exe
 systeminfo.exe
 net.exe
 ping.exe 0x
+\Microsoft.Workflow.Compiler.exe
 
 #Search everything your looking at for mimikatz
 mimikatz
