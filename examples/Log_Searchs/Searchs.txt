@@ -300,6 +300,8 @@ powershell~System~7045
 ~Security~4719
 ~Security~4720 
 ~Security~4729
+search_multiple:-`A user account was changed.~Security~4738
+search_multiple:-`A user account was changed.~Security~4742
 #~Security~4648
 ~Security~4688
 #~Security~5156
