@@ -461,6 +461,7 @@ mimilib
 #Everything Search REG Keys
 \CurrentControlSet\Control\WMI\Autologger\
 \WINDOWS\CURRENTVERSION\RUN\
+\Microsoft\Windows\CurrentVersion\
 \SOFTWARE\MICROSOFT\WINDOWS NT\CURRENTVERSION\WINLOGON\
 \Windows\CurrentVersion\RunOnceEx\
 \Shell\
