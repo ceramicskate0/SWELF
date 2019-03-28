@@ -1,0 +1,34 @@
+#SearchTerm ~ EventLogName ~ EventID
+windows defender antivirus scan~microsoft-Windows-Windows Defender/Operational~
+amsiscanbuffer ~amsi/operational~1101
+commandline: "c:\program files (x86)\microsoft visual studio\2017\community\common7\ide\privateassemblies\scriptedsandbox64.exe"~microsoft-windows-sysmon/operational~
+commandline: "c:\program files\nvidia corporation\display.nvcontainer\nvdisplay.container.exe" -f~microsoft-windows-sysmon/operational~
+parentcommandline: "c:\windows\microsoft.net\framework\v4.0.30319\ngen.exe" createpdb~microsoft-windows-sysmon/operational~
+image: c:\program files (x86)\microsoft visual studio\2017\community\common7\servicehub\hosts\servicehub.host.clr.x86\servicehub.vsdetouredhost.exe~microsoft-windows-sysmon/operational~
+transfer job that is associated with the https://aka.ms/vs/15/release/channel~Microsoft-Windows-Bits-Client/Operational
+windows defender antivirus has encountered an error trying to update signatures.~microsoft-Windows-Windows Defender/Operational~
+image: c:\program files (x86)\microsoft visual studio\2017\community\common7\servicehub\hosts\servicehub.host.clr.x86\servicehub.host.clr.x86.exe~microsoft-windows-sysmon/operational~
+commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=renderer~microsoft-windows-sysmon/operational~
+commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=ppapi-broker~microsoft-windows-sysmon/operational~
+commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=gpu-process~microsoft-windows-sysmon/operational~
+commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=crashpad-handler~microsoft-windows-sysmon/operational~
+image: c:\program files (x86)\google\chrome\application\chrome.exe~Microsoft-Windows-Sysmon/Operational~
+parentcommandline: "c:\program files (x86)\google\chrome\application\chrome.exe"~Microsoft-Windows-Sysmon/Operational~
+runspace id: ~Microsoft-Windows-PowerShell/Operational~
+powershell console is~Microsoft-Windows-PowerShell/Operational~
+image: c:\windows\microsoft.net\framework\v4.0.30319\mscorsvw.exe~Microsoft-Windows-Sysmon/Operational~
+the database engine attached a database (1, c:\programdata\microsoft\search\data\applications\windows\windows.edb).~Application~
+the database engine attached a database (1, c:\programdata\microsoft\search\data\applications\windows\windows.edb).~Application on DESKTOP-2EUEFUU~
+process path: c:\program files (x86)\microsoft visual studio\2017\community\common7\ide\devenv.exe~Microsoft-Windows-Bits-Client/Operational 
+image: c:\program files (x86)\swelf\swelf.exe~microsoft-windows-sysmon/operational~
+C:\WINDOWS\system32\SearchIndexer.exe~microsoft-windows-sysmon/operational~
+c:\windows\system32\svchost.exe -k localsystemnetworkrestricted -p -s TabletInputService~microsoft-windows-sysmon/operational~
+parentimage: c:\program files (x86)\ossec-agent\ossec-agent.exe~microsoft-windows-sysmon/operational~
+image: c:\program files (x86)\nvidia corporation\~microsoft-windows-sysmon/operational~
+C:\WINDOWS\system32\SearchIndexer.exe~microsoft-windows-sysmon/operational~
+image: c:\windows\system32\mpsigstub.exe~microsoft-windows-sysmon/operational~
+commandline: wmic  logicaldisk where "drivetype=2 and not deviceid like "a:"" get deviceid, volumename, description, filesystem, size, volumeserialnumber~microsoft-windows-sysmon/operational~
+parentcommandline: c:\windows\system32\cmd.exe /c wmic logicaldisk where "drivetype=2 and not deviceid like "a:"" get deviceid, volumename, description, filesystem, size, volumeserialnumber~microsoft-windows-sysmon/operational~
+(@jaredcatkinson)~Microsoft-Windows-PowerShell/Operational~
+#(@mattifestation)~Microsoft-Windows-PowerShell/Operational~
+windows defender antivirus has removed history of malware and other potentially unwanted software.~microsoft-windows-windows defender/operational~1013
