@@ -1,0 +1,478 @@
+#Layout of Searchs.txt File for searching:
+#NOTE: Upper or Lower case doesnt matter. Search will find both.
+#SearchTerm~EventLogName~EventID
+
+#windows-bits
+~Microsoft-Windows-Bits-Client/Operational~59
+~Microsoft-Windows-Bits-Client/Operational~60
+~Microsoft-Windows-Bits-Client/Operational~3
+
+#Windows Powershell
+webclient~windows powershell~
+iex~windows powershell~
+wscript~windows powershell~
+New-Service~windows powershell~
+schtask~windows powershell~
+task~windows powershell~
+count:|:2~windows powershell~
+hidden~windows powershell~
+invoke-item~windows powershell~
+
+#AMSI
+~AMSI/Operational~
+
+#Microsoft-Windows-Security-Mitigations/KernelMode
+~Microsoft-Windows-Security-Mitigations/KernelMode~
+
+#Microsoft-Windows-Win32k/Concurrency
+~Microsoft-Windows-Win32k/Concurrency~
+
+#Microsoft-Windows-Win32k/Contention
+~Microsoft-Windows-Win32k/Contention~
+
+#Microsoft-Windows-Win32k/Messages
+~Microsoft-Windows-Win32k/Messages~
+
+#Microsoft-Windows-Win32k/Operational
+~Microsoft-Windows-Win32k/Operational~
+
+#Microsoft-Windows-Security-Mitigations/UserMode
+~Microsoft-Windows-Security-Mitigations/UserMode~
+
+#Microsoft-Windows-Win32k/UIPI
+~Microsoft-Windows-Win32k/UIPI~
+
+#Microsoft-Windows-Win32k/Tracing
+~Microsoft-Windows-Win32k/Tracing~
+
+#Microsoft-Windows-Win32k/Render
+~Microsoft-Windows-Win32k/Render~
+
+#Microsoft-Windows-Win32k/Power
+~Microsoft-Windows-Win32k/Power~
+
+#Windows-PowerShell/Operational
+encoding-~Microsoft-Windows-PowerShell/Operational~4104
+invoke-~Microsoft-Windows-PowerShell/Operational~4104
+wp-content~Microsoft-Windows-PowerShell/Operational~4104
+rename~Microsoft-Windows-PowerShell/Operational~4104
+-ep bypass~Microsoft-Windows-PowerShell/Operational~4104
+amsi~Microsoft-Windows-PowerShell/Operational~4104
+InvoKE-expResSioN~Microsoft-Windows-PowerShell/Operational~4104
+.Download~Microsoft-Windows-PowerShell/Operational~4104
+Remove-EventLog~Microsoft-Windows-PowerShell/Operational~4104
+Clear-EventLog~Microsoft-Windows-PowerShell/Operational~4104
+Limit-EventLog~Microsoft-Windows-PowerShell/Operational~4104
+count:-join:2~Microsoft-Windows-PowerShell/Operational~4104
+count:':21~Microsoft-Windows-PowerShell/Operational~4104
+count:+:8~Microsoft-Windows-PowerShell/Operational~4104
+count:;:12~Microsoft-Windows-PowerShell/Operational~4104
+count:|:3~Microsoft-Windows-PowerShell/Operational~4104
+count:&:10~Microsoft-Windows-PowerShell/Operational~4104
+iwr('http~Microsoft-Windows-PowerShell/Operational~4104
+eventdata_length:12000~Microsoft-Windows-PowerShell/Operational~4104
+webclient~Microsoft-Windows-PowerShell/Operational~4104
+iex~Microsoft-Windows-PowerShell/Operational~4104
+wscript~Microsoft-Windows-PowerShell/Operational~4104
+powershell New-Service~Microsoft-Windows-PowerShell/Operational~4104
+$env~Microsoft-Windows-PowerShell/Operational~4104
+http~Microsoft-Windows-PowerShell/Operational~4104
+base64decode~Microsoft-Windows-PowerShell/Operational~4104
+|iex~Microsoft-Windows-PowerShell/Operational~4104
+frombase64string~Microsoft-Windows-PowerShell/Operational~4104
+[System.Reflection.Assembly]::Load~Microsoft-Windows-PowerShell/Operational~4104
+Invoke-Item~Microsoft-Windows-PowerShell/Operational~4104
+Gzipstream~Microsoft-Windows-PowerShell/Operational~4104
+-nop~Microsoft-Windows-PowerShell/Operational~4104
+encodedcommand~Microsoft-Windows-PowerShell/Operational~4104
+noprofile~Microsoft-Windows-PowerShell/Operational~41044104
+invoke-shellcode~Microsoft-Windows-PowerShell/Operational~4104
+adodb.stream~Microsoft-Windows-PowerShell/Operational~4104
+\start menu~Microsoft-Windows-PowerShell/Operational~4104
+
+#Application
+~Application~866
+#~Application~1534
+http~Application~1040
+
+#Microsoft-Windows-WMI-Activity/Operational
+~Microsoft-Windows-WMI-Activity/Operational~5861
+Temporary~Microsoft-Windows-WMI-Activity/Operational~5860
+Win32_Bios~Microsoft-Windows-WMI-Activity/Operational~
+
+#Windows-Sysmon/Operational
+~Microsoft-Windows-Sysmon/Operational~2
+#~Microsoft-Windows-Sysmon/Operational~8
+#~Microsoft-Windows-Sysmon/Operational~9
+~Microsoft-Windows-Sysmon/Operational~12
+~Microsoft-Windows-Sysmon/Operational~16
+#~Microsoft-Windows-Sysmon/Operational~17
+#~Microsoft-Windows-Sysmon/Operational~18
+~Microsoft-Windows-Sysmon/Operational~19
+~Microsoft-Windows-Sysmon/Operational~20
+~Microsoft-Windows-Sysmon/Operational~21
+sysmon~Microsoft-Windows-Sysmon/Operational~5
+#powershell.exe~Microsoft-Windows-Sysmon/Operational~10
+#wmiprvse.exe~Microsoft-Windows-Sysmon/Operational~10
+search_multiple:ping`mshta~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:wscript`AcroRd32~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:cscript`.js~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:csc`appdata~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:dwm.exe`cmd.exe~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:cmd`timeout~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:cmd`sc.exe~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:cmd`wscript~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:cmd`cscript~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:powershell`csc~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:powershell`wscript~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:acrord32.exe`powershell.exe~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:winrar.exe`wscript.exe~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:powershell`sc.exe~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:powershell`rundll32~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:winword`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:winword`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:excel`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:excel`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:POWERPNT`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:POWERPNT`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:iexplorer`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:iexplorer`svchost~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:iexplorer`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:chrome`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:chrome`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:firefox`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:firefox`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:3389`127.0.0.1`svchost.exe~Microsoft-Windows-Sysmon/Operational~3
+search_multiple:mshta`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:mshta`jscript~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:mshta`powershell~Microsoft-Windows-Sysmon/Operational~1
+#search_multiple:cmd`wmic~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:wscript`wmic~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:wscript`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:wscript`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:wmic`cmd~Microsoft-Windows-Sysmon/Operational~1
+#search_multiple:conhost`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:wmiprvse`powershell~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:java`reg~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:powershell`netsvcs~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:rundll32`appdata~Microsoft-Windows-Sysmon/Operational~1
+#search_multiple:rundll32`.exe~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:java`cmd~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:C:\Windows\AppPatch\`sdbinst.exe~Microsoft-Windows-Sysmon/Operational~1
+rename~Microsoft-Windows-Sysmon/Operational~1
+takeown~Microsoft-Windows-Sysmon/Operational~1
+mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
+mshta vbscript:~Microsoft-Windows-Sysmon/Operational~
+regsvr32~Microsoft-Windows-Sysmon/Operational~
+bitsadmin.exe  /transfer~Microsoft-Windows-Sysmon/Operational~
+bitsadmin.exe /download~Microsoft-Windows-Sysmon/Operational~ 
+rundll32.exe javascript:~Microsoft-Windows-Sysmon/Operational~
+count:;:2~Microsoft-Windows-Sysmon/Operational~1
+Signed: false~Microsoft-Windows-Sysmon/Operational~6
+commandline_contains:msiexec /q /i~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:-nop~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:hidden~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:-windowstyle~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:msiexec /quiet /i~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:mshta -Enbedding~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:mshta javascript~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:rundll32.exe javascript~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:ATBroker /start~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:ATBroker.exe /start~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:EQNEDT32.EXE -Embedding~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:pcalua.exe -a~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:regasm.exe /U~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:+~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:-urlcache~Microsoft-Windows-Sysmon/Operational~1
+commandline_contains:http~Microsoft-Windows-Sysmon/Operational~1
+count:|:3~Microsoft-Windows-Sysmon/Operational~1
+#commandline_contains:C:\Windows\System32\wmiprvse.exe -secured -Embedding~Microsoft-Windows-Sysmon/Operational~1
+#commandline_contains:==~Microsoft-Windows-Sysmon/Operational~1
+sc.exe~Microsoft-Windows-Sysmon/Operational~1
+ParentCommandLine: C:\Windows\System32\wbem\WmiPrvSE.exe~Microsoft-Windows-Sysmon/Operational~1
+#Below will log unloading of Sysmon Driver
+Filter Manager~Microsoft-Windows-Sysmon/Operational~1
+file system filter~Microsoft-Windows-Sysmon/Operational~1
+commandline: c:\windows\system32\cmd.exe /c~Microsoft-Windows-Sysmon/Operational~1
+netsh.exe~Microsoft-Windows-Sysmon/Operational~1
+\start menu~Microsoft-Windows-Sysmon/Operational~11
+Image: <unknown process>~Microsoft-Windows-Sysmon/Operational~
+C:\WINDOWS\system32\wbem\scrcons.exe~Microsoft-Windows-Sysmon/Operational~11
+0x800~Microsoft-Windows-Sysmon/Operational~10
+
+#Sysmon Connections to watch
+.opendns.com~Microsoft-Windows-Sysmon/Operational~3
+ddns.net~Microsoft-Windows-Sysmon/Operational~3
+net.exe~Microsoft-Windows-Sysmon/Operational~3
+hit-block.opendns.com~Microsoft-Windows-Sysmon/Operational~3
+
+#Defender
+detected~microsoft-Windows-Windows Defender/Operational~
+detection~microsoft-Windows-Windows Defender/Operational~ 
+malware~microsoft-Windows-Windows Defender/Operational~
+disabled~microsoft-Windows-Windows Defender/Operational~
+windows defender antivirus configuration has changed.~microsoft-Windows-Windows Defender/Operational~
+~microsoft-Windows-Windows Defender/Operational~5007
+windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
+~microsoft-Windows-Windows Defender/Operational~1007
+~microsoft-Windows-Windows Defender/Operational~1008
+~microsoft-Windows-Windows Defender/Operational~1015
+~microsoft-Windows-Windows Defender/Operational~1116
+~microsoft-Windows-Windows Defender/Operational~1117
+~microsoft-Windows-Windows Defender/Operational~3007
+#~microsoft-Windows-Windows Defender/Operational~5001
+#~microsoft-Windows-Windows Defender/Operational~5007
+~Microsoft-Windows-Windows Defender/Operational~1121
+~Microsoft-Windows-Windows Defender/Operational~1122
+~Microsoft-Windows-Windows Defender/Operational~1123
+~Microsoft-Windows-Windows Defender/Operational~1125
+~Microsoft-Windows-Windows Defender/Operational~1126
+
+#Microsoft-Windows-Windows Defender/WHC
+~Microsoft-Windows-Windows Defender/WHC~1123
+~Microsoft-Windows-Windows Defender/WHC~1125
+~Microsoft-Windows-Windows Defender/WHC~1126
+~Microsoft-Windows-Windows Defender/WHC~1124
+~Microsoft-Windows-Windows Defender/WHC~5007
+
+#DistributedCOM
+System~Microsoft-Windows-DistributedCOM~10016
+
+#RemoteConnectionManager/Operational
+~Microsoft-Windows-TerminalServices-RemoteConnectionManager~1056
+~Microsoft-Windows-TerminalServices-RemoteConnectionManager~1149
+
+#Microsoft-Windows-TerminalServices-LocalSessionManager/Operational
+#~Microsoft-Windows-TerminalServices-LocalSessionManager~21
+#~Microsoft-Windows-TerminalServices-LocalSessionManager~23
+#~Microsoft-Windows-TerminalServices-LocalSessionManager~24
+#~Microsoft-Windows-TerminalServices-LocalSessionManager~25
+
+#Microsoft-WindowsCodeIntegrity/Operational
+~Microsoft-WindowsCodeIntegrity/Operational~3033
+~Microsoft-Windows-CodeIntegrity/Operational~3076
+~Microsoft-Windows-CodeIntegrity/Operational~3099
+log_level:error~Microsoft-Windows-CodeIntegrity/Operational~
+log_level:warning~Microsoft-Windows-CodeIntegrity/Operational~
+
+#Microsoft-Windows-Kernel-Audit-API-Calls
+SetThreadContext~Microsoft-Windows-Kernel-Audit-API-Calls~
+CreateRemoteThread~Microsoft-Windows-Kernel-Audit-API-Calls~
+WriteProcessMemory~Microsoft-Windows-Kernel-Audit-API-Calls~
+QueueUserAPC~Microsoft-Windows-Kernel-Audit-API-Calls~
+NTMapViewOfSection~Microsoft-Windows-Kernel-Audit-API-Calls~
+
+#Microsoft-Windows-Kernel-EventTracing/Analytic 
+~Microsoft-Windows-Kernel-EventTracing/Analytic~12
+
+#AppLocker
+8000~Microsoft-Windows-AppLocker/EXE and DLL~
+8000~Microsoft-Windows-AppLocker/MSI and Script~
+log_level:warning~Microsoft-Windows-AppLocker/EXE and DLL~
+log_level:warning~Microsoft-Windows-AppLocker/MSI and Script~
+
+#System
+~System~104
+~System~7045
+~System~7040
+#~System~7045
+cmd~System~7045
+powershell~System~7045
+~System~7022
+~System~4719
+~System~7009
+#~System~1014
+
+#Microsoft-Windows-SoftwareRestrictionPolicies
+~Microsoft-Windows-SoftwareRestrictionPolicies~866
+
+#Security
+~Security~517
+#~Security~576
+#~Security~577
+#~Security~578
+~Security~1100
+~Security~1101
+~Security~1102 
+~Security~1108
+~Security~7045 
+~Security~5140
+~Security~4719
+~Security~4720 
+~Security~4729
+search_multiple:-`A user account was changed.~Security~4738
+search_multiple:-`A user account was changed.~Security~4742
+#~Security~4648
+~Security~4688
+#~Security~5156
+Destination Port:  445~Security~5156
+#~Security~4689
+#~Security~4672
+#~Security~4688
+0xC000015B~Security~4625
+search_multiple:Logon Type:		9`seclogo~Security~4624
+Logon Type:		9~Security~4624 
+Logon Type:		3~Security~4624 
+Logon Type:		10~Security~4624
+IPC$~Security~5145
+ADMIN$~Security~5145
+C$~Security~5145
+RPCSS~Security~4648
+search_multiple:Chrome`ReadData`Login Data~Security~4663
+
+#Microsoft-Windows-TaskScheduler/Operational
+#~Microsoft-Windows-TaskScheduler/Operational~106
+#~Microsoft-Windows-TaskScheduler/Operational~141
+
+#DNS-Client
+System~Microsoft-Windows-DNS-Client/Operational~1014
+
+#Commands COMMANDLINES to be run on all
+commandline_contains:rename
+commandline_length:500
+commandline_contains:<
+commandline_contains:>
+commandline_contains:^
+commandline_contains:*
+commandline_contains:$env
+commandline_contains:print /D:
+commandline_contains:expand
+commandline_contains:cmstp.exe /ni /s
+commandline_contains:odbcconf -f
+commandline_contains:-windowstyle hidden
+commandline_contains:runscripthelper.exe surfacecheck
+commandline_contains:Scriptrunner.exe -appvscript
+commandline_contains:javascript
+commandline_contains:vbscript
+commandline_contains:sc create
+commandline_contains:java.exe -jar 
+commandline_contains:vssadmin delete shadows
+commandline_contains:-ep bypass -w hidden -file
+commandline_contains:Split(
+commandline_contains:-wddisable
+commandline_contains:/format
+commandline_contains:rename
+commandline_contains:/Create
+commandline_contains:/stext
+commandline_contains:/shellexec
+commandline_contains:& del
+commandline_contains:/download
+commandline_contains:/transfer
+commandline_contains:/shtml
+commandline_contains:.php.exe
+commandline_contains:cl Microsoft-Windows-WMI-Activity/Trace
+commandline_contains:process call create 
+
+#Command COUNT to be run on all
+#count:+:12
+count:&:10
+count:-split:4
+count:^:9
+count:`:9
+count:call:4
+count:set:5
+count:-join:5
+count:^:10
+count:;:50
+count:,:25
+count:*:8
+count:?:7
+count:^:1
+
+#Network Connections
+network_connect:443:powershell
+network_connect:80:powershell
+network_connect:443:cmd
+network_connect:80:cmd
+network_connect:443:javaw
+network_connect:80:javaw
+network_connect:443:wmic
+network_connect:80:wmic
+network_connect:443:bitsadmin
+network_connect:80:bitsadmin
+network_connect:443:wscript
+network_connect:80:wscript
+network_connect:443:explorer
+network_connect:80:explorer
+
+#Search all for Multiple
+search_multiple:vbc`.txt
+search_multiple:%COMPSPEC%`cmd~~7045
+search_multiple:%COMPSPEC%`powershell~~7045
+search_multiple:rundll32`.dat
+
+#KEYWORD SEARCHS to be run on all
+sc.exe
+jscript
+cvtres
+vbscript
+csript
+cmstp.exe
+Iexpress.exe
+psr.exe
+CMSTP.exe
+expand.exe
+control.exe
+ieexec.exe
+makecab.exe
+extrac.exe
+ftp.exe
+mshta
+#regedit
+.bgi
+.scr
+rundll32.exe javascript:
+rundll32.exe http:
+.SettingContent-ms
+#regserv32
+#msbuild
+attrib.exe
+vbc.exe
+#vbc
+installutil.exe
+at.exe
+netsh 
+advfirewall
+appvlp.exe
+timeout.exe
+logman
+wpr.exe
+ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
+EtwTraceProvider
+auditpol
+scrobj.dll,NI,
+RunAs 
+pastebin
+msinfo32.exe
+C:\$Recycle.bin\
+C:\WINDOWS\system32\wbem\scrcons.exe
+arp.exe
+systeminfo.exe
+net.exe
+ping.exe 0x
+\Microsoft.Workflow.Compiler.exe
+
+#Search everything your looking at for mimikatz
+mimikatz
+sekurlsa::logonpasswords
+privilege::debug
+mimilib
+~~5145
+
+#Everything Search REG Keys
+\CurrentControlSet\Control\WMI\Autologger\
+\WINDOWS\CURRENTVERSION\RUN\
+\Microsoft\Windows\CurrentVersion\
+\SOFTWARE\MICROSOFT\WINDOWS NT\CURRENTVERSION\WINLOGON\
+\Windows\CurrentVersion\RunOnceEx\
+\Shell\
+\CLSID\
+\InProcServer32
+Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders
+Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
+\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run
+\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce\
+\SOFTWARE\Wow6432Node\Google\Update\ClientState\
+\StartupItems
+CurrentControlSet\Control\Lsa\Security Packages
+\CurrentControlSet\Control\Lsa\OSConfig\Security Packages
