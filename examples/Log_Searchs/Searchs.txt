@@ -462,8 +462,6 @@ mimilib
 
 #Everything Search REG Keys
 \CurrentControlSet\Control\WMI\Autologger\
-\WINDOWS\CURRENTVERSION\RUN\
-\Microsoft\Windows\CurrentVersion\
 \SOFTWARE\MICROSOFT\WINDOWS NT\CURRENTVERSION\WINLOGON\
 \Windows\CurrentVersion\RunOnceEx\
 \Shell\
@@ -473,6 +471,7 @@ Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders
 Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
 \Microsoft\Windows\CurrentVersion\Policies\Explorer\Run
 \SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce\
+\Microsoft\Windows\CurrentVersion\Run
 \SOFTWARE\Wow6432Node\Google\Update\ClientState\
 \StartupItems
 CurrentControlSet\Control\Lsa\Security Packages
