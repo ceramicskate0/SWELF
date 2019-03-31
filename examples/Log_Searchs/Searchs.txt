@@ -298,6 +298,8 @@ powershell~System~7045
 ~Security~1101
 ~Security~1102 
 ~Security~1108
+nTSecurityDescriptor~Security~5136
+WRITE_DAC~Security~4662
 ~Security~7045 
 ~Security~5140
 ~Security~4719
