@@ -439,6 +439,7 @@ installutil.exe
 at.exe
 netsh 
 advfirewall
+mklink
 appvlp.exe
 timeout.exe
 logman
