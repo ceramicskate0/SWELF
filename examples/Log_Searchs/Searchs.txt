@@ -285,6 +285,7 @@ powershell~System~7045
 ~System~4719
 ~System~7009
 #~System~1014
+SAM~System~16965
 
 #Microsoft-Windows-SoftwareRestrictionPolicies
 ~Microsoft-Windows-SoftwareRestrictionPolicies~866
