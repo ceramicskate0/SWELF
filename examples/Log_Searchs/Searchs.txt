@@ -19,6 +19,7 @@ hidden~windows powershell~
 invoke-item~windows powershell~
 
 #AMSI
+#Idea to turn on located at https://gist.github.com/mattifestation/dfdd41e5020f4286e9b6486545abc359
 ~AMSI/Operational~
 
 #Microsoft-Windows-Security-Mitigations/KernelMode
