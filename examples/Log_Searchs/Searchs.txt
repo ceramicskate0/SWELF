@@ -258,6 +258,10 @@ System~Microsoft-Windows-DistributedCOM~10016
 log_level:error~Microsoft-Windows-CodeIntegrity/Operational~
 log_level:warning~Microsoft-Windows-CodeIntegrity/Operational~
 
+#Microsoft-Windows-Shell-Core/Operational
+~Microsoft-Windows-Shell-Core/Operational~9707
+~Microsoft-Windows-Shell-Core/Operational~9708
+
 #Microsoft-Windows-Kernel-Audit-API-Calls
 SetThreadContext~Microsoft-Windows-Kernel-Audit-API-Calls~
 CreateRemoteThread~Microsoft-Windows-Kernel-Audit-API-Calls~
