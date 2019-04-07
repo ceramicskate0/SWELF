@@ -496,3 +496,4 @@ CurrentControlSet\Control\Lsa\Security Packages
 \CurrentControlSet\Control\Lsa\OSConfig\Security Packages
 \SYSTEM\CurrentControlSet\Services\PortProxy\v4tov4
 \SYSTEM\CurrentControlSet\Control\WMI\Autologger\
+\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Publishers\
