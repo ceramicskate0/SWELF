@@ -93,6 +93,7 @@ adodb.stream~Microsoft-Windows-PowerShell/Operational~4104
 
 #Application
 ~Application~866
+0xc0000409~Application~1000
 #~Application~1534
 http~Application~1040
 
@@ -488,3 +489,4 @@ Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
 \StartupItems
 CurrentControlSet\Control\Lsa\Security Packages
 \CurrentControlSet\Control\Lsa\OSConfig\Security Packages
+\SYSTEM\CurrentControlSet\Services\PortProxy\v4tov4
