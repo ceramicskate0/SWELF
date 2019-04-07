@@ -274,6 +274,9 @@ NTMapViewOfSection~Microsoft-Windows-Kernel-Audit-API-Calls~
 #Microsoft-Windows-Kernel-EventTracing/Analytic 
 ~Microsoft-Windows-Kernel-EventTracing/Analytic~12
 
+#Microsoft-TerminalServices-LocalSessionmanager Operational
+~Microsoft-TerminalServices-LocalSessionmanager Operational~21
+
 #AppLocker
 8000~Microsoft-Windows-AppLocker/EXE and DLL~
 8000~Microsoft-Windows-AppLocker/MSI and Script~
