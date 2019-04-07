@@ -53,6 +53,7 @@ invoke-item~windows powershell~
 ~Microsoft-Windows-Win32k/Power~
 
 #Windows-PowerShell/Operational
+Remove-EtwTraceProvider~Microsoft-Windows-PowerShell/Operational~4104
 encoding-~Microsoft-Windows-PowerShell/Operational~4104
 invoke-~Microsoft-Windows-PowerShell/Operational~4104
 wp-content~Microsoft-Windows-PowerShell/Operational~4104
@@ -494,3 +495,4 @@ Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
 CurrentControlSet\Control\Lsa\Security Packages
 \CurrentControlSet\Control\Lsa\OSConfig\Security Packages
 \SYSTEM\CurrentControlSet\Services\PortProxy\v4tov4
+\SYSTEM\CurrentControlSet\Control\WMI\Autologger\
