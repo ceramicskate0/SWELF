@@ -98,6 +98,9 @@ adodb.stream~Microsoft-Windows-PowerShell/Operational~4104
 #~Application~1534
 http~Application~1040
 
+#Microsoft-Windows-SoftwareRestrictionPolicies
+~Microsoft-Windows-SoftwareRestrictionPolicies~866
+
 #Microsoft-Windows-WMI-Activity/Operational
 ~Microsoft-Windows-WMI-Activity/Operational~5861
 Temporary~Microsoft-Windows-WMI-Activity/Operational~5860
