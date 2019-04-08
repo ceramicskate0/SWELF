@@ -303,9 +303,6 @@ powershell~System~7045
 #~System~1014
 SAM database has been denied~System~16965
 
-#Microsoft-Windows-SoftwareRestrictionPolicies
-~Microsoft-Windows-SoftwareRestrictionPolicies~866
-
 #Security
 ~Security~517
 #~Security~576
