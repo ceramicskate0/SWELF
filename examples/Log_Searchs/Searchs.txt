@@ -450,7 +450,7 @@ attrib.exe
 vbc.exe
 #vbc
 installutil.exe
-at.exe
+\at.exe
 netsh 
 advfirewall
 mklink
