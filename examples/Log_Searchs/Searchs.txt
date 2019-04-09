@@ -314,6 +314,8 @@ SAM database has been denied~System~16965
 ~Security~1108
 nTSecurityDescriptor~Security~5136
 WRITE_DAC~Security~4662
+EventConsumer~Security~4662
+PutClass~Security~4662
 ~Security~7045 
 ~Security~5140
 ~Security~4719
