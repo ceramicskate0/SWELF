@@ -102,6 +102,7 @@ http~Application~1040
 ~Microsoft-Windows-SoftwareRestrictionPolicies~866
 
 #Microsoft-Windows-WMI-Activity/Operational
+0x0~Microsoft-Windows-WMI-Activity/Operational~5857
 ~Microsoft-Windows-WMI-Activity/Operational~5861
 Temporary~Microsoft-Windows-WMI-Activity/Operational~5860
 Win32_Bios~Microsoft-Windows-WMI-Activity/Operational~
