@@ -66,9 +66,9 @@ Remove-EventLog~Microsoft-Windows-PowerShell/Operational~4104
 Clear-EventLog~Microsoft-Windows-PowerShell/Operational~4104
 Limit-EventLog~Microsoft-Windows-PowerShell/Operational~4104
 count:-join:2~Microsoft-Windows-PowerShell/Operational~4104
-count:':21~Microsoft-Windows-PowerShell/Operational~4104
+#count:':21~Microsoft-Windows-PowerShell/Operational~4104
 count:+:8~Microsoft-Windows-PowerShell/Operational~4104
-count:;:12~Microsoft-Windows-PowerShell/Operational~4104
+#count:;:12~Microsoft-Windows-PowerShell/Operational~4104
 count:|:3~Microsoft-Windows-PowerShell/Operational~4104
 count:&:10~Microsoft-Windows-PowerShell/Operational~4104
 iwr('http~Microsoft-Windows-PowerShell/Operational~4104
@@ -102,6 +102,7 @@ http~Application~1040
 ~Microsoft-Windows-SoftwareRestrictionPolicies~866
 
 #Microsoft-Windows-WMI-Activity/Operational
+root\~Microsoft-Windows-WMI-Activity/Operational~5858
 0x0~Microsoft-Windows-WMI-Activity/Operational~5857
 ~Microsoft-Windows-WMI-Activity/Operational~5861
 Temporary~Microsoft-Windows-WMI-Activity/Operational~5860
@@ -217,7 +218,6 @@ commandline_contains:vssadmin delete shadows /all /quiet~Microsoft-Windows-Sysmo
 .opendns.com~Microsoft-Windows-Sysmon/Operational~3
 ddns.net~Microsoft-Windows-Sysmon/Operational~3
 net.exe~Microsoft-Windows-Sysmon/Operational~3
-hit-block.opendns.com~Microsoft-Windows-Sysmon/Operational~3
 
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
@@ -461,7 +461,6 @@ appvlp.exe
 timeout.exe
 logman
 wpr.exe
-ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
 EtwTraceProvider
 auditpol
 scrobj.dll,NI,
@@ -482,6 +481,10 @@ sekurlsa::logonpasswords
 privilege::debug
 mimilib
 ~~5145
+
+#WMI
+ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
+root\cimv2
 
 #Everything Search REG Keys
 \CurrentControlSet\Control\WMI\Autologger\
