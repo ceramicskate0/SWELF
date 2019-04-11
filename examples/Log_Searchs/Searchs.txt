@@ -92,12 +92,6 @@ invoke-shellcode~Microsoft-Windows-PowerShell/Operational~4104
 adodb.stream~Microsoft-Windows-PowerShell/Operational~4104
 \start menu~Microsoft-Windows-PowerShell/Operational~4104
 
-#Application
-~Application~866
-0xc0000409~Application~1000
-#~Application~1534
-http~Application~1040
-
 #Microsoft-Windows-SoftwareRestrictionPolicies
 ~Microsoft-Windows-SoftwareRestrictionPolicies~866
 
@@ -290,6 +284,14 @@ NTMapViewOfSection~Microsoft-Windows-Kernel-Audit-API-Calls~
 8000~Microsoft-Windows-AppLocker/MSI and Script~
 log_level:warning~Microsoft-Windows-AppLocker/EXE and DLL~
 log_level:warning~Microsoft-Windows-AppLocker/MSI and Script~
+
+#Application
+~Application~866
+0xc0000409~Application~1000
+#~Application~1534
+http~Application~1040
+\\~Application~1040
+msi~Application~1040
 
 #System
 ~System~104
