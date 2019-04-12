@@ -196,6 +196,7 @@ count:|:3~Microsoft-Windows-Sysmon/Operational~1
 #commandline_contains:C:\Windows\System32\wmiprvse.exe -secured -Embedding~Microsoft-Windows-Sysmon/Operational~1
 #commandline_contains:==~Microsoft-Windows-Sysmon/Operational~1
 sc.exe~Microsoft-Windows-Sysmon/Operational~1
+net stop~Microsoft-Windows-Sysmon/Operational~1
 ParentCommandLine: C:\Windows\System32\wbem\WmiPrvSE.exe~Microsoft-Windows-Sysmon/Operational~1
 #Below will log unloading of Sysmon Driver
 Filter Manager~Microsoft-Windows-Sysmon/Operational~1
