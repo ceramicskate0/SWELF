@@ -1,0 +1,2 @@
+$LogCommandHealthEvent=$true
+$LogCommandLifeCycleEvent=$true
