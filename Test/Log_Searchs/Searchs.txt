@@ -4,23 +4,6 @@
 
 #Application
 ~Application~866
-#~Application~1534
-http~Application~1040
-
-search_multiple:cmd`timeout~Microsoft-Windows-Sysmon/Operational~1
-search_multiple:powershell`rundll32~Microsoft-Windows-Sysmon/Operational~1
-
-#System
-~System~104
-~System~7045
-~System~7040
-#~System~7045
-cmd~System~7045
-powershell~System~7045
-~System~7022
-~System~4719
-~System~7009
-#~System~1014
 
 #Security
 ~Security~517
@@ -58,8 +41,6 @@ search_multiple:Chrome`ReadData`Login Data~Security~4663
 
 #Microsoft-Windows-TaskScheduler/Operational
 ~Microsoft-Windows-TaskScheduler/Operational~106
-#~Microsoft-Windows-TaskScheduler/Operational~141
-
 
 #Commands COMMANDLINES to be run on all
 commandline_contains:rename
