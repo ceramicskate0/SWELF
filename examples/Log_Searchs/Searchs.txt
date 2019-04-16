@@ -481,7 +481,6 @@ net.exe
 ping.exe 0x
 \Microsoft.Workflow.Compiler.exe
 nc.exe
-auditpol
 
 #Search everything your looking at for mimikatz
 mimikatz
