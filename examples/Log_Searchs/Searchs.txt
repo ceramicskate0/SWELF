@@ -169,6 +169,7 @@ search_multiple:svchost.exe`-s EventLog~Microsoft-Windows-Sysmon/Operational~10
 search_multiple:lsass`0x1010~EventLog~Microsoft-Windows-Sysmon/Operational~10
 rename~Microsoft-Windows-Sysmon/Operational~1
 takeown~Microsoft-Windows-Sysmon/Operational~1
+received files\~Microsoft-Windows-Sysmon/Operational~1
 mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 mshta vbscript:~Microsoft-Windows-Sysmon/Operational~
 regsvr32~Microsoft-Windows-Sysmon/Operational~
