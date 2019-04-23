@@ -1,6 +1,6 @@
 #Layout of Searchs.txt File for searching:
 #NOTE: Upper or Lower case doesnt matter. Search will find both.
-#SearchTerm~EventLogName~EventID
+#SearchTerm/Search_CMD~EventLogName~EventID
 
 #Application
 java~Application~
