@@ -329,6 +329,8 @@ PutClass~Security~4662
 ~Security~4719
 ~Security~4720 
 ~Security~4729
+search_multiple:A security-enabled local group membership was enumerated.`net1.exe`admin~Security~4798
+search_multiple:A security-enabled local group membership was enumerated.`net1.exe`admin~Security~4799
 search_multiple:-`A user account was changed.~Security~4738
 search_multiple:-`A user account was changed.~Security~4742
 #~Security~4648
