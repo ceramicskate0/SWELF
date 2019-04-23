@@ -6,8 +6,8 @@
 java~Application~
 java~Application~866
 
-count:AppData:2~Application~
 count:AppData:2~Application~866
+count:AppData:2~Application~
 
 eventdata_length:9000~Application~
 
