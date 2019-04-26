@@ -1,4 +1,4 @@
-﻿//Written by Ceramicskate0
+//Written by Ceramicskate0
 //Copyright 
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,7 @@ namespace SWELF
     {
         private static List<string> Program_Start_Args = new List<string>();
 
+        [STAThread]
         internal static void Main(string[] args)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -48,7 +49,7 @@ namespace SWELF
             var elapsedTime = watch.Elapsed;
         }
 
-        public static void Start_EVTX_Process()
+        internal static void Start_EVTX_Process()
         {
             try
             {
