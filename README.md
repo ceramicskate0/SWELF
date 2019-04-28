@@ -11,7 +11,7 @@ SWELF is designed to put you back in control of your log data and your log forwa
 >Also, an interesting case has come up recently, that red teamers could use this to help simulate a SIEM on a VM for testing on an endpoint. 
 
 ## [Install:](https://github.com/ceramicskate0/SWELF/wiki/How-to-'install'-SWELF)
-## [Useage:](https://github.com/ceramicskate0/SWELF/wiki/How-to-Execute-SWELF)
+## [Usage:](https://github.com/ceramicskate0/SWELF/wiki/How-to-Execute-SWELF)
 ## [Requirements:](https://github.com/ceramicskate0/SWELF/wiki/SWELF-Requirements)
 
 ![swelf icon](https://user-images.githubusercontent.com/6934294/47841159-afd30b00-dd86-11e8-8e9d-36c8af61a4db.png)
