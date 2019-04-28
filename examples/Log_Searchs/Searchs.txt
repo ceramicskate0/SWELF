@@ -431,6 +431,7 @@ search_multiple:vbc`.txt
 search_multiple:%COMPSPEC%`cmd~~7045
 search_multiple:%COMPSPEC%`powershell~~7045
 search_multiple:rundll32`.dat
+search_multiple:cmd.exe'del
 
 #KEYWORD SEARCHS to be run on all
 sc.exe
