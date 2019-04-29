@@ -212,6 +212,7 @@ C:\WINDOWS\system32\wbem\scrcons.exe~Microsoft-Windows-Sysmon/Operational~11
 commandline_contains:vssadmin delete shadows /all /quiet~Microsoft-Windows-Sysmon/Operational~1
 \temp\debug.bin~Microsoft-Windows-Sysmon/Operational~11
 lsass~Microsoft-Windows-Sysmon/Operational~10
+dbguiremotebreakin~Microsoft-Windows-Sysmon/Operational~8
 
 #Sysmon Connections to watch
 .opendns.com~Microsoft-Windows-Sysmon/Operational~3
