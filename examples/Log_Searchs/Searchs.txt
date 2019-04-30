@@ -159,6 +159,7 @@ search_multiple:wmiprvse`powershell~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:java`reg~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:powershell`netsvcs~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:rundll32`appdata~Microsoft-Windows-Sysmon/Operational~1
+search_multiple:C:\Windows\explorer.exe`Integritylevel: system~Microsoft-Windows-Sysmon/Operational~1
 #search_multiple:rundll32`.exe~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:java`cmd~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:C:\Windows\AppPatch\`sdbinst.exe~Microsoft-Windows-Sysmon/Operational~1
