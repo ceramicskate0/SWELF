@@ -521,4 +521,4 @@ CurrentControlSet\Control\Lsa\Security Packages
 \SYSTEM\CurrentControlSet\Services\PortProxy\v4tov4
 \SYSTEM\CurrentControlSet\Control\WMI\Autologger\
 \SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Publishers\
-\Software\Classes\AppX82a6gwre4fdg3bt635tn5ctqjf8msdd2\Shell\open\command
+\Shell\open\command
