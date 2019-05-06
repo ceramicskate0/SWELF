@@ -487,6 +487,9 @@ C:\WINDOWS\system32\wbem\scrcons.exe
 \ping.exe 0x
 \Microsoft.Workflow.Compiler.exe
 \nc.exe
+\control.exe
+\ieexec.exe
+\wab.exe
 
 #Search everything your looking at for mimikatz
 mimikatz
@@ -518,3 +521,4 @@ CurrentControlSet\Control\Lsa\Security Packages
 \SYSTEM\CurrentControlSet\Services\PortProxy\v4tov4
 \SYSTEM\CurrentControlSet\Control\WMI\Autologger\
 \SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Publishers\
+\Software\Classes\AppX82a6gwre4fdg3bt635tn5ctqjf8msdd2\Shell\open\command
