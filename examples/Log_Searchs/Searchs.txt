@@ -3,8 +3,8 @@
 #SearchTerm~EventLogName~EventID
 
 #windows-bits
-~Microsoft-Windows-Bits-Client/Operational~59
-~Microsoft-Windows-Bits-Client/Operational~60
+/c~Microsoft-Windows-Bits-Client/Operational~59
+/c~Microsoft-Windows-Bits-Client/Operational~60
 ~Microsoft-Windows-Bits-Client/Operational~3
 
 #Windows Powershell
@@ -436,6 +436,7 @@ search_multiple:rundll32`.dat
 search_multiple:cmd.exe'del
 
 #KEYWORD SEARCHS to be run on all
+bitsadmin.exe /SetNotifyCmdLine
 sc.exe
 jscript
 cvtres
