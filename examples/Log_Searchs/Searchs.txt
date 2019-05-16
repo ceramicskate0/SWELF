@@ -301,6 +301,7 @@ log_level:warning~Microsoft-Windows-AppLocker/MSI and Script~
 http~Application~1040
 \\~Application~1040
 msi~Application~1040
+Application: SWELF.exe~Application~1026
 
 #System
 ~System~104
