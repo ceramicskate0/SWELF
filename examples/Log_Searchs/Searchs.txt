@@ -116,6 +116,7 @@ Win32_Bios~Microsoft-Windows-WMI-Activity/Operational~
 sysmon~Microsoft-Windows-Sysmon/Operational~5
 #powershell.exe~Microsoft-Windows-Sysmon/Operational~10
 #wmiprvse.exe~Microsoft-Windows-Sysmon/Operational~10
+HarddiskVolumeShadowCopy~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:plink.exe`@~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:ping`mshta~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:wscript`AcroRd32~Microsoft-Windows-Sysmon/Operational~1
