@@ -440,6 +440,7 @@ search_multiple:rundll32`.dat
 search_multiple:cmd.exe'del
 
 #KEYWORD SEARCHS to be run on all
+\appcmd.exe
 bitsadmin.exe /SetNotifyCmdLine
 sc.exe
 jscript
