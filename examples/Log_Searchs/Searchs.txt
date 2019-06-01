@@ -511,6 +511,7 @@ ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
 root\cimv2
 
 #Everything Search REG Keys
+\CurrentControlSet\Control\SecurityProviders\WDigest
 \CurrentControlSet\Control\WMI\Autologger\
 \SOFTWARE\MICROSOFT\WINDOWS NT\CURRENTVERSION\WINLOGON\
 \Windows\CurrentVersion\RunOnceEx\
