@@ -1,9 +1,10 @@
-//Written by Ceramicskate0
+﻿//Written by Ceramicskate0
 //Copyright 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace SWELF
@@ -12,11 +13,10 @@ namespace SWELF
     {
         private static List<string> Program_Start_Args = new List<string>();
 
-        [STAThread]
+        [MTAThread]
         internal static void Main(string[] args)
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
             Program_Start_Args = Environment.GetCommandLineArgs().ToList();
 
             if (Program_Start_Args.Count>1)
@@ -31,8 +31,11 @@ namespace SWELF
             {
                 try
                 {
-                    if (System_Info.Is_SWELF_Running())
+                    if (System_Info.Is_SWELF_Running()==false)
                     {
+                        Thread THREAD_APP_RUN_TIMER = new Thread(CHECK_If_App_Has_Run_To_Long);//kills app for running to long
+                        THREAD_APP_RUN_TIMER.IsBackground = true;
+                        THREAD_APP_RUN_TIMER.Start();
                         Start_Live_Process();
                     }
                     else
@@ -45,8 +48,6 @@ namespace SWELF
                     Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE, "Start_Live_Process()", e.Message.ToString() + ", Also the app halted." + "Stack=" + e.StackTrace);
                 }
             }
-            watch.Stop();
-            var elapsedTime = watch.Elapsed;
         }
 
         internal static void Start_EVTX_Process()
@@ -94,9 +95,11 @@ namespace SWELF
                 Start_Setup();
 
                 Thread PS_Plugins_Thread = new Thread(() => Start_Run_Plugins());
+                PS_Plugins_Thread.IsBackground = true;
                 PS_Plugins_Thread.Start();
 
                 Thread Local_Logs_Thread = new Thread(() => Start_ReadLocal_Logs());
+                Local_Logs_Thread.IsBackground = true;
                 Local_Logs_Thread.Start();
 
                 Start_Read_Search_Write_Forward_EventLogs();
@@ -140,6 +143,7 @@ namespace SWELF
             try
             {
                 Settings.Plugin_Search_Terms_Unparsed=Settings.Plugin_Search_Terms_Unparsed.Distinct().ToList();
+
                 for (int x = 0; x < Settings.Plugin_Search_Terms_Unparsed.Count; ++x)
                 {
                     EventLog_Entry PSLog = new EventLog_Entry();
@@ -165,7 +169,7 @@ namespace SWELF
                         }
                         catch (Exception e)
                         {
-                            Error_Operation.Log_Error("Network_Forwarder.SEND_Logs() or EventLog_SWELF.WRITE_EventLog_From_SWELF_Search()", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " HostEventLogAgent_Eventlog.WRITE_EventLog " + e.Message.ToString(), Error_Operation.LogSeverity.Warning);
+                            Error_Operation.Log_Error("Network_Forwarder.SEND_Logs() or EventLog_SWELF.WRITE_EventLog_From_SWELF_Search() Start_Run_Plugins()", Settings.EventLog_w_PlaceKeeper_List.ElementAt(x) + " HostEventLogAgent_Eventlog.WRITE_EventLog " + e.Message.ToString(), Error_Operation.LogSeverity.Warning);
                         }
                     }
                 }
@@ -195,8 +199,10 @@ namespace SWELF
                     if ((Settings.Running_Thread_Count < Settings.Max_Thread_Count) || Settings.Total_Threads_Run == 0)//start threads
                     {
                        Thread Search_Thread = new Thread(() => Start_Threaded_Search(Settings.Total_Threads_Run));
+                       Search_Thread.IsBackground = true;
+                       Search_Thread.Priority = ThreadPriority.AboveNormal;
                        Search_Thread.Start();
-                       Thread.Sleep(1000);//wait for thread to start
+                       Thread.Sleep(500);//wait for thread to start
                     }
                     while (Settings.Running_Thread_Count >= Settings.Max_Thread_Count)//wait for 1 thread to finish when max limit is hit. sleep becuz no work to do while threads work
                     {
@@ -209,7 +215,6 @@ namespace SWELF
                 }
                 Start_Output_Post_Run();
             }
-            Settings.UPDATE_EventLog_w_PlaceKeeper_File();
         }
 
         private static void Start_Threaded_Search(int Index)
@@ -224,26 +229,30 @@ namespace SWELF
 
                 EVNT_Log.READ_EventLog(Settings.EventLog_w_PlaceKeeper_List.ElementAt(Index), Settings.EventLog_w_PlaceKeeper[Settings.EventLog_w_PlaceKeeper_List.ElementAt(Index)]);
 
-                Search_EventLog search_Obj = new Search_EventLog(EVNT_Log.EventLog_Log_API.Contents_of_EventLog);
+                if (EVNT_Log.EventLog_Log_API != null)
+                {
+                    Search_EventLog search_Obj = new Search_EventLog(EVNT_Log.EventLog_Log_API.Contents_of_EventLog);
 
-                Settings.SWELF_Events_Of_Interest_Matching_EventLogs = search_Obj.Search(Settings.EventLog_w_PlaceKeeper_List.ElementAt(Index));
+                    Settings.SWELF_Events_Of_Interest_Matching_EventLogs = search_Obj.Search(Settings.EventLog_w_PlaceKeeper_List.ElementAt(Index));
+                }
             }
             catch (Exception e)
             {
                 if (e.Message == "Object reference not set to an instance of an object.")
                 {
-                    Error_Operation.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", Settings.EventLog_w_PlaceKeeper_List.ElementAt(Settings.Total_Threads_Run-1) + " " + e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
+                    Error_Operation.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", Settings.EventLog_w_PlaceKeeper_List.ElementAt(Settings.Total_Threads_Run-1) + " " + e.Message.ToString()+" This error means the EventLog was not read or searched.", Error_Operation.LogSeverity.Informataion);
                 }
                 else if (e.Message.ToString().Contains("The process cannot access the file"))
                 {
-                    Error_Operation.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", e.Message.ToString()+" OS File lock of vital resource at runtime.", Error_Operation.LogSeverity.Informataion);
+                    Error_Operation.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", e.Message.ToString()+" OS File lock of vital resource at runtime." + " This error means the EventLog was not read or searched.", Error_Operation.LogSeverity.Warning);
                 }
                 else
                 {
-                    Error_Operation.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", " " + Settings.EventLog_w_PlaceKeeper_List.ElementAt(Settings.Total_Threads_Run) + " x=" + (Settings.Total_Threads_Run).ToString() + " " + e.Message.ToString() + ". Check search Syntx", Error_Operation.LogSeverity.Informataion);
+                    Error_Operation.Log_Error("Start_Read_Search_Write_Forward_EventLogs()", " " + Settings.EventLog_w_PlaceKeeper_List.ElementAt(Settings.Total_Threads_Run) + " x=" + (Settings.Total_Threads_Run).ToString() + " " + e.Message.ToString() + ". Check search Syntx." + " This error means the EventLog was not read or searched.", Error_Operation.LogSeverity.Informataion);
                 }
             }
             Settings.Running_Thread_Count--;
+            GC.Collect();
         }
 
         internal static void Start_Output_Post_Run()
@@ -272,6 +281,7 @@ namespace SWELF
                 }
                 Sec_Checks.Post_Run_Sec_Checks();
             }
+            Settings.UPDATE_EventLog_w_PlaceKeeper_File();
         }
 
         private static void Start_ReadLocal_Logs()
@@ -423,6 +433,21 @@ namespace SWELF
                 File_Operation.Write_IP_Output(Settings.IP_List_EVT_Logs.Distinct().ToList());
             }
         }
-     }
+
+        private static void CHECK_If_App_Has_Run_To_Long()
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            while (watch.Elapsed.Hours < 1)
+            { Thread.Sleep(600000); }
+            watch.Stop();
+            var elapsedTime = watch.Elapsed;
+            Start_Output_Post_Run();
+            Error_Operation.Log_Error("CHECK_If_App_Has_Run_To_Long()", "SWELF Ran to long ("+elapsedTime.ToString()+") this could be for many reasons. Most likely is that there are to many log sources your trying to read into SWELF or that some of the logs files are to large to be read in with all the other searchs. Try running SWELF in sequence. ", Error_Operation.LogSeverity.Critical);
+            Error_Operation.SEND_Errors_To_Central_Location();
+            Error_Operation.WRITE_Stored_Errors();
+            Environment.Exit((int)Error_Operation.EventID.SWELF_MAIN_APP_ERROR);
+
+        }
+    }
 }
 

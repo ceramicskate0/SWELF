@@ -14,12 +14,12 @@ namespace SWELF
     //Persist Sub Key,Value
     internal class Reg_Operation
     {
-        private static RegistryKey BASE_SWELF_KEY = Registry.LocalMachine.CreateSubKey("Software\\SWELF");
+        internal static RegistryKey BASE_SWELF_KEY = Registry.LocalMachine.CreateSubKey("Software\\SWELF");
         internal static RegistryKey EventLog_Base_Key = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\Eventlog\\");
 
         private static long Default_Size = EventLogSession.GlobalSession.GetLogInformation("security", PathType.LogName).FileSize.Value;
 
-        private static string[] SWELF_Keys =
+        internal static string[] SWELF_Keys =
         {"First_Run", "Encryption",Settings.SWELF_AppConfig_Args[17], Settings.SWELF_AppConfig_Args[10],
             "SWELF_Current_Version","SWELF_CWD","SWELF_FAILED_SEC_CHECK",
              Settings.SWELF_AppConfig_Args[7],Settings.SWELF_AppConfig_Args[8],Settings.SWELF_AppConfig_Args[6], Settings.SWELF_AppConfig_Args[9],
@@ -66,6 +66,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
+                Error_Operation.Log_Error("CHECK_Eventlog_SWELF_Reg_Key_Exists()", e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
                 return false;
             }
         }
@@ -99,7 +100,16 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                return false;
+                if (Key!=REG_KEY.logging_level)
+                {
+                    Error_Operation.Log_Error("CHECK_SWELF_Reg_Key_Exists()", e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
+                    return false;
+                }
+                else
+                {
+                    BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.logging_level].ToString(), Crypto_Operation.Protect_Data_Value(Settings.Logging_Level_To_Report));
+                    return true;
+                }
             }
         }
 
@@ -182,8 +192,7 @@ namespace SWELF
                     {
                         try
                         {
-                            string thing = Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(Key));
-                            return thing;
+                            return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(Key)));
                         }
                         catch (Exception e)
                         {
@@ -193,8 +202,7 @@ namespace SWELF
                             }
                             try
                             {
-                                string thing = Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(Key));
-                                return thing;
+                                return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(Key)));
                             }
                             catch (Exception ex)
                             {
@@ -204,8 +212,7 @@ namespace SWELF
                     }
                     else
                     {
-                        string thing2 = Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(Key));
-                        return thing2;
+                        return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(Key)));
                     }
                 }
                 else
@@ -215,6 +222,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
+                Error_Operation.Log_Error("READ_SWELF_Reg_Key()", e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
                 return "";
             }
         }
@@ -242,21 +250,18 @@ namespace SWELF
                         {
                             try
                             {
-                                string thing = Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
-                                return thing;
+                                return Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
                             }
                             catch (Exception e)
                             {
                                 ADD_or_CHANGE_SWELF_Reg_Key(Key, SWELF_Keys[(int)Key]);
-                                string thing = Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
-                                return thing;
+                                return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key])));
                             }
                         }
                         else
                         {
                             ADD_or_CHANGE_SWELF_Reg_Key(Key, Crypto_Operation.CONVERT_To_String_From_Bytes(Crypto_Operation.Protect_Data_Value(SWELF_Keys[(int)Key].ToString()), 1));
-                            string thing = Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
-                            return thing;
+                            return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key])));
                         }
                     }
                     else
@@ -275,21 +280,18 @@ namespace SWELF
                         {
                             try
                             {
-                                string thing = Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
-                                return thing;
+                                return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key])));
                             }
                             catch (Exception e)
                             {
                                 ADD_or_CHANGE_SWELF_Reg_Key(Key, SWELF_Keys[(int)Key]);
-                                string thing = Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
-                                return thing;
+                                return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key])));
                             }
                         }
                         else
                         {
                             ADD_or_CHANGE_SWELF_Reg_Key(Key, Crypto_Operation.CONVERT_To_String_From_Bytes(Crypto_Operation.Protect_Data_Value(SWELF_Keys[(int)Key].ToString()), 1));
-                            string thing = Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
-                            return thing;
+                            return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key])));
                         }
                     }
                     else
@@ -357,7 +359,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    //catch error
+                    Error_Operation.Log_Error("READ_ALL_SWELF_Reg_Keys()", e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
                 }
             }
 
@@ -371,7 +373,17 @@ namespace SWELF
 
         internal static void DELETE_SWELF_Reg_Key(REG_KEY Key)
         {
-            BASE_SWELF_KEY.DeleteValue(SWELF_Keys[(int)Key]);
+            try
+            {
+                BASE_SWELF_KEY.DeleteValue(SWELF_Keys[(int)Key]);
+            }
+            catch(Exception e)
+            {
+                if (e.Message.Contains("No value exists with that name")==false)
+                {
+                    Error_Operation.Log_Error("DELETE_SWELF_Reg_Key()", e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
+                }
+            }
         }
 
         internal static void WRITE_Default_SWELF_Reg_Keys()
@@ -391,10 +403,10 @@ namespace SWELF
             BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.SWELF_Current_Version].ToString(), Crypto_Operation.Protect_Data_Value(Settings.SWELF_Version));
             BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.SWELF_CWD].ToString(), Crypto_Operation.Protect_Data_Value(Settings.SWELF_CWD));
             BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.SWELF_FAILED_SEC_CHECK].ToString(), Crypto_Operation.Protect_Data_Value("false"));
-            BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.central_app_config].ToString(), Crypto_Operation.Protect_Data_Value(""));
-            BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.central_plugin_search_config].ToString(), Crypto_Operation.Protect_Data_Value(""));
-            BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.central_search_config].ToString(), Crypto_Operation.Protect_Data_Value(""));
-            BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.central_whitelist_search_config].ToString(),Crypto_Operation.Protect_Data_Value(""));
+            //BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.central_app_config].ToString(), Crypto_Operation.Protect_Data_Value(""));
+            //BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.central_plugin_search_config].ToString(), Crypto_Operation.Protect_Data_Value(""));
+           // BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.central_search_config].ToString(), Crypto_Operation.Protect_Data_Value(""));
+            //BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.central_whitelist_search_config].ToString(),Crypto_Operation.Protect_Data_Value(""));
             BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.ConsoleAppConfig_CreationDate].ToString(), Crypto_Operation.Protect_Data_Value(File_Operation.GET_CreationTime(Settings.GET_AppConfigFile_Path)));
             BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.ConsoleAppConfig_Contents], Crypto_Operation.Protect_Data_Value(File_Operation.READ_AllText(Settings.GET_AppConfigFile_Path)));
             BASE_SWELF_KEY.SetValue(SWELF_Keys[(int)REG_KEY.SearchTerms_File_Contents], Crypto_Operation.Protect_Data_Value(File_Operation.READ_AllText(Settings.GET_SearchTermsFile_Path)));

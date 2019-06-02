@@ -112,11 +112,11 @@ namespace SWELF
                     ++count;
                     if (count >= thresholdvalue)
                     {
-                        return false;
+                        return true;
                     }
                 }
             }
-            return true;
+            return false;
         }
 
         internal static void CHECK_Memory()

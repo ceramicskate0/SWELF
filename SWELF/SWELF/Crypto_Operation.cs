@@ -323,16 +323,16 @@ namespace SWELF
             {
                 if (File_Operation.CHECK_if_File_Exists(Value) && (File_Operation.CHECK_File_Encrypted(Value)))
                 {
-                    return (BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Decrypt_File_Contents(Value, false)))));
+                    return Protect_Memory(BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Decrypt_File_Contents(Value, false)))));
                 }
                 else
                 {
-                    return (BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Value))));
+                    return Protect_Memory(BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Value))));
                 }
             }
             catch (Exception e)
             {
-                return (BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Value))));
+                return Protect_Memory(BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Value))));
             }
         }
 
@@ -342,18 +342,22 @@ namespace SWELF
             {
                 if (string.IsNullOrEmpty(Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.Encryption,false))==true)
                 {
+                   Reg_Operation.BASE_SWELF_KEY.SetValue(Reg_Operation.SWELF_Keys[(int)Reg_Operation.REG_KEY.Encryption].ToString(), Protect_Data_Value(Generate_Decrypt()));
+                }
+                else
+                {
                     Settings.WRITE_Default_Configs_Files_and_Reg();
                 }
             }
-           string password= (Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.Encryption));
+           string password= Protect_Memory(Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.Encryption));
            string content = "";
-           string[] PWarray = (password).Split(',').ToArray();
+           string[] PWarray = Protect_Memory(password).Split(',').ToArray();
 
            for (int x=0;x < PWarray.Length; ++x)
             {
                 content += Cipher_Parts.ElementAt(Convert.ToInt32(PWarray[x]));
             }
-           return (Hash(content));
+           return Protect_Memory(Hash(content));
         }
 
         internal static bool VERIFY_String_Hashs(string String1, string string2)

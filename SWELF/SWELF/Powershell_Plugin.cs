@@ -14,44 +14,51 @@ namespace SWELF
         internal static List<string> HistoryOfCommandsRun = new List<string>();
         private static string powershellSciptLocation = "";
         private static string powershellSciptArgs = "";
-        private static string CurrentWorkingDir = Directory.GetCurrentDirectory() + "\\";
         internal static string ScriptContents = "";
 
         internal static string Run_PS_Script(String PowershellSciptLocation, string PowershellSciptArgs = "")
         {
-            ScriptContents = File_Operation.READ_AllText(PowershellSciptLocation);
-            
-            if (CallAntimalwareScanInterface(Get_SHA256(PowershellSciptLocation), ScriptContents) < 32768)
+            if (File_Operation.CHECK_if_File_Exists(PowershellSciptLocation))
             {
-                powershellSciptLocation = PowershellSciptLocation;
-                powershellSciptArgs = PowershellSciptArgs;
+                ScriptContents = File_Operation.READ_AllText(PowershellSciptLocation);
 
-                ProcessStartInfo startInfo = new ProcessStartInfo("powershell", "-ExecutionPolicy Bypass .\\" + Path.GetFileName(PowershellSciptLocation));
-                startInfo.WorkingDirectory = Path.GetDirectoryName(PowershellSciptLocation);
-                startInfo.RedirectStandardOutput = true;
-                startInfo.RedirectStandardError = true;
-                startInfo.LoadUserProfile = true;
-                startInfo.UseShellExecute = false;
-                startInfo.CreateNoWindow = true;
-                Process process = new Process();
-                process.StartInfo = startInfo;
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                if (string.IsNullOrEmpty(output))
+                if (CallAntimalwareScanInterface(Get_SHA256(PowershellSciptLocation), ScriptContents) < 32768)
                 {
-                    output += "\nPS Plugin ERROR: " + process.StandardError.ReadToEnd();
+                    powershellSciptLocation = PowershellSciptLocation;
+                    powershellSciptArgs = PowershellSciptArgs;
+
+                    ProcessStartInfo startInfo = new ProcessStartInfo("powershell", "-ExecutionPolicy Bypass .\\" + Path.GetFileName(PowershellSciptLocation));
+                    startInfo.WorkingDirectory = Path.GetDirectoryName(PowershellSciptLocation);
+                    startInfo.RedirectStandardOutput = true;
+                    startInfo.RedirectStandardError = true;
+                    startInfo.LoadUserProfile = true;
+                    startInfo.UseShellExecute = false;
+                    startInfo.CreateNoWindow = true;
+                    Process process = new Process();
+                    process.StartInfo = startInfo;
+                    process.Start();
+                    string output = process.StandardOutput.ReadToEnd();
+                    if (string.IsNullOrEmpty(output))
+                    {
+                        output += "\nPS Plugin ERROR: " + process.StandardError.ReadToEnd();
+                    }
+                    if (string.IsNullOrEmpty(ScriptContents) == false || string.IsNullOrWhiteSpace(ScriptContents) == false)
+                    {
+                        Settings.WhiteList_Search_Terms_Unparsed.Add(ScriptContents + "~" + "microsoft-windows-powershell/operational" + "~");
+                        Settings.WhiteList_Search_Terms_Unparsed.Add(ScriptContents + "~" + "windows powershell" + "~");
+                    }
+                    return output;
                 }
-                if (string.IsNullOrEmpty(ScriptContents) == false || string.IsNullOrWhiteSpace(ScriptContents) == false)
+                else
                 {
-                    Settings.WhiteList_Search_Terms_Unparsed.Add(ScriptContents + "~" + "microsoft-windows-powershell/operational" + "~");
-                    Settings.WhiteList_Search_Terms_Unparsed.Add(ScriptContents + "~" + "windows powershell" + "~");
+                    Error_Operation.Log_Error("Run_PS_Script() POSSIBLE MALWARE DETECTED", "Script located at " + powershellSciptLocation + " SHA256=" + Get_SHA256(PowershellSciptLocation) + ". Script is Malware according to AMSI. SWELF converted the contents to Base64 1 time for the purpose of the log size. Malware Script Contents = " + Base64Encode(ScriptContents), Error_Operation.LogSeverity.Critical);
+                    return ("POSSIBLE MALWARE DETECTED - Script located at " + powershellSciptLocation + " SHA256=" + Get_SHA256(PowershellSciptLocation) + ". Script is Malware according to AMSI. SWELF converted the contents to Base64 1 time for the purpose of the log size. Malware Script Contents = " + Base64Encode(ScriptContents));
                 }
-                return output;
             }
             else
             {
-                Error_Operation.Log_Error("POSSIBLE MALWARE DETECTED", "Script located at " + powershellSciptLocation + " SHA256=" + Get_SHA256(PowershellSciptLocation) + ". Script is Malware according to AMSI. Script Base64 Contents = " + Base64Encode(ScriptContents),Error_Operation.LogSeverity.Critical);
-                return ("POSSIBLE MALWARE DETECTED - Script located at " + powershellSciptLocation + " SHA256=" + Get_SHA256(PowershellSciptLocation) + ". Script is Malware according to AMSI. Script Base64 Contents = " + Base64Encode(ScriptContents));
+                Error_Operation.Log_Error("Run_PS_Script()",PowershellSciptLocation + " is not a valid file on " + Settings.ComputerName, Error_Operation.LogSeverity.Warning);
+                return (PowershellSciptLocation + " is not a valid file on " + Settings.ComputerName);
             }
         }
 

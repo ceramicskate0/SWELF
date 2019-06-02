@@ -160,7 +160,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    Sec_Checks.LOG_SEC_CHECK_Fail("FAILED Security Check Registry " + e.Message.ToString());
+                    LOG_SEC_CHECK_Fail("FAILED Security Check Registry " + e.Message.ToString());
                     return false;
                 }
             }
@@ -181,7 +181,7 @@ namespace SWELF
             }
             catch (Exception E)
             {
-                Sec_Checks.LOG_SEC_CHECK_Fail(E.Message.ToString());
+                LOG_SEC_CHECK_Fail(E.Message.ToString());
                 return false;
             }
         }
@@ -194,7 +194,7 @@ namespace SWELF
             }
             else
             {
-                Sec_Checks.LOG_SEC_CHECK_Fail(Settings.SWELF_EventLog_Name + " Eventlog is empty and logs did not write to event log.");
+                LOG_SEC_CHECK_Fail(Settings.SWELF_EventLog_Name + " Eventlog is empty and logs did not write to event log.");
                 return false;//FAILED
             }
         }
@@ -204,7 +204,7 @@ namespace SWELF
             long EVT_Log_Namez_FileSize = EventLogSession.GlobalSession.GetLogInformation(EVT_Log_Name, PathType.LogName).FileSize.Value;
             if (EVT_Log_Namez_FileSize < Default_Min_EventLogSize)
             {
-                Sec_Checks.LOG_SEC_CHECK_Fail("The " + EVT_Log_Name + " eventlog is smaller that the system log. This could be unintended modification");
+                LOG_SEC_CHECK_Fail("The " + EVT_Log_Name + " eventlog is smaller that the system log. This could be unintended modification");
                 return false;
             }
             return true;
@@ -227,16 +227,16 @@ namespace SWELF
                             switch (eventLogs.ElementAt(x).OverflowAction)
                             {
                                 case OverflowAction.OverwriteOlder:
-                                    Sec_Checks.LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Retention_Policy() " + eventLogs.ElementAt(x).LogDisplayName + " is set to not overwire only logs older than " + eventLogs.ElementAt(x).MinimumRetentionDays.ToString());
+                                    LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Retention_Policy() " + eventLogs.ElementAt(x).LogDisplayName + " is set to not overwire only logs older than " + eventLogs.ElementAt(x).MinimumRetentionDays.ToString());
                                     return true;
                                 case OverflowAction.DoNotOverwrite:
-                                    Sec_Checks.LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Retention_Policy() " + eventLogs.ElementAt(x).LogDisplayName + " is set to not overwire the oldest event log");
+                                    LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Retention_Policy() " + eventLogs.ElementAt(x).LogDisplayName + " is set to not overwire the oldest event log");
                                     return true;
                             }
                         }
                         else
                         {
-                            Sec_Checks.LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Retention_Policy() "+ eventLogs.ElementAt(x).LogDisplayName + " \"File\" reg attrib does not exist and it should");
+                            LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Retention_Policy() "+ eventLogs.ElementAt(x).LogDisplayName + " \"File\" reg attrib does not exist and it should");
                             return false;
                         }
                     }
@@ -260,20 +260,20 @@ namespace SWELF
 
             if (diff.Days < 0 && UpTime < 1)
             {
-                Sec_Checks.LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Has_Not_Recorded_Logs_In_X_Days() The Event Log " + EVT_Log_Name + " has not been written to in 24 hours.");
+                LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Has_Not_Recorded_Logs_In_X_Days() The Event Log " + EVT_Log_Name + " has not been written to in 24 hours.");
                 return false;//FAILED
             }
 
             diff = Today.Subtract(CreationTime);
             if (diff.Days <= 0)
             {
-                Sec_Checks.LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Has_Not_Recorded_Logs_In_X_Days() The Event Log " + EVT_Log_Name + " was created in the last 24 hours.");
+                LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Has_Not_Recorded_Logs_In_X_Days() The Event Log " + EVT_Log_Name + " was created in the last 24 hours.");
                 return false;//FAILED
             }
 
             if (EventLogSession.GlobalSession.GetLogInformation(EVT_Log_Name, PathType.LogName).IsLogFull.Value && EventLogSession.GlobalSession.GetLogInformation(EVT_Log_Name, PathType.LogName).RecordCount < 10)
             {
-                Sec_Checks.LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Has_Not_Recorded_Logs_In_X_Days() The Event Log " + EVT_Log_Name + " is full amd has less than 10 records.");
+                LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Has_Not_Recorded_Logs_In_X_Days() The Event Log " + EVT_Log_Name + " is full amd has less than 10 records.");
                 return false;//FAILED
             }
             return true;
@@ -396,9 +396,7 @@ namespace SWELF
         /// <param name="Msg"></param>
         internal static void LOG_SEC_CHECK_Fail(string Msg)
         {
-            Error_Operation.Log_Error("SEC_Check_Failed()", Msg, Error_Operation.LogSeverity.FailureAudit, Error_Operation.EventID.SWELF_FailureAudit);
-            EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog(Msg);
-
+            Error_Operation.Log_Error("SEC_Check_Failed()", Msg, Error_Operation.LogSeverity.Critical, Error_Operation.EventID.SWELF_FailureAudit);
         }
     }
 }
