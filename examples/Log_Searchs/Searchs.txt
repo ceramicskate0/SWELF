@@ -309,6 +309,8 @@ http~Application~1040
 \\~Application~1040
 msi~Application~1040
 Application: SWELF.exe~Application~1026
+#SWELF.exe~Application~
+clrguard~Application~
 
 #System
 ~System~104
