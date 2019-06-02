@@ -89,7 +89,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
 ~Security~
 ~Microsoft-Windows-Security-Mitigations/KernelMode~
 ~Microsoft-Windows-CodeIntegrity/Operational~
-~#microsoft-windows-deviceguard/operational~
+#~microsoft-windows-deviceguard/operational~
 #~Application~
 ~microsoft-windows-wmi-activity/operational~
 ~windows powershell~
@@ -333,7 +333,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             }
             if (!CHECK_if_File_Exists(Settings.GET_WhiteList_SearchTermsFile_Path))
             {
-                CREATE_NEW_Files_And_Dirs(Settings.GET_WhiteList_SearchTermsFile_Path, Settings.Search_WhiteList_FileName, GET_Default_Whitelist_File_Contents);
+                CREATE_NEW_Files_And_Dirs(Settings.Search_File_Location, Settings.Search_WhiteList_FileName, GET_Default_Whitelist_File_Contents);
                 Crypto_Operation.Secure_File(Settings.GET_WhiteList_SearchTermsFile_Path);
             }
         }
@@ -354,11 +354,12 @@ Microsoft-WindowsCodeIntegrity/Operational=1
                 if (e.Message.Contains("FileNotFoundException"))
                 {
                     File.Create(path);
+                    Error_Operation.Log_Error("GET_CreationTime()", path+" "+e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
                     return DateTime.Now.ToString();
                 }
                 else
                 {
-                    Error_Operation.Log_Error("GET_CreationTime()", e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
+                    Error_Operation.Log_Error("GET_CreationTime()", path + " " + e.Message.ToString(), Error_Operation.LogSeverity.Warning);
                     return null;
                 }
             }
@@ -447,6 +448,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             }
             catch (Exception e)
             {
+                Error_Operation.Log_Error("CHECK_File_Encrypted()", e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
                 return false;//File NOT Encrypted
             }
         }
@@ -531,6 +533,11 @@ Microsoft-WindowsCodeIntegrity/Operational=1
         }
 
         internal static void APPEND_AllTXT(string FilePath,string Content)
+        {
+            File.AppendAllText(FilePath, Content);
+        }
+
+        internal static void WRITE_ALLTXT(string FilePath, string Content)
         {
             File.WriteAllText(FilePath, Content);
         }

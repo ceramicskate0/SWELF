@@ -33,6 +33,7 @@ namespace SWELF
 
         internal static void WRITE_FailureAudit_Error_To_EventLog(string Msg, Error_Operation.EventID eventID = 0)
         {
+            Settings.SWELF_EvtLog_OBJ.Source = Settings.SWELF_EventLog_Name;
             if (eventID == 0)
             {
                 using (EventLog myLogger = new EventLog(Settings.SWELF_EvtLog_OBJ.Source, Environment.MachineName, CHECK_If_Protected_Log_Name(Settings.SWELF_EvtLog_OBJ.Source)))
@@ -51,6 +52,8 @@ namespace SWELF
 
         internal static void WRITE_ERROR_EventLog(string Msg, Error_Operation.EventID eventID = 0)
         {
+            Settings.SWELF_EvtLog_OBJ.Source = Settings.SWELF_EventLog_Name;
+
             if (Convert.ToInt32(eventID) == 0)
             {
                 using (EventLog myLogger = new EventLog(Settings.SWELF_EvtLog_OBJ.Source, Environment.MachineName, CHECK_If_Protected_Log_Name(Settings.SWELF_EvtLog_OBJ.Source)))
@@ -69,6 +72,8 @@ namespace SWELF
 
         internal static void WRITE_Verbose_EventLog(string Msg, Error_Operation.EventID eventID = 0)
         {
+            Settings.SWELF_EvtLog_OBJ.Source = Settings.SWELF_EventLog_Name;
+
             if (Convert.ToInt32(eventID) == 0)
             {
                 using (EventLog myLogger = new EventLog(Settings.SWELF_EvtLog_OBJ.Source, Environment.MachineName, CHECK_If_Protected_Log_Name(Settings.SWELF_EvtLog_OBJ.Source)))
@@ -87,6 +92,8 @@ namespace SWELF
 
         internal static void WRITE_Info_EventLog(string Msg,Error_Operation.EventID eventID= 0)
         {
+            Settings.SWELF_EvtLog_OBJ.Source = Settings.SWELF_EventLog_Name;
+
             if (Convert.ToInt32(eventID) == 0)
             {
                 using (EventLog myLogger = new EventLog(Settings.SWELF_EvtLog_OBJ.Source, Environment.MachineName, CHECK_If_Protected_Log_Name(Settings.SWELF_EvtLog_OBJ.Source)))
@@ -105,6 +112,7 @@ namespace SWELF
 
         internal static void WRITE_Warning_EventLog(string Msg, Error_Operation.EventID eventID = 0)
         {
+            Settings.SWELF_EvtLog_OBJ.Source = Settings.SWELF_EventLog_Name;
             if (Convert.ToInt32(eventID) == 0)
             {
                 using (EventLog myLogger = new EventLog(Settings.SWELF_EvtLog_OBJ.Source, Environment.MachineName, CHECK_If_Protected_Log_Name(Settings.SWELF_EvtLog_OBJ.Source)))
@@ -123,6 +131,8 @@ namespace SWELF
 
         internal static void WRITE_Critical_EventLog_DataType(EventLog_Entry EvntLog)
         {
+            Settings.SWELF_EvtLog_OBJ.Source = Settings.SWELF_EventLog_Name;
+
             using (EventLog myLogger = new EventLog(Settings.SWELF_EvtLog_OBJ.Source, Environment.MachineName, CHECK_If_Protected_Log_Name(EvntLog.LogName)))
             {
                 myLogger.WriteEntry(EvntLog.EventData, EventLogEntryType.FailureAudit, EvntLog.EventID);
@@ -131,6 +141,8 @@ namespace SWELF
 
         internal static void WRITE_Warning_EventLog_DataType(EventLog_Entry EvntLog)
         {
+            Settings.SWELF_EvtLog_OBJ.Source = Settings.SWELF_EventLog_Name;
+
             using (EventLog myLogger = new EventLog(Settings.SWELF_EvtLog_OBJ.Source, Environment.MachineName, CHECK_If_Protected_Log_Name(EvntLog.LogName)))
             {
                 myLogger.WriteEntry(EvntLog.EventData, EventLogEntryType.Warning, EvntLog.EventID);

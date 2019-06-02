@@ -79,7 +79,7 @@ namespace SWELF
             }
             else
             {
-                Error_Operation.Log_Error("READ_EventLog() if (Settings.FIND_EventLog_Exsits())", Eventlog_FullName+"' EventLog does not exist.",Error_Operation.LogSeverity.Informataion);
+                Error_Operation.Log_Error("READ_EventLog() if (Settings.FIND_EventLog_Exsits())", Eventlog_FullName+" EventLog does not exist.",Error_Operation.LogSeverity.Informataion);
             }
         }
 

@@ -64,7 +64,7 @@ namespace SWELF
 
         //SWELF Security Check Info
         private static Process sWELF_PROC_Name = Process.GetCurrentProcess();
-        public static Process SWELF_PROC_Name
+        internal static Process SWELF_PROC_Name
         {
             get
             {
@@ -76,7 +76,7 @@ namespace SWELF
         internal readonly static int SWELF_CRIT_ERROR_EXIT_CODE = 1265;
         internal readonly static char CommentCharConfigs = '#';
         internal readonly static string ComputerName = Environment.MachineName;
-        public readonly static string SWELF_EventLog_Name = SWELF_PROC_Name.ProcessName + "_Events_of_Interest";
+        internal readonly static string SWELF_EventLog_Name = SWELF_PROC_Name.ProcessName + "_Events_of_Interest";
         internal readonly static int Log_Forward_Location_Port = 514;
         internal static List<string> Log_Forwarders_HostNames = new List<string>();
         internal static List<int> Log_Forwarders_Port = new List<int>();
@@ -193,6 +193,7 @@ namespace SWELF
         internal static string Logging_Level_To_Report = Error_Operation.Severity_Levels[Error_Operation.Logging_Level_To_Report];
         internal static EventLog SWELF_EvtLog_OBJ = new EventLog();
         internal readonly static string SWELF_Date_Time_Format = "MMM dd yyyy HH:mm:ss";
+        internal static bool Network_Connectivity = true;
 
         //SWELF File Location accessors
         internal static string GET_ErrorLog_Location
@@ -293,12 +294,15 @@ namespace SWELF
             while (ThreadsDone_Setup != 2) { Thread.Sleep(1000); }
 
             Thread EventLogIDPLacekeepers_Thread = new Thread(() => RUN_Thread_EventLogIDPLacekeepers());
+            EventLogIDPLacekeepers_Thread.IsBackground = true;
             EventLogIDPLacekeepers_Thread.Start();
 
             Thread Whitelist_Thread = new Thread(() => RUN_Thread_Whitelist_SearchFile());
+            Whitelist_Thread.IsBackground = true;
             Whitelist_Thread.Start();
 
             Thread Pluging_Thread = new Thread(() => RUN_Thread_Plugins());
+            Pluging_Thread.IsBackground = true;
             Pluging_Thread.Start();
 
             CHECK_SWELF_Version();
@@ -456,6 +460,27 @@ namespace SWELF
                         Sec_Checks.LOG_SEC_CHECK_Fail("READ_CENTRAL_APP_Config_Folder() SWELF " + SWELF_AppConfig_Args[7] + " updated in local host Reg entry, possible tampering with local host config. SWELF will attempt to get Config from what is stored in Reg as dest of central config.");
                     }
                 }
+                else if (File_Operation.CHECK_File_Encrypted(GET_AppConfigFile_Path) == false && Reg_Operation.CHECK_SWELF_Reg_Key_Exists(Reg_Operation.REG_KEY.central_app_config) == true)
+                {
+                    //Check if file encrypted AND is creation date == to Reg key
+                    if (File_Operation.GET_CreationTime(GET_AppConfigFile_Path) == Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_CreationDate))
+                    {
+                        READ_and_Parse_Console_App_Config_Contents();
+                        if (AppConfig_File_Args[SWELF_AppConfig_Args[7]] != Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.central_app_config))
+                        {
+                            Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.central_app_config, AppConfig_File_Args[SWELF_AppConfig_Args[7]]);
+                        }
+                        AppConfig_File_Args[SWELF_AppConfig_Args[7]] = Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.central_app_config);
+                    }
+                    else//if file creation date is not == to REG
+                    {
+                        Sec_Checks.LOG_SEC_CHECK_Fail("READ_CENTRAL_APP_Config_Folder() SWELF " + SWELF_AppConfig_Args[7] + " updated in local host Reg entry, possible tampering with local host config. SWELF will attempt to get Config from what is stored in Reg as dest of central config.");
+                    }
+                }
+                else if (File_Operation.CHECK_File_Encrypted(GET_AppConfigFile_Path) == false && Reg_Operation.CHECK_SWELF_Reg_Key_Exists(Reg_Operation.REG_KEY.central_app_config) == false)
+                {
+                    READ_and_Parse_Console_App_Config_Contents();
+                }
                 else
                 {
                     AppConfig_File_Args[SWELF_AppConfig_Args[7]] = Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.central_app_config);
@@ -494,10 +519,19 @@ namespace SWELF
             catch (Exception e)
             {
                 AppConfig_File_Args = Backup_Config_File_Args;
+                if (e.Message.Contains("The operation has timed out") || e.Message.Contains("The remote name could not be resolved: "))
+                {
+                    Network_Connectivity = false;
+                    AppConfig_File_Args = new Dictionary<string, string>();
+                    READ_App_Config_File();
+                }
+                else
+                {
+                    READ_App_Config_File();
+                    Error_Operation.Log_Error("READ_CENTRAL_APP_Config_File() ", e.Message.ToString(), Error_Operation.LogSeverity.Warning);
+                    Error_Operation.SEND_Errors_To_Central_Location();
+                }
                 //if error here for bad key in dict no worries the  READ_App_Config_File() will pull it down b4 read
-                READ_App_Config_File();
-                Error_Operation.Log_Error("READ_CENTRAL_APP_Config_File() ", e.Message.ToString(), Error_Operation.LogSeverity.Warning);
-                Error_Operation.SEND_Errors_To_Central_Location();
             }
         }
 
@@ -531,11 +565,9 @@ namespace SWELF
                 {
                     if (File_Operation.CHECK_File_Encrypted(GET_SearchTermsFile_PLUGIN_Path) == false)
                     {
-                        File.WriteAllLines(GET_SearchTermsFile_PLUGIN_Path, Backup_Config_File_Args_Array);
-                        Crypto_Operation.Secure_File(GET_SearchTermsFile_PLUGIN_Path);
+                        Error_Operation.Log_Error("READ_CENTRAL_PLUGINS_Folders() ", e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
+                        Error_Operation.SEND_Errors_To_Central_Location();
                     }
-                    Error_Operation.Log_Error("READ_CENTRAL_PLUGINS_Folders() ", e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
-                    Error_Operation.SEND_Errors_To_Central_Location();
                 }
                 catch (Exception ex)
                 {
@@ -606,19 +638,26 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                if (e.Message.Contains("The operation has timed out"))
+                if (e.Message.Contains("The operation has timed out") || e.Message.Contains("The remote name could not be resolved: "))
                 {
                     if (File_Operation.CHECK_File_Encrypted(GET_SearchTermsFile_Path)==false)
                     {
                         if (string.IsNullOrEmpty(Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.SearchTerms_File_Contents)) == false)
                         {
-                            File.WriteAllText(GET_SearchTermsFile_Path, Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.SearchTerms_File_Contents));
+                            File_Operation.WRITE_ALLTXT(GET_SearchTermsFile_Path, Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.SearchTerms_File_Contents));
+                            Crypto_Operation.Secure_File(GET_SearchTermsFile_Path);
                         }
+                    }
+                    else
+                    {
+                        File_Operation.WRITE_ALLTXT(GET_SearchTermsFile_Path, Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.SearchTerms_File_Contents));
+                        Crypto_Operation.Secure_File(GET_SearchTermsFile_Path);
                     }
                 }
                 else if (File_Operation.CHECK_File_Encrypted(GET_SearchTermsFile_Path) == false)
                 {
                     File.WriteAllLines(GET_SearchTermsFile_Path, Backup_Config_File_Args_Array);
+                    Crypto_Operation.Secure_File(GET_SearchTermsFile_Path);
                 }
                 Error_Operation.Log_Error("READ_CENTRAL_SEARCH_Config_File() ", "Attempted to connect to central config error was "+e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
                 Error_Operation.SEND_Errors_To_Central_Location();
@@ -688,7 +727,7 @@ namespace SWELF
         {
             bool FileEncrypted = File_Operation.CHECK_File_Encrypted(GET_AppConfigFile_Path);
 
-            if (Reg_Operation.CHECK_SWELF_Reg_Key_Exists(Reg_Operation.REG_KEY.central_app_config))//Check if centrally configured via reg
+            if (Reg_Operation.CHECK_SWELF_Reg_Key_Exists(Reg_Operation.REG_KEY.central_app_config) && Network_Connectivity == true)//Check if centrally configured via reg
             {
                 if (Web_Operation.VERIFY_Central_File_Config_Hash(Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.central_app_config), GET_AppConfigFile_Path)==false)//check to see if the web config is diffrent from one on disk
                 {
@@ -698,7 +737,7 @@ namespace SWELF
                 READ_and_Parse_Console_App_Config_Contents();
                 Crypto_Operation.Secure_File(GET_AppConfigFile_Path);
             }
-            else if (FileEncrypted && File.GetCreationTime(GET_AppConfigFile_Path).ToString() == Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_CreationDate))//no central config, check if encrypted and same datetime as reg
+            else if (FileEncrypted && File.GetCreationTime(GET_AppConfigFile_Path).ToString() == Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_CreationDate) && Network_Connectivity == true)//no central config, check if encrypted and same datetime as reg
             {
                 try
                 {
@@ -712,6 +751,22 @@ namespace SWELF
                 {
                     AppConfig_File_Args = Backup_Config_File_Args;
                     Error_Operation.WRITE_Errors_To_Log("READ_App_Config_File()", e.Message.ToString(), Error_Operation.LogSeverity.Critical);
+                    File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, AppConfigFile_FileName, File_Operation.GET_Default_ConsoleAppConfig_File_Contents);
+                }
+            }
+            else if (Reg_Operation.CHECK_SWELF_Reg_Key_Exists(Reg_Operation.REG_KEY.central_app_config) && Network_Connectivity == false)
+            {
+                try
+                {
+                    File_Operation.WRITE_ALLTXT(GET_AppConfigFile_Path, Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_Contents));
+                    Crypto_Operation.UnSecure_File(GET_AppConfigFile_Path);
+                    READ_and_Parse_Console_App_Config_Contents();
+                    Crypto_Operation.Secure_File(GET_AppConfigFile_Path);
+                }
+                catch (Exception e)//ISSUE !!! A APP_CONFIG ARG did not work
+                {
+                    AppConfig_File_Args = Backup_Config_File_Args;
+                    Error_Operation.WRITE_Errors_To_Log("READ_App_Config_File()", "Network_Connectivity == false"+e.Message.ToString(), Error_Operation.LogSeverity.Critical);
                     File_Operation.CREATE_NEW_Files_And_Dirs(Config_File_Location, AppConfigFile_FileName, File_Operation.GET_Default_ConsoleAppConfig_File_Contents);
                 }
             }
@@ -732,19 +787,25 @@ namespace SWELF
                         Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_CreationDate, File.GetCreationTime(GET_AppConfigFile_Path).ToString());
                         Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_Contents, File_Operation.READ_AllText(GET_AppConfigFile_Path));
                         Crypto_Operation.Secure_File(GET_AppConfigFile_Path);
-                        Error_Operation.Log_Error("READ_App_Config_File()", "No central config and not same file on disk in config folder as was previousley saved in reg. File not encrypted. Appears to be appconfig file update on "+ ComputerName+". Reg keys updated to reflect. " +
+                        Error_Operation.Log_Error("READ_App_Config_File()", "No central config and not same in file as on disk in config folder as was previousley saved in reg. Appconfig not encrypted. Appears to be appconfig file update on " + ComputerName+". Reg keys updated to reflect. " +
                         " File Info from OS to folllow... ConsoleAppConfig.conf has a Date Created:"+File.GetCreationTime(GET_AppConfigFile_Path ) + " ConsoleAppConfig.conf File Last Modified: " + File.GetLastWriteTime(GET_AppConfigFile_Path )+ " SWELF Last ConsoleAppConfig.conf reg value says it was created via stored info: " + Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_CreationDate), Error_Operation.LogSeverity.Critical, Error_Operation.EventID.SWELF_Warning);
                     }
                 }
-                else if (FileEncrypted)//assume not central conf and no reg valid entry
+                else if (FileEncrypted==true)//assume not central conf and no reg valid entry
                 {
                     Crypto_Operation.UnSecure_File(GET_AppConfigFile_Path);
                     READ_and_Parse_Console_App_Config_Contents();
                     Crypto_Operation.Secure_File(GET_AppConfigFile_Path);
                 }
+                else if (FileEncrypted==false)
+                {
+                    READ_and_Parse_Console_App_Config_Contents();
+                    Error_Operation.Log_Error("READ_App_Config_File()", "No central config in registry and the ones in appconfig file are not the same in file as in reg. Appconfig file also not encrypted. Appears to be appconfig file update on " + ComputerName + ". Reg keys updated to reflect. " +
+                    " File Info from OS to folllow... ConsoleAppConfig.conf has a Date Created:" + File.GetCreationTime(GET_AppConfigFile_Path) + " ConsoleAppConfig.conf File Last Modified: " + File.GetLastWriteTime(GET_AppConfigFile_Path) + " SWELF Last ConsoleAppConfig.conf reg value says it was created via stored info: " + Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_CreationDate), Error_Operation.LogSeverity.Critical, Error_Operation.EventID.SWELF_Warning);
+                }
                 else
                 {
-                    //SHIT Its boned Do something to notify admins from reg values and write default config
+                    Error_Operation.Log_Error("READ_App_Config_File()", "No consoleappconfig.conf and not same file on disk in config folder as was previousley saved in reg. File not encrypted. Appears to be appconfig file update on " + ComputerName + ".",Error_Operation.LogSeverity.Critical);
                 }
             }
         }
@@ -761,6 +822,22 @@ namespace SWELF
 
                     READ_App_Config_For_CentralConfig_Options(methods_args);
                 }
+            }
+            if (AppConfig_File_Args.ContainsKey(Reg_Operation.REG_KEY.central_app_config.ToString()) == false)
+            {
+                Reg_Operation.DELETE_SWELF_Reg_Key(Reg_Operation.REG_KEY.central_app_config);
+            }
+            if (AppConfig_File_Args.ContainsKey(Reg_Operation.REG_KEY.central_plugin_search_config.ToString()) == false)
+            {
+                Reg_Operation.DELETE_SWELF_Reg_Key(Reg_Operation.REG_KEY.central_plugin_search_config);
+            }
+            if (AppConfig_File_Args.ContainsKey(Reg_Operation.REG_KEY.central_search_config.ToString()) == false)
+            {
+                Reg_Operation.DELETE_SWELF_Reg_Key(Reg_Operation.REG_KEY.central_search_config);
+            }
+            if (AppConfig_File_Args.ContainsKey(Reg_Operation.REG_KEY.central_whitelist_search_config.ToString())==false)
+            {
+                Reg_Operation.DELETE_SWELF_Reg_Key(Reg_Operation.REG_KEY.central_whitelist_search_config);
             }
         }
 
@@ -841,16 +918,19 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    AppConfig_File_Args.Remove(methods_args.ElementAt(0).ToLower());
-                    AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                    if (e.Message.ToString().Contains("An item with the same key has already been added.") == false)
+                    {
+                        AppConfig_File_Args.Remove(methods_args.ElementAt(0).ToLower());
+                        AppConfig_File_Args.Add(methods_args.ElementAt(0).ToLower(), methods_args.ElementAt(1));
+                    }
                 }
             }
         }
 
-        internal static void READ_Search_Terms_File(bool CentralConfig=false,bool EncryptFile=true)
+        internal static void READ_Search_Terms_File(bool CentralConfig = false, bool EncryptFile = true)
         {
             string line = "";
-            if (CentralConfig==false)//reading local searchs.txt file
+            if (CentralConfig == false)//reading local searchs.txt file
             {
                 try
                 {
@@ -895,11 +975,11 @@ namespace SWELF
             {
                 List<string> ConfigLines = Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.SearchTerms_File_Contents).Split('\n').ToList();
 
-                for (int x=0; x < ConfigLines.Count; ++x)
+                for (int x = 0; x < ConfigLines.Count; ++x)
                 {
                     if (ConfigLines.ElementAt(x).StartsWith(CommentCharConfigs.ToString()) == false && String.IsNullOrWhiteSpace(ConfigLines.ElementAt(x)) == false)
                     {
-                        Search_Terms_Unparsed.Add(ConfigLines.ElementAt(x).Replace('\r',' ').ToLower());
+                        Search_Terms_Unparsed.Add(ConfigLines.ElementAt(x).Replace('\r', ' ').ToLower());
                     }
                 }
                 Search_Terms_Unparsed = Search_Terms_Unparsed.Distinct().ToList();
@@ -1061,10 +1141,7 @@ namespace SWELF
                 foreach (string SearchLogType in Search_Terms_Unparsed)//search terms
                 {
                     string[] SearchsArgs = SearchLogType.Split(SplitChar_SearchCommandSplit, StringSplitOptions.RemoveEmptyEntries).ToArray();
-
-                    if (SearchsArgs.Length > 1)
-                    {
-                        if (String.IsNullOrEmpty(SearchsArgs[1]) == false && SearchLogType.StartsWith(CommentCharConfigs.ToString()) == false)
+                        if (SearchsArgs.Length > 1 && String.IsNullOrEmpty(SearchsArgs[1]) == false && SearchLogType.StartsWith(CommentCharConfigs.ToString()) == false)
                         {
                             try
                             {
@@ -1087,7 +1164,6 @@ namespace SWELF
                                 Error_Operation.Log_Error("CHECK_if_all_Search_Terms_have_Indexed_LogsSources()", e.Message.ToString() + Searchs.Count, Error_Operation.LogSeverity.Warning);
                             }
                         }
-                    }
                 }
                 List<string> MissingEventLogs = Searchs.Distinct().Except(EventLog_w_PlaceKeeper_List.Distinct()).ToList();
                 Searchs.Clear();
@@ -1125,8 +1201,8 @@ namespace SWELF
             string line = "";
             try
             {
-                Crypto_Operation.UnSecure_File(Plugin_Search_Location + "\\" + SearchTermsFileName_FileName);
-                StreamReader file = new StreamReader(Plugin_Search_Location + "\\" + SearchTermsFileName_FileName);
+                Crypto_Operation.UnSecure_File(GET_SearchTermsFile_PLUGIN_Path);
+                StreamReader file = new StreamReader(GET_SearchTermsFile_PLUGIN_Path);
                 while ((line = file.ReadLine()) != null)
                 {
                     if (!line.Contains(CommentCharConfigs) && String.IsNullOrWhiteSpace(line) == false)
@@ -1135,7 +1211,7 @@ namespace SWELF
                     }
                 }
                 file.Close();
-                Crypto_Operation.Secure_File(Plugin_Search_Location + "\\" + SearchTermsFileName_FileName);
+                Crypto_Operation.Secure_File(GET_SearchTermsFile_PLUGIN_Path);
             }
             catch (Exception e)
             {
@@ -1175,7 +1251,7 @@ namespace SWELF
                 {
                     if (x != 0)
                     {
-                        if (AppConfig_File_Args.ContainsKey(SWELF_AppConfig_Args[0] + x) == true && !String.IsNullOrEmpty(AppConfig_File_Args[SWELF_AppConfig_Args[0]+ x]))
+                        if (AppConfig_File_Args.ContainsKey(SWELF_AppConfig_Args[0] + x) && !String.IsNullOrEmpty(AppConfig_File_Args[SWELF_AppConfig_Args[0]+ x]))
                         {
                             if (Reg_Operation.CHECK_SWELF_Reg_Key_Exists(Reg_Operation.REG_KEY.ConsoleAppConfig_CreationDate))
                             {
@@ -1377,7 +1453,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    Error_Operation.Log_Error("GET_LogCollector_Locations()", "Unable to get a log_collector[?] location setup done.", Error_Operation.LogSeverity.Critical);
+                    Error_Operation.Log_Error("GET_LogCollector_Locations()", "Unable to get a log_collector["+x+"] location setup done.", Error_Operation.LogSeverity.Critical);
                 }
             }
            
