@@ -91,9 +91,15 @@ noprofile~Microsoft-Windows-PowerShell/Operational~41044104
 invoke-shellcode~Microsoft-Windows-PowerShell/Operational~4104
 adodb.stream~Microsoft-Windows-PowerShell/Operational~4104
 \start menu~Microsoft-Windows-PowerShell/Operational~4104
+count:&:10~Microsoft-Windows-PowerShell/Operational~4104
+count:,:25count:&:10~Microsoft-Windows-PowerShell/Operational~4104
 
 #Microsoft-Windows-SoftwareRestrictionPolicies
 ~Microsoft-Windows-SoftwareRestrictionPolicies~866
+
+#WMI
+ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
+root\cimv2
 
 #Microsoft-Windows-WMI-Activity/Operational
 root\~Microsoft-Windows-WMI-Activity/Operational~5858
@@ -402,7 +408,6 @@ commandline_contains:process call create
 
 #Command COUNT to be run on all
 #count:+:12
-count:&:10
 count:-split:4
 count:^:9
 count:`:9
@@ -411,7 +416,6 @@ count:set:5
 count:-join:5
 count:^:10
 count:;:50
-count:,:25
 count:*:8
 count:?:7
 count:^:1
@@ -505,10 +509,6 @@ sekurlsa::logonpasswords
 privilege::debug
 mimilib
 ~~5145
-
-#WMI
-ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
-root\cimv2
 
 #Everything Search REG Keys
 \CurrentControlSet\Control\SecurityProviders\WDigest
