@@ -528,6 +528,7 @@ Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
 \Microsoft\Windows\CurrentVersion\Policies\Explorer\Run
 \SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce\
 \Microsoft\Windows\CurrentVersion\Run
+\software\microsoft\windows\currentversion\policies\system\enableLUA
 \SOFTWARE\Wow6432Node\Google\Update\ClientState\
 \StartupItems
 CurrentControlSet\Control\Lsa\Security Packages
