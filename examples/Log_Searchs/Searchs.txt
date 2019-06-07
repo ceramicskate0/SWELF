@@ -515,6 +515,11 @@ privilege::debug
 mimilib
 ~~5145
 
+#COM OBJS to watch, mostly watch reg changes
+{F5078F35-C551-11D3-89B9-0000F81FE221}
+{0F87369F-A4E5-4CFC-BD3E-73E6154572DD}
+{E430E93D-09A9-4DC5-80E3-CBB2FB9AF28E}
+
 #Everything Search REG Keys
 \CurrentControlSet\Control\SecurityProviders\WDigest
 \CurrentControlSet\Control\WMI\Autologger\
