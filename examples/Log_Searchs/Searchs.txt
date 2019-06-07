@@ -464,6 +464,8 @@ csript
 \extrac.exe
 \ftp.exe
 qwinsta.exe
+accesschk.exe
+accesschk64.exe
 mshta
 #regedit
 .bgi
