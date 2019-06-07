@@ -463,6 +463,7 @@ csript
 \makecab.exe
 \extrac.exe
 \ftp.exe
+qwinsta.exe
 mshta
 #regedit
 .bgi
