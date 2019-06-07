@@ -533,3 +533,8 @@ CurrentControlSet\Control\Lsa\Security Packages
 \SYSTEM\CurrentControlSet\Control\WMI\Autologger\
 \SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Publishers\
 \Shell\open\command
+#Reg Injection Locations
+\Software\Microsoft\Windows NT\CurrentVersion\Windows\Appinit_Dlls
+\Software\Wow6432Node\Microsoft\Windows NT\CurrentVersion\Windows\Appinit_Dlls
+\System\CurrentControlSet\Control\Session Manager\AppCertDlls
+\Software\Microsoft\Windows NT\currentversion\image file execution options
