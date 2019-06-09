@@ -110,6 +110,7 @@ Win32_Bios~Microsoft-Windows-WMI-Activity/Operational~
 
 #Windows-Sysmon/Operational
 ~Microsoft-Windows-Sysmon/Operational~2
+~Microsoft-Windows-Sysmon/Operational~22
 #~Microsoft-Windows-Sysmon/Operational~8
 #~Microsoft-Windows-Sysmon/Operational~9
 ~Microsoft-Windows-Sysmon/Operational~12
