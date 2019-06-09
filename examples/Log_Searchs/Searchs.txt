@@ -507,6 +507,7 @@ C:\WINDOWS\system32\wbem\scrcons.exe
 \ieexec.exe
 \wab.exe
 MSXSL.EXE
+runonce.exe
 
 #Search everything your looking at for mimikatz
 mimikatz
