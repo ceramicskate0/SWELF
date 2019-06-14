@@ -542,6 +542,7 @@ CurrentControlSet\Control\Lsa\Security Packages
 \SYSTEM\CurrentControlSet\Services\PortProxy\v4tov4
 \SYSTEM\CurrentControlSet\Control\WMI\Autologger\
 \SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Publishers\
+\SYSTEM\CurrentControlSet\Control\LSA
 \System\CurrentControlSet\Control\SecurityProviders\WDigest
 \Shell\open\command
 #Reg Injection Locations
