@@ -3,7 +3,7 @@
 
 ## Summary:
 If you can type this,
-### Findthis ~ EventLogName ~ EventID(Not required)
+### Findthis ~ With this EventLog Name ~ EventID(Not required)
 you can find the logs you want from a windows machine and send just those to your SIEM. Thats right now all the logs just the ones you want.
 
 
