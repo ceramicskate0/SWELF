@@ -508,6 +508,7 @@ C:\WINDOWS\system32\wbem\scrcons.exe
 \wab.exe
 MSXSL.EXE
 runonce.exe
+lsasrv.dll
 
 #Search everything your looking at for mimikatz
 mimikatz
@@ -528,6 +529,7 @@ mimilib
 \CURRENTVERSION\WINLOGON\Shell
 \Windows\CurrentVersion\RunOnceEx\
 \Shell\
+\SYSTEM\CurrentControlSet\Services\NTDS
 \CLSID\
 \InProcServer32
 Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders
@@ -545,6 +547,7 @@ CurrentControlSet\Control\Lsa\Security Packages
 \SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Publishers\
 \SYSTEM\CurrentControlSet\Control\LSA
 \System\CurrentControlSet\Control\SecurityProviders\WDigest
+\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest\UseLogonCredential
 \Shell\open\command
 #Reg Injection Locations
 \Software\Microsoft\Windows NT\CurrentVersion\Windows\Appinit_Dlls
