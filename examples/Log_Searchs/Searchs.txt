@@ -525,6 +525,7 @@ mimilib
 \CurrentControlSet\Control\SecurityProviders\WDigest
 \CurrentControlSet\Control\WMI\Autologger\
 \SOFTWARE\MICROSOFT\WINDOWS NT\CURRENTVERSION\WINLOGON\
+\CURRENTVERSION\WINLOGON\Shell
 \Windows\CurrentVersion\RunOnceEx\
 \Shell\
 \CLSID\
