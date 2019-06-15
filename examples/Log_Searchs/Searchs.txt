@@ -509,6 +509,7 @@ C:\WINDOWS\system32\wbem\scrcons.exe
 MSXSL.EXE
 runonce.exe
 lsasrv.dll
+<unknown process>
 
 #Search everything your looking at for mimikatz
 mimikatz
