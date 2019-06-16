@@ -232,6 +232,8 @@ ddns.net~Microsoft-Windows-Sysmon/Operational~3
 net.exe~Microsoft-Windows-Sysmon/Operational~3
 powershell~Microsoft-Windows-Sysmon/Operational~3
 ~Microsoft-Windows-Sysmon/Operational~3
+rundll32~Microsoft-Windows-Sysmon/Operational~3
+
 
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
