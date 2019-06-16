@@ -2,8 +2,8 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: ''
-assignees: ''
+labels: Bug, Need to Confirm
+assignees: ceramicskate0
 
 ---
 
