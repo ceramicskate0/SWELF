@@ -440,6 +440,8 @@ network_connect:443:wscript
 network_connect:80:wscript
 network_connect:443:explorer
 network_connect:80:explorer
+network_connect:443:rundll32
+network_connect:80:rundll32
 
 #Search all for Multiple
 search_multiple:vbc`.txt
