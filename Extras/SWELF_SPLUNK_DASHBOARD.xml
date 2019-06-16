@@ -35,7 +35,7 @@
       <viz type="timeline_app.timeline">
         <title>EventsTimeLine</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ | stats count by DateTime,SearchRule,EventID,EventLogName |  table DateTime,SearchRule,EventID,EventLogName</query>
+          <query>sourcetype=SWELF $SourceComputer$ | stats count by DateTime,Search_Rule,EventID,EventLogName |  table DateTime,Search_Rule,EventID,EventLogName</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -58,7 +58,7 @@
       <viz type="timeline_app.timeline">
         <title>EventsTimeLine</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$  | stats count by DateTime,SearchRule,EventID,EventLogName | rare DateTime,SearchRule,EventID,EventLogName  | table DateTime,SearchRule,EventID,EventLogName</query>
+          <query>sourcetype=SWELF $SourceComputer$  | stats count by DateTime,Search_Rule,EventID,EventLogName | rare DateTime,Search_Rule,EventID,EventLogName  | table DateTime,Search_Rule,EventID,EventLogName</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -77,11 +77,11 @@
   </row>
   <row>
     <panel>
-      <title>EventIDs</title>
+      <title>EventLogName</title>
       <table>
-        <title>EventIDs</title>
+        <title>EventLogName</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$  | stats count by EventID,EventLogName</query>
+          <query>sourcetype=SWELF $SourceComputer$  | stats count by EventLogName</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -110,11 +110,11 @@
   </row>
   <row>
     <panel>
-      <title>SearchRule Hits</title>
+      <title>Search_Rule Hits</title>
       <table>
-        <title>SearchRule Hits</title>
+        <title>Search_Rule Hits</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ | table EventLogName,SearchRule,EventID | stats count by SearchRule | sort by _count</query>
+          <query>sourcetype=SWELF $SourceComputer$ | table EventLogName,Search_Rule,EventID | stats count by Search_Rule | sort by _count</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -126,11 +126,11 @@
       </table>
     </panel>
     <panel>
-      <title>SearchRule Hits</title>
+      <title>Search_Rule Hits</title>
       <chart>
-        <title>SearchRule Hits</title>
+        <title>Search_Rule Hits</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ | table SearchRule, ComputerName | stats count by SearchRule</query>
+          <query>sourcetype=SWELF $SourceComputer$ | table Search_Rule, ComputerName | stats count by Search_Rule</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -147,9 +147,9 @@
   <row>
     <panel>
       <table>
-        <title>SearchRule Distro Hit</title>
+        <title>Search_Rule Distro Hit</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ | table EventLogName,SearchRule,EventID | stats count by EventLogName,SearchRule,EventID | sort by _count</query>
+          <query>sourcetype=SWELF $SourceComputer$ | table EventLogName,Search_Rule,EventID | stats count by EventLogName,Search_Rule,EventID | sort by _count</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
