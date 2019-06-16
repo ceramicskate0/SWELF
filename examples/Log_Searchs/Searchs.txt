@@ -53,6 +53,13 @@ invoke-item~windows powershell~
 ~Microsoft-Windows-Win32k/Power~
 
 #Windows-PowerShell/Operational
+kernel32.dll~Microsoft-Windows-PowerShell/Operational~4104
+reflection~Microsoft-Windows-PowerShell/Operational~4104
+dllimport~Microsoft-Windows-PowerShell/Operational~4104
+interopservices~Microsoft-Windows-PowerShell/Operational~4104
+assembly~Microsoft-Windows-PowerShell/Operational~4104
+appdomain~Microsoft-Windows-PowerShell/Operational~4104
+marshal~Microsoft-Windows-PowerShell/Operational~4104
 Remove-EtwTraceProvider~Microsoft-Windows-PowerShell/Operational~4104
 encoding-~Microsoft-Windows-PowerShell/Operational~4104
 invoke-~Microsoft-Windows-PowerShell/Operational~4104
