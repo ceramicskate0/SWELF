@@ -1,5 +1,6 @@
 # Simple-Windows-Event-Log-Forwarder (SWELF) 
 
+<img src="https://user-images.githubusercontent.com/6934294/47841159-afd30b00-dd86-11e8-8e9d-36c8af61a4db.png" width="350" height="300">
 
 ## Summary:
 If you can type this, 
@@ -24,9 +25,6 @@ into a text file ([Searchs.txt](https://github.com/ceramicskate0/SWELF/wiki/%5CL
 2. Read and search any local log file for everything or just the log with the data you want.
 
 3. Read, search, and forward any 'Powershell Plugin' (after attempting to force it through Microsoft [AMSI](https://docs.microsoft.com/en-us/windows/desktop/amsi/antimalware-scan-interface-portal)) output (ie that script you like that you cant get output from at scale) for everything or just the log with the data you want.
-
-
-![swelf icon](https://user-images.githubusercontent.com/6934294/47841159-afd30b00-dd86-11e8-8e9d-36c8af61a4db.png)
 
 ## [Want to know more or have Questions check out the WIKI:](https://github.com/ceramicskate0/SWELF/wiki)
 
