@@ -525,6 +525,16 @@ runonce.exe
 lsasrv.dll
 #<unknown process>
 Microsoft.Workflow.Compiler.exe
+powershellcustomhost.exe
+texttransform.exe
+runscripthelper.exe
+visualuiaverifynative.exe
+fsiAny
+ntkd.exe
+kd.exe
+cdb.exe
+bginfo.exe
+WFC.exe
 
 #Search everything your looking at for mimikatz
 mimikatz
