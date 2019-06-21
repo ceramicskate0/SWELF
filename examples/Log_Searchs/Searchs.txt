@@ -456,6 +456,8 @@ search_multiple:%COMPSPEC%`cmd~~7045
 search_multiple:%COMPSPEC%`powershell~~7045
 search_multiple:rundll32`.dat
 search_multiple:cmd.exe'del
+search_multiple:vbc.exe`Microsoft.Workflow.Compiler.exe 
+search_multiple:csc.exe`Microsoft.Workflow.Compiler.exe 
 
 #KEYWORD SEARCHS to be run on all
 \appcmd.exe
