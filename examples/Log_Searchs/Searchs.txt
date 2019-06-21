@@ -522,6 +522,7 @@ MSXSL.EXE
 runonce.exe
 lsasrv.dll
 #<unknown process>
+Microsoft.Workflow.Compiler.exe
 
 #Search everything your looking at for mimikatz
 mimikatz
