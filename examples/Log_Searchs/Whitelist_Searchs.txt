@@ -32,3 +32,4 @@ windows defender antivirus has removed history of malware and other potentially 
 provider started with result code 0x0~Microsoft-Windows-WMI-Activity/Operational~5857
 sourceimage: c:\tools\sysinternalssuite\procexp64.exe~Microsoft-Windows-Sysmon/Operational~10
 new process name:	c:\windows\microsoft.net\framework\v4.0.30319\ngen.exe~Security~4688
+\device\harddiskvolume3\windows\system32\svchost.exe~microsoft-windows-security-mitigations/kernelmode~1
