@@ -116,7 +116,8 @@ Temporary~Microsoft-Windows-WMI-Activity/Operational~5860
 Win32_Bios~Microsoft-Windows-WMI-Activity/Operational~
 
 #Windows-Sysmon/Operational
-~Microsoft-Windows-Sysmon/Operational~2
+\appdata\~Microsoft-Windows-Sysmon/Operational~2
+\windows\~Microsoft-Windows-Sysmon/Operational~2
 ~Microsoft-Windows-Sysmon/Operational~7
 ~Microsoft-Windows-Sysmon/Operational~255
 ~Microsoft-Windows-Sysmon/Operational~22
