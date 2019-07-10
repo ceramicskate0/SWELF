@@ -192,8 +192,8 @@ received files\~Microsoft-Windows-Sysmon/Operational~1
 mshta.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 mshta vbscript:~Microsoft-Windows-Sysmon/Operational~
 regsvr32~Microsoft-Windows-Sysmon/Operational~
-bitsadmin.exe  /transfer~Microsoft-Windows-Sysmon/Operational~
-bitsadmin.exe /download~Microsoft-Windows-Sysmon/Operational~ 
+bitsadmin.exe /transfer~Microsoft-Windows-Sysmon/Operational~
+bitsadmin.exe /download~Microsoft-Windows-Sysmon/Operational~
 rundll32.exe javascript:~Microsoft-Windows-Sysmon/Operational~
 count:;:2~Microsoft-Windows-Sysmon/Operational~1
 Signed: false~Microsoft-Windows-Sysmon/Operational~6
