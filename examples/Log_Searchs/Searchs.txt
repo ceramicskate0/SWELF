@@ -94,7 +94,7 @@ Invoke-Item~Microsoft-Windows-PowerShell/Operational~4104
 Gzipstream~Microsoft-Windows-PowerShell/Operational~4104
 -nop~Microsoft-Windows-PowerShell/Operational~4104
 encodedcommand~Microsoft-Windows-PowerShell/Operational~4104
-noprofile~Microsoft-Windows-PowerShell/Operational~41044104
+noprofile~Microsoft-Windows-PowerShell/Operational~4104
 invoke-shellcode~Microsoft-Windows-PowerShell/Operational~4104
 adodb.stream~Microsoft-Windows-PowerShell/Operational~4104
 \start menu~Microsoft-Windows-PowerShell/Operational~4104
