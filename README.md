@@ -20,7 +20,7 @@ into a text file ([Searchs.txt](https://github.com/ceramicskate0/SWELF/wiki/%5CL
 
 ## [Requirements:](https://github.com/ceramicskate0/SWELF/wiki/SWELF-Requirements)
 
-## What can SWELF do:
+## [What can SWELF do](https://github.com/ceramicskate0/SWELF/wiki/How-SWELF-Works):
 
 1. Read, search, and forward any Windows Eventlog and/or saved evtx (that are not I.O. locked) file for everything or just the log with the data you want.
 
