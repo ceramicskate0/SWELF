@@ -26,7 +26,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    Error_Operation.Log_Error("READ_Local_Log_Files() ", e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
+                    Error_Operation.Log_Error("READ_Local_Log_Files() ", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
                 }
             }
         }
@@ -64,7 +64,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Error_Operation.Log_Error("READ_Local_Log_Dirs() ", e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
+                Error_Operation.Log_Error("READ_Local_Log_Dirs() ", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
             }
         }
 
@@ -94,7 +94,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Error_Operation.Log_Error("READ_Local_Log_Dirs() ", e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
+                Error_Operation.Log_Error("READ_Local_Log_Dirs() ", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
             }
         }
     }

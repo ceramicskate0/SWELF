@@ -8,15 +8,16 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
+using static System.Text.Encoding;
 
 namespace SWELF
 {
     internal static class Crypto_Operation
     {
         private const int AES256KeySize = 256;
-        internal readonly static char[] Common_Encrypted_Chars = { '�', '¿', 'ړ', '©', '°', '¤', 'ʔ','¶','»','ø','6','ځ','ª','Û','»','®' };
+        internal readonly static char[] Common_Encrypted_Chars = { '�','ó','�', '¿', 'ړ', '©', '°', '¤', 'ʔ','¶','»','ø','6','ځ','ª','Û','»','®' };
 
-        private static byte[] Entropy = {Convert.ToByte(Settings.ComputerName.Length) };
+        private static byte[] Entropy = {System.Convert.ToByte(Settings.ComputerName.Length) };
 
         private static string SALT = Hash(Environment.ProcessorCount.ToString()).Substring(0,8);
 
@@ -88,7 +89,7 @@ namespace SWELF
                 }
                 else
                 {
-                    Error_Operation.Log_Error("UnLock_File()", e.Message.ToString() + " retry=" + RetryNumber, Error_Operation.LogSeverity.FailureAudit);
+                    Error_Operation.Log_Error("UnLock_File()", e.Message.ToString() + " "+ FilePath+ "  retry=" + RetryNumber,"", Error_Operation.LogSeverity.FailureAudit);
                 }
             }
         }
@@ -99,7 +100,7 @@ namespace SWELF
 
             using (Aes AES = Aes.Create())
             {
-                AES.KeySize = 256;
+                AES.KeySize = AES256KeySize;
                 AES.BlockSize = 128;
                 AES.Padding = PaddingMode.PKCS7;
 
@@ -132,7 +133,7 @@ namespace SWELF
             {
                 using (Aes AES = Aes.Create())
                 {
-                    AES.KeySize = 256;
+                    AES.KeySize = AES256KeySize;
                     AES.BlockSize = 128;
                     AES.Padding = PaddingMode.PKCS7;
 
@@ -148,7 +149,15 @@ namespace SWELF
                         {
                             using (StreamReader srDecrypt = new StreamReader(csDecrypt))
                             {
-                                plaintext = srDecrypt.ReadToEnd();
+                                try
+                                {
+                                    plaintext = srDecrypt.ReadToEnd();
+                                }
+                                catch (Exception e)
+                                {
+                                    File_Operation.DELETE_File(InputEncryptedFilePath);
+                                    File_Operation.WRITE_Default_Critical_Files();
+                                }
                             }
                             csDecrypt = null;
                         }
@@ -165,30 +174,6 @@ namespace SWELF
                     csDecrypt.Dispose();
             }
             return plaintext;
-        }
-
-        internal static byte[] Protect_Data_Value(byte[] UnEncrypted_Value)
-        {
-            try
-            {
-                return ProtectedData.Protect(CONVERT_To_UTF8_Bytes(CONVERT_To_String_From_Bytes(UnEncrypted_Value,2)), Entropy, DataProtectionScope.CurrentUser);
-            }
-            catch (Exception e)
-            {
-                return new byte[0];
-            }
-        }
-
-        internal static byte[] Protect_Data_Value(string UnEncrypted_Value)
-        {
-            try
-            {
-                return ProtectedData.Protect(CONVERT_To_UTF8_Bytes(UnEncrypted_Value), Entropy, DataProtectionScope.CurrentUser);
-            }
-            catch (Exception e)
-            {
-                return new byte[0]; 
-            }
         }
 
         internal static byte[] CONVERT_To_UTF8_Bytes(string String_Data)
@@ -238,6 +223,30 @@ namespace SWELF
                 }
         }
 
+        internal static byte[] Protect_Data_Value(byte[] UnEncrypted_Value)
+        {
+            try
+            {
+                return ProtectedData.Protect(CONVERT_To_UTF8_Bytes(CONVERT_To_String_From_Bytes(UnEncrypted_Value,2)), Entropy, DataProtectionScope.CurrentUser);
+            }
+            catch (Exception e)
+            {
+                return new byte[0];
+            }
+        }
+
+        internal static byte[] Protect_Data_Value(string UnEncrypted_Value)
+        {
+            try
+            {
+                return ProtectedData.Protect(CONVERT_To_UTF8_Bytes(UnEncrypted_Value), Entropy, DataProtectionScope.CurrentUser);
+            }
+            catch (Exception e)
+            {
+                return new byte[0]; 
+            }
+        }
+
         internal static string UnProtect_Data_Value(byte[] Encrypted_Value)
         {
             try
@@ -252,25 +261,93 @@ namespace SWELF
 
         internal static string Protect_Memory(string UnEncrypted_Value)
         {
+            byte[] toEncrypt = UnEncrypted_Value.ToByteArrayWithPadding();
             try
             {
-                byte[] Orig_array = CONVERT_To_UTF8_Bytes(UnEncrypted_Value);
-                Padd(ref Orig_array, 16);
-                ProtectedMemory.Protect(Orig_array, MemoryProtectionScope.SameProcess);
-                return UnEncrypted_Value;
+                ProtectedMemory.Protect(toEncrypt, MemoryProtectionScope.SameProcess);
+                return ASCII.GetString(toEncrypt);
             }
             catch (Exception e)
             {
-                return UnEncrypted_Value;
+                return ASCII.GetString(toEncrypt);
             }
         }
 
+        internal static byte[] Protect_Memory(byte[] UnEncrypted_Value)
+        {
+            byte[] toEncrypt = ASCII.GetString(UnEncrypted_Value).ToByteArrayWithPadding();
+            try
+            {
+                ProtectedMemory.Protect(toEncrypt, MemoryProtectionScope.SameProcess);
+                return toEncrypt;
+            }
+            catch (Exception e)
+            {
+                return toEncrypt;
+            }
+        }
+
+        //https://github.com/vunvulear/Stuff/blob/master/MemoryEncryption/MemoryEncryption.cs
         internal static string UnProtect_Memory(string Encrypted_Value)
         {
-            byte[] Orig_array = CONVERT_To_UTF8_Bytes(Encrypted_Value);
-            Padd(ref Orig_array,16);
-            ProtectedMemory.Unprotect(Orig_array, MemoryProtectionScope.SameProcess);
-            return Encrypted_Value;
+            byte[] byteEncrypted_Value = ASCII.GetBytes(Encrypted_Value.RemovePadding());
+            try
+            {
+            ProtectedMemory.Unprotect(byteEncrypted_Value, MemoryProtectionScope.SameProcess);
+            return ASCII.GetString(byteEncrypted_Value);
+            }
+            catch (Exception e)
+            {
+                return "";
+            }
+        }
+
+        internal static string UnProtect_Memory(byte[] Encrypted_Value)
+        {
+            byte[] byteEncrypted_Value = ASCII.GetBytes(ASCII.GetString(Encrypted_Value).RemovePadding());
+            try
+            {
+                ProtectedMemory.Unprotect(byteEncrypted_Value, MemoryProtectionScope.SameProcess);
+                return ASCII.GetString(byteEncrypted_Value);
+            }
+            catch (Exception e)
+            {
+                return "";
+            }
+        }
+
+        internal static byte[] ToByteArrayWithPadding(this String str)
+        {
+            const int BlockingSize = 16;
+            int byteLength = ((str.Length / BlockingSize) + 1) * BlockingSize;
+            byte[] toEncrypt = new byte[byteLength];
+            ASCII.GetBytes(str).CopyTo(toEncrypt, 0);
+            return toEncrypt;
+        }
+
+        internal static string RemovePadding(this String str)
+        {
+            char paddingChar = '\0';
+            int indexOfFirstPadding = str.IndexOf(paddingChar);
+            string cleanString="";
+            if (indexOfFirstPadding > 0)
+            {
+                cleanString = str.Remove(indexOfFirstPadding);
+            }
+            else
+            {
+                cleanString = str;
+            }
+            return cleanString;
+        }
+
+        private static byte[] CreateRandomEntropy()
+        {
+            byte[] entropy = new byte[16];
+
+            new RNGCryptoServiceProvider().GetBytes(entropy);
+
+            return entropy;
         }
 
         private static void Padd(ref byte[] src_array, int pad_size)
@@ -323,16 +400,16 @@ namespace SWELF
             {
                 if (File_Operation.CHECK_if_File_Exists(Value) && (File_Operation.CHECK_File_Encrypted(Value)))
                 {
-                    return Protect_Memory(BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Decrypt_File_Contents(Value, false)))));
+                    return (BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Decrypt_File_Contents(Value, false)))));
                 }
                 else
                 {
-                    return Protect_Memory(BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Value))));
+                    return (BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Value))));
                 }
             }
             catch (Exception e)
             {
-                return Protect_Memory(BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Value))));
+                return (BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Value))));
             }
         }
 
@@ -349,15 +426,14 @@ namespace SWELF
                     Settings.WRITE_Default_Configs_Files_and_Reg();
                 }
             }
-           string password= Protect_Memory(Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.Encryption));
+           string password = (Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.Encryption));
            string content = "";
-           string[] PWarray = Protect_Memory(password).Split(',').ToArray();
-
-           for (int x=0;x < PWarray.Length; ++x)
+           string[] PWarray = (password).Split(',').ToArray();
+            for (int x=0;x < PWarray.Length; ++x)
             {
-                content += Cipher_Parts.ElementAt(Convert.ToInt32(PWarray[x]));
+                content += (Cipher_Parts.ElementAt(System.Convert.ToInt32(PWarray[x])));
             }
-           return Protect_Memory(Hash(content));
+           return (Hash(content));
         }
 
         internal static bool VERIFY_String_Hashs(string String1, string string2)

@@ -88,8 +88,12 @@ namespace SWELF
             }
         }
 
-        internal static void Log_Error(string MethodNameInCode, string Message, LogSeverity LogSeverity, EventID eventID = 0)
+        internal static void Log_Error(string MethodNameInCode, string Message,string StackDetails, LogSeverity LogSeverity, EventID eventID = 0)
         {
+            if (Settings.Logging_Level_To_Report.ToLower() == "verbose")
+            {
+                Message = Message + " Stack_Info=" + StackDetails; 
+            }
             string msg = "DateTime=" + DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   SourceComputer=" + Settings.ComputerName + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n";
             try
             {

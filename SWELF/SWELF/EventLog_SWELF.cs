@@ -26,7 +26,7 @@ namespace SWELF
             using (EventLog myLogger = new EventLog(Settings.SWELF_EvtLog_OBJ.Source, Environment.MachineName, CHECK_If_Protected_Log_Name(EvntLog.LogName)))
             {
                 //THIS is where SWELF eventlog get the severity BTW.
-                myLogger.WriteEntry(EvntLog.SearchRule + "\r\n\r\n" + EvntLog.EventData, EventLogEntryType.Information, EvntLog.EventID);
+                myLogger.WriteEntry("Search_Rule=" + EvntLog.SearchRule + "\r\n\r\n" + EvntLog.EventData, EventLogEntryType.Information, EvntLog.EventID);
                 //IF ERROR For eventlog source occures it because in reg the 'source' is a sub folder uner a eventlog reg key with same name. Might want to do renaming to avoid issues.
             }
         }

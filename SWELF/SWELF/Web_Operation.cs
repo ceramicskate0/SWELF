@@ -29,7 +29,7 @@ namespace SWELF
                 File_Operation.DELETE_File(LocalPath);//remove old config file
                 File_Operation.APPEND_AllTXT(LocalPath, Central_Config_File_Web_Cache);
             }
-            Error_Operation.Log_Error("GET_Central_Config_File()", "Updated " + FileName + " from " + WebPath + ". It was downloaded to " + LocalPath, Error_Operation.LogSeverity.Verbose, Error_Operation.EventID.SWELF_Central_Config_Changed);//log change
+            Error_Operation.Log_Error("GET_Central_Config_File()", "Updated " + FileName + " from " + WebPath + ". It was downloaded to " + LocalPath,"", Error_Operation.LogSeverity.Verbose, Error_Operation.EventID.SWELF_Central_Config_Changed);//log change
             if (File_Operation.CHECK_File_Encrypted(LocalPath) == false)
             {
                 Crypto_Operation.Secure_File(LocalPath);
@@ -146,8 +146,12 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Error_Operation.WRITE_Errors_To_Log("VERIFY_Central_File_Config_Hash()", e.Message.ToString() + " " + HTTP_File_Path + " " + Local_File_Path, Error_Operation.LogSeverity.Warning);//log change
+                Error_Operation.WRITE_Errors_To_Log("VERIFY_Central_File_Config_Hash()", e.Message.ToString() + " " + HTTP_File_Path + " " + Local_File_Path, Error_Operation.LogSeverity.Informataion);//log change
                 return false;
+            }
+            finally
+            {
+                Wclient.Dispose();              
             }
         }
 
@@ -190,7 +194,8 @@ namespace SWELF
         protected override WebRequest GetWebRequest(Uri uri)
         {
             WebRequest w = base.GetWebRequest(uri);
-            w.Timeout = 15000;
+            w.UseDefaultCredentials = true;
+            w.Timeout = 1000;
             return w;
         }
     }

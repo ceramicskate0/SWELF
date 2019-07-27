@@ -36,7 +36,7 @@ namespace SWELF
                         catch (Exception e)
                         { 
                             Settings.Logs_Sent_to_ALL_Collectors = false;
-                            Error_Operation.Log_Error("SEND_Logs() [transport_protocol] == tcp", Settings.Log_Forwarders_HostNames.ElementAt(x)+" "+ e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
+                            Error_Operation.Log_Error("SEND_Logs() [transport_protocol] == tcp", Settings.Log_Forwarders_HostNames.ElementAt(x)+" "+ e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
                         }
                     }
                     Settings.Logs_Sent_to_ALL_Collectors = true;
@@ -59,7 +59,7 @@ namespace SWELF
                         catch (Exception e)
                         {
                             Settings.Logs_Sent_to_ALL_Collectors = false;
-                            Error_Operation.Log_Error("SEND_Logs() else//Default send logs UDP", Settings.Log_Forwarders_HostNames.ElementAt(x) + " " + e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
+                            Error_Operation.Log_Error("SEND_Logs() else//Default send logs UDP", Settings.Log_Forwarders_HostNames.ElementAt(x) + " " + e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
                         }
                     }
                     Settings.Logs_Sent_to_ALL_Collectors = true;
@@ -91,7 +91,7 @@ namespace SWELF
                         {
                             Data_Sent = false;
                             Settings.Logs_Sent_to_ALL_Collectors = false;
-                            Error_Operation.Log_Error("SEND_Logs() transport_protocol tcp", Settings.Log_Forwarders_HostNames.ElementAt(x) + " " + e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
+                            Error_Operation.Log_Error("SEND_Logs() transport_protocol tcp", Settings.Log_Forwarders_HostNames.ElementAt(x) + " " + e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
                         }
                     }
                     Settings.Logs_Sent_to_ALL_Collectors = true;
@@ -111,7 +111,7 @@ namespace SWELF
                         {
                             Data_Sent = false;
                             Settings.Logs_Sent_to_ALL_Collectors = false;
-                            Error_Operation.Log_Error("SEND_Logs() Default send logs UDP", Settings.Log_Forwarders_HostNames.ElementAt(x) + " " + e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
+                            Error_Operation.Log_Error("SEND_Logs() Default send logs UDP", Settings.Log_Forwarders_HostNames.ElementAt(x) + " " + e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
                         }
                     }
                     Settings.Logs_Sent_to_ALL_Collectors = true;
@@ -137,7 +137,7 @@ namespace SWELF
                     {
                         Data_Sent = false;
                         Settings.Logs_Sent_to_ALL_Collectors = false;
-                        Error_Operation.Log_Error("SEND_Data_from_File_UDP(Log_File_Data)", "SWELF NETWORK ERROR: " + e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
+                        Error_Operation.Log_Error("SEND_Data_from_File_UDP(Log_File_Data)", "SWELF NETWORK ERROR: " + e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
                     }
                 }
                 Settings.Logs_Sent_to_ALL_Collectors = true;
@@ -147,7 +147,7 @@ namespace SWELF
             {
                 Data_Sent = false;
                 Settings.Logs_Sent_to_ALL_Collectors = false;
-                Error_Operation.Log_Error("SEND_Data_from_File(string Log_File_Data)", e.Message.ToString(),Error_Operation.LogSeverity.Warning);
+                Error_Operation.Log_Error("SEND_Data_from_File(string Log_File_Data)", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Warning);
             }
             return Data_Sent;
         }
@@ -171,13 +171,13 @@ namespace SWELF
                     }
                 case "syslog":
                     {
-                        Data = DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.LogName + "   " + data.CreatedTime + "   " + data.EventRecordID + "   " + data.TaskDisplayName + "   " +data.SearchRule + "   " + Regex.Replace(data.EventData, @"\n|\r|\t|\r\n|\n\r", "    ");
+                        Data = DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.LogName + "   " + data.CreatedTime + "   " + data.EventRecordID + "   " + data.TaskDisplayName + "    " + data.SearchRule + "\"" + "    " + Regex.Replace(data.EventData, @"\n|\r|\t|\r\n|\n\r", "    ");
                         break;
 
                     }
                 case "syslogxml":
                     {
-                        Data = DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.LogName + "   " + data.CreatedTime + "   " + data.EventRecordID + "   " + data.TaskDisplayName+ "   " + data.SearchRule + "   " + Regex.Replace(data.GET_XML_of_Log, @"\n|\r|\t|\r\n|\n\r", "    ");
+                        Data = DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   " + Settings.ComputerName + "   " + data.Severity + "   " + "SWELF_Syslog" + "   " + data.EventID.ToString() + "   " + data.LogName + "   " + data.CreatedTime + "   " + data.EventRecordID + "   " + data.TaskDisplayName+ "   "  + data.SearchRule + "\"" + "   " + Regex.Replace(data.GET_XML_of_Log, @"\n|\r|\t|\r\n|\n\r", "    ");
                         break;
 
                     }
@@ -188,12 +188,12 @@ namespace SWELF
                     }
                 case "keyvalue":
                     {
-                        Data = "DateTime=\"" + data.CreatedTime + "\"" + "   " + "SourceComputer=\"" + Settings.ComputerName + "\"" + "   " + "EventID=\"" + data.EventID.ToString() + "\"" + "   " + "EventLogName=\"" + data.LogName + "\"" + "   " + "EventRecordID=\"" + data.EventRecordID + "\"" + "   " + "DisplayName=\"" + data.TaskDisplayName + "\"" + "   " + "Severity=\"" + data.Severity + "\"" + "   " + "UserID=\"" + data.UserID + "\"" + "   " +"SearchRule=\""+ data.SearchRule + "\"   " + "ParentCommandLine=\"" + Regex.Replace(data.ParentCMDLine, @"\n|\r|\t|\r\n|\n\r", "    ") + "\"   " + "ChildCommandLine=\"" + Regex.Replace(data.ChildCMDLine, @"\n|\r|\t|\r\n|\n\r", "    ")  + "\"   " + "EventData=\"" + Regex.Replace(data.EventData, @"\n|\r|\t|\r\n|\n\r", "    ") + " \"";
+                        Data = "CreatedTime=\"" + data.CreatedTime + "\"" + "   " + "SourceComputer=\"" + Settings.ComputerName + "\"" + "   " + "EventID=\"" + data.EventID.ToString() + "\"" + "   " + "EventLogName=\"" + data.LogName + "\"" + "   " + "EventRecordID=\"" + data.EventRecordID + "\"" + "   " + "DisplayName=\"" + data.TaskDisplayName + "\"" + "   " + "Severity=\"" + data.Severity + "\"" + "   " + "UserID=\"" + data.UserID + "\"" + "   " + "Search_Rule=\"" + data.SearchRule +"\""+"   " + "ParentCommandLine=\"" + Regex.Replace(data.ParentCMDLine, @"\n|\r|\t|\r\n|\n\r", "    ") + "\"   " + "ChildCommandLine=\"" + Regex.Replace(data.ChildCMDLine, @"\n|\r|\t|\r\n|\n\r", "    ")  + "\"   " + "EventData=\"" + Regex.Replace(data.EventData, @"\n|\r|\t|\r\n|\n\r", "\n") + " \"";
                         break;
                     }
                 default:
                     {
-                        Data = DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   " + "SearchRule=\""+ data.SearchRule + "\"" + "    " + Regex.Replace(data.GET_XML_of_Log, @"\n|\r|\t|\r\n|\n\r", "    ");
+                        Data = DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   " + data.SearchRule + "    " + Regex.Replace(data.GET_XML_of_Log, @"\n|\r|\t|\r\n|\n\r", "    ");
                         break;
                     }
             }
