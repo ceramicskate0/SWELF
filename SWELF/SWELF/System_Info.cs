@@ -125,7 +125,7 @@ namespace SWELF
             {
                 if (Current_Memory_Dump_Retry_Number >= Max_Memory_Dump_Retry_Number)
                 {
-                    Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE, "CHECK_Memory()", "SWELF Detected MAXIMUM Memory useage and stopped after " + Max_Memory_Dump_Retry_Number.ToString() + " tries to resolve issue.");
+                    Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE, "CHECK_Memory()", "SWELF Detected MAXIMUM Memory useage and stopped after " + Max_Memory_Dump_Retry_Number.ToString() + " tries to resolve issue.","");
                 }
                 else
                 {

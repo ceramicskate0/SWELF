@@ -8,7 +8,7 @@ namespace SWELF
 {
     internal class EventLog_File
     {
-        private Queue<EventLog_Entry> contents_of_EventLog;
+        internal Queue<EventLog_Entry> contents_of_EventLog;
 
         internal string EventLogFileName = "";
         private long iD_EVENTLOG = 0;
@@ -37,7 +37,7 @@ namespace SWELF
             }
         }
 
-        internal long ID_EVENTLOG
+        internal long ID_Number_Of_Individual_log_Entry_EVENTLOG
         {
             get
             {

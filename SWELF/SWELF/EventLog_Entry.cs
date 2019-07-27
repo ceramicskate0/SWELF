@@ -17,9 +17,10 @@ namespace SWELF
         private int eventID = 0;
         private string computerName = null;
         private string userID = null;
-        private string searchrule = null;
+        private string searchrule = "";
         private byte[] EVT_Data_Compressed;
         private int EVT_Data_Size=0;
+        private string Time_Logged = null;
 
         private byte[] XML_Data_Compressed;
         private int XML_Data_Size = 0;
@@ -99,7 +100,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    xml_evntdata=value;
+                    xml_evntdata="ERROR";
                 }
             }
         }
@@ -243,7 +244,7 @@ namespace SWELF
             {
                 try
                 {
-                    if (string.IsNullOrEmpty(searchrule))
+                    if (string.IsNullOrEmpty(searchrule) && searchrule.Contains(Settings.Search_Commands[8]) == false)
                     {
                         searchrule = value;
                     }
@@ -291,7 +292,7 @@ namespace SWELF
 
         internal void GET_IP_FromLogFile()
         {
-            if (Settings.AppConfig_File_Args.ContainsKey(Settings.SWELF_AppConfig_Args[11]))
+            if (Settings.AppConfig_File_Args.ContainsKey(Settings.SWELF_AppConfig_Args[11]) && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 3)
             {
                 string Eventdata = Compression_Operation.DeCompress_Contents_String(EVT_Data_Compressed,EVT_Data_Size);
 
@@ -301,22 +302,46 @@ namespace SWELF
 
                 foreach (string line in EventlogDataSegment)
                 {
-                    if (Eventdata.Contains("destinationip: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 3)
+                    if (Eventdata.Contains("destinationip: "))
                     {
                         string[] delm1 = { "destinationip: ", "destinationhostname: " };
 
-                        string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                        string[] datA_IP = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
-                        if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
+                        if (datA_IP[1].Length > 0 && (!string.IsNullOrEmpty(datA_IP[1])))
                         {
-                            Settings.IP_List_EVT_Logs.Add(datA[1].Replace("\r\n", ""));
+                            if (Eventdata.Contains("image: "))
+                            {
+                                string[] delm2= { "image: " };
+                                string[] delm3 = { "user: " };
+                                string[] datA_img1 = Eventdata.Split(delm2, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                string[] datA_img2 = datA_img1[1].Split(delm3, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+                                if (datA_img2[0].Length > 0 && (!string.IsNullOrEmpty(datA_img2[0])))
+                                {
+                                    Settings.IP_List_EVT_Logs.Add(datA_img2[0].Replace("\r\n", "") +","+ datA_IP[1].Replace("\r\n", ""));
+                                }
+                            }
                         }
                     }
                     else if (Settings.IP_RegX.IsMatch(line) && line.Contains('.') && line.Contains('\\') == false && string.IsNullOrEmpty(line) == false)
                     {
+                        if (Eventdata.Contains("image: ") )
+                        {
+                            string[] delm2 = { "image: " };
+
+                            string[] datA_img = Eventdata.Split(delm2, StringSplitOptions.RemoveEmptyEntries).ToArray();
+
+                            if (datA_img[1].Length > 0 && (!string.IsNullOrEmpty(datA_img[1])))
+                            {
+                                Settings.IP_List_EVT_Logs.Add(datA_img[1].Replace("\r\n", ""));
+                            }
+                        }
                         Settings.IP_List_EVT_Logs.Add(line);
                     }
                 }
+                EventlogDataSegment.Clear();
+                Eventdata = null;
             }
         }
 
@@ -336,6 +361,8 @@ namespace SWELF
                     {
                         Settings.Hashs_From_EVT_Logs.Add(datA[1].Replace("\r\n", ""));
                     }
+                    delm1 = null;
+                    datA = null;
                 }
                 if (Eventdata.Contains("hashes: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 6)
                 {
@@ -347,6 +374,8 @@ namespace SWELF
                     {
                         Settings.Hashs_From_EVT_Logs.Add(datA[1].Replace("\r\n", ""));
                     }
+                    delm1 = null;
+                    datA = null;
                 }
                 else if (Settings.SHA256_RegX.Matches(Eventdata).Count > 0)
                 {
@@ -355,6 +384,7 @@ namespace SWELF
                         Settings.Hashs_From_EVT_Logs.Add(MatchedHash.ToString());
                     }
                 }
+                Eventdata = null;
             }
         }
 
@@ -386,6 +416,8 @@ namespace SWELF
                     }
                 }
             }
+            EventlogDataSegment.Clear();
+            Eventdata = null;
         }
         
         private string GET_CMDLineArgs()
@@ -481,6 +513,7 @@ namespace SWELF
                 }
                 CommandLineArgLength = commandLine.Length;
                 CommandLineArgs = commandLine;
+                Eventdata = null;
                 return commandLine;
             }
             catch (Exception e)
@@ -506,6 +539,7 @@ namespace SWELF
                         Sysmon_DST_Port = datA[1].Replace("\r\n","");
                     }
                 }
+                Eventdata = null;
                 return Sysmon_DST_Port;
             }
             catch (Exception e)
@@ -532,6 +566,7 @@ namespace SWELF
                         Sysmon_Src_Process = filepath[filepath.Length-1].Replace("\r\n", "");
                     }
                 }
+                Eventdata = null;
                 return Sysmon_Src_Process;
             }
             catch (Exception e)

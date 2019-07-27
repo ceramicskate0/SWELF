@@ -220,7 +220,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             }
             catch (Exception e)
             {
-                Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE, "CREATE_NEW_Files_And_Dirs() check IO restrictions on machine for app.", e.Message.ToString());
+                Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE, "CREATE_NEW_Files_And_Dirs() check IO restrictions on machine for app.", e.Message.ToString(), e.StackTrace.ToString());
             }
         }
 
@@ -288,6 +288,10 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             {
                 Directory.CreateDirectory(Settings.Plugin_Scripts_Location);
             }
+            if (CHECK_if_File_Exists(Settings.GET_SearchTermsFile_PLUGIN_Path) == false)
+            {
+                File.Create(Settings.GET_SearchTermsFile_PLUGIN_Path);
+            }
         }
 
         internal static string GET_FilesToMonitor_Path()
@@ -302,14 +306,17 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             return Settings.GET_DirectoriesToMonitor_Path;
         }
 
-        internal static void VERIFY_AppConfig_Default_Files_Ready()
+        /// <summary>
+        /// Writes CONSOLEAPPCONFIG default configs
+        /// </summary>
+        internal static void VERIFY_AppConfig_Default_Files_Ready()//Writes default CONSOLEAPPCONFIG default configs
         {
             if (!CHECK_if_File_Exists(Settings.GET_AppConfigFile_Path))
             {
                 CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.AppConfigFile_FileName, GET_Default_ConsoleAppConfig_File_Contents);
                 Crypto_Operation.Secure_File(Settings.GET_AppConfigFile_Path);
             }
-            if (!CHECK_if_File_Exists(Settings.GET_EventLogID_PlaceHolder_Path))
+            if (!CHECK_if_File_Exists(Settings.GET_EventLogID_PlaceHolder_Path))//eventlogplaceholder
             {
                 CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.EventLogID_PlaceHolde_FileName, GET_Default_Eventlog_with_PlaceKeeper_File_Contents);
                 Crypto_Operation.Secure_File(Settings.GET_EventLogID_PlaceHolder_Path);
@@ -324,7 +331,10 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             }
         }
 
-        internal static void VERIFY_Search_Default_Files_Ready()
+        /// <summary>
+        /// Writes Searchs folder configs
+        /// </summary>
+        internal static void VERIFY_Search_Default_Files_Ready()//Writes Searchs.txt defaults
         {
             if (!CHECK_if_File_Exists(Settings.GET_SearchTermsFile_Path))
             {
@@ -336,6 +346,15 @@ Microsoft-WindowsCodeIntegrity/Operational=1
                 CREATE_NEW_Files_And_Dirs(Settings.Search_File_Location, Settings.Search_WhiteList_FileName, GET_Default_Whitelist_File_Contents);
                 Crypto_Operation.Secure_File(Settings.GET_WhiteList_SearchTermsFile_Path);
             }
+        }
+
+        /// <summary>
+        /// Use to write ConsoleAppconfig folder files and Search folder default files. It will check if they are missing and if yes replace.
+        /// </summary>
+        internal static void WRITE_Default_Critical_Files()
+        {
+            VERIFY_AppConfig_Default_Files_Ready();
+            VERIFY_Search_Default_Files_Ready();
         }
 
         internal static void HIDDEN_File(string path)
@@ -354,12 +373,12 @@ Microsoft-WindowsCodeIntegrity/Operational=1
                 if (e.Message.Contains("FileNotFoundException"))
                 {
                     File.Create(path);
-                    Error_Operation.Log_Error("GET_CreationTime()", path+" "+e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
+                    Error_Operation.Log_Error("GET_CreationTime()", path+" "+e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
                     return DateTime.Now.ToString();
                 }
                 else
                 {
-                    Error_Operation.Log_Error("GET_CreationTime()", path + " " + e.Message.ToString(), Error_Operation.LogSeverity.Warning);
+                    Error_Operation.Log_Error("GET_CreationTime()", path + " " + e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Warning);
                     return null;
                 }
             }
@@ -391,7 +410,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             }
             else
             {
-                Error_Operation.Log_Error("READ_File_In_StringArray()", "File not found " + FilePath, Error_Operation.LogSeverity.Informataion);
+                Error_Operation.Log_Error("READ_File_In_StringArray()", "File not found " + FilePath, "",Error_Operation.LogSeverity.Informataion);
                 return File.ReadAllLines(FilePath);
             }
         }
@@ -412,7 +431,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             {
                 if (FIleExists == false)
                 {
-                    Error_Operation.Log_Error("READ_AllText()", "File not found " + FilePath, Error_Operation.LogSeverity.Informataion);
+                    Error_Operation.Log_Error("READ_AllText()", "File not found " + FilePath,"", Error_Operation.LogSeverity.Informataion);
                     return null;
                 }
                 else
@@ -448,7 +467,13 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             }
             catch (Exception e)
             {
-                Error_Operation.Log_Error("CHECK_File_Encrypted()", e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
+
+                bool FileExists = File_Operation.CHECK_if_File_Exists(FilePath);
+                if(FileExists==true && e.Message.Contains("Access to the path") && e.Message.Contains("denied"))
+                {
+                    File_Operation.DELETE_File(FilePath);
+                }
+                Error_Operation.Log_Error("CHECK_File_Encrypted()", e.Message.ToString() + ". Is file on disk check="+ FileExists.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
                 return false;//File NOT Encrypted
             }
         }

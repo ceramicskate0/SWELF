@@ -51,13 +51,13 @@ namespace SWELF
                 }
                 else
                 {
-                    Error_Operation.Log_Error("Run_PS_Script() POSSIBLE MALWARE DETECTED", "Script located at " + powershellSciptLocation + " SHA256=" + Get_SHA256(PowershellSciptLocation) + ". Script is Malware according to AMSI. SWELF converted the contents to Base64 1 time for the purpose of the log size. Malware Script Contents = " + Base64Encode(ScriptContents), Error_Operation.LogSeverity.Critical);
+                    Error_Operation.Log_Error("Run_PS_Script() POSSIBLE MALWARE DETECTED", "Script located at " + powershellSciptLocation + " SHA256=" + Get_SHA256(PowershellSciptLocation) + ". Script is Malware according to AMSI. SWELF converted the contents to Base64 1 time for the purpose of the log size. Malware Script Contents = " + Base64Encode(ScriptContents),"", Error_Operation.LogSeverity.Critical);
                     return ("POSSIBLE MALWARE DETECTED - Script located at " + powershellSciptLocation + " SHA256=" + Get_SHA256(PowershellSciptLocation) + ". Script is Malware according to AMSI. SWELF converted the contents to Base64 1 time for the purpose of the log size. Malware Script Contents = " + Base64Encode(ScriptContents));
                 }
             }
             else
             {
-                Error_Operation.Log_Error("Run_PS_Script()",PowershellSciptLocation + " is not a valid file on " + Settings.ComputerName, Error_Operation.LogSeverity.Warning);
+                Error_Operation.Log_Error("Run_PS_Script()",PowershellSciptLocation + " is not a valid file on " + Settings.ComputerName, "", Error_Operation.LogSeverity.Warning);
                 return (PowershellSciptLocation + " is not a valid file on " + Settings.ComputerName);
             }
         }

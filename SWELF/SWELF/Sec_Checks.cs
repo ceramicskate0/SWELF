@@ -110,10 +110,10 @@ namespace SWELF
 
         internal static bool CHECK_If_EventLog_Missing(EventLog_File ELF, EventLog_Entry EVE)
         {
-            if ((EVE.EventLog_Seq_num != ELF.ID_EVENTLOG + 1) && ELF.EventlogMissing == false && (ELF.ID_EVENTLOG != 0 && EVE.EventRecordID != 0))
+            if ((EVE.EventLog_Seq_num != ELF.ID_Number_Of_Individual_log_Entry_EVENTLOG + 1) && ELF.EventlogMissing == false && (ELF.ID_Number_Of_Individual_log_Entry_EVENTLOG != 0 && EVE.EventRecordID != 0))
             {
                 ELF.EventlogMissing = true;
-                LOG_SEC_CHECK_Fail("CHECK_If_EventLog_Missing(EventLogFile, EventLogEntry) Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.");
+                LOG_SEC_CHECK_Fail("CHECK_If_EventLog_Missing() Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.");
                 return true;
             }
             else
@@ -260,14 +260,14 @@ namespace SWELF
 
             if (diff.Days < 0 && UpTime < 1)
             {
-                LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Has_Not_Recorded_Logs_In_X_Days() The Event Log " + EVT_Log_Name + " has not been written to in 24 hours.");
+                LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Has_Not_Recorded_Logs_In_X_Days() The Event Log " + EVT_Log_Name + " has not been written to in 24 hours."+ diff.Days +"<"+ 0 +"&&"+ UpTime +"<"+ 1);
                 return false;//FAILED
             }
 
             diff = Today.Subtract(CreationTime);
             if (diff.Days <= 0)
             {
-                LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Has_Not_Recorded_Logs_In_X_Days() The Event Log " + EVT_Log_Name + " was created in the last 24 hours.");
+                LOG_SEC_CHECK_Fail("Check_Windows_Event_Log_Has_Not_Recorded_Logs_In_X_Days() The Event Log " + EVT_Log_Name + " was created in the last 24 hours."+ diff.Days +"<="+ 0);
                 return false;//FAILED
             }
 
@@ -314,7 +314,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                LOG_SEC_CHECK_Fail("Check_Event_Log_Is_Blank() EventLogSession.GlobalSession.GetLogInformation(EVT_Log_Name, PathType.LogName) " + EVT_Log_Name + " = "+e.Message.ToString());
+                LOG_SEC_CHECK_Fail("Check_Event_Log_Is_Blank() EventLogSession.GlobalSession.GetLogInformation("+ EVT_Log_Name+", PathType.LogName). EventLog Name was " + EVT_Log_Name + ". Error message was "+e.Message.ToString());
                 return false;//FAILED
             }
         }
@@ -396,7 +396,7 @@ namespace SWELF
         /// <param name="Msg"></param>
         internal static void LOG_SEC_CHECK_Fail(string Msg)
         {
-            Error_Operation.Log_Error("SEC_Check_Failed()", Msg, Error_Operation.LogSeverity.Critical, Error_Operation.EventID.SWELF_FailureAudit);
+            Error_Operation.Log_Error("SEC_Check_Failed()", Msg,"", Error_Operation.LogSeverity.Critical, Error_Operation.EventID.SWELF_FailureAudit);
         }
     }
 }

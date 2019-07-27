@@ -10,7 +10,7 @@ namespace SWELF
 {
     internal class Read_EventLog
     {
-        private static EventRecord Windows_EventLog_from_API { get; set; }
+        internal static EventRecord Windows_EventLog_from_API { get; set; }
         internal EventLog_File EventLog_Log_API;//windows live api read
         private static bool MissingLogInFileDueToException = false;
         internal Queue<EventLog_Entry> EVTX_File_Logs = new Queue<EventLog_Entry>();
@@ -66,7 +66,7 @@ namespace SWELF
                 {
                     EVTlog_PlaceHolder = First_EventID;
                     READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder, EventLog_Log_API);
-                    EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog("Missed all logs from '"+ Eventlog_FullName+"' on machine '"+Settings.ComputerName +"' the first eventlog id was older than where app left off. Possible log file cycle/overwrite between runs. "+ First_EventID+" > "+PlaceKeeper_EventRecordID);
+                    EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog("Missed "+ (First_EventID-PlaceKeeper_EventRecordID) + " logs from '"+ Eventlog_FullName+"' on machine '"+Settings.ComputerName +"' the first eventlog id was older than where app left off. Possible log file cycle/overwrite between runs. First event log id number in the log is "+ First_EventID+" SWELF left off from last run at "+PlaceKeeper_EventRecordID);
                     Settings.EventLog_w_PlaceKeeper[Eventlog_FullName.ToLower()] = Last_EventID;
                 }
                 else//unknown/catch condition assume 1st run
@@ -79,7 +79,7 @@ namespace SWELF
             }
             else
             {
-                Error_Operation.Log_Error("READ_EventLog() if (Settings.FIND_EventLog_Exsits())", Eventlog_FullName+" EventLog does not exist.",Error_Operation.LogSeverity.Informataion);
+                Error_Operation.Log_Error("READ_EventLog() if (Settings.FIND_EventLog_Exsits())", Eventlog_FullName+" EventLog does not exist.","",Error_Operation.LogSeverity.Informataion);
             }
         }
 
@@ -147,7 +147,7 @@ namespace SWELF
                     }
                     catch (Exception e)
                     {
-                        Error_Operation.Log_Error("READ_EVTX_File()", e.Message.ToString() +"Event Log Missing due to improper format. Possible tampering or invalid format.", Error_Operation.LogSeverity.FailureAudit);
+                        Error_Operation.Log_Error("READ_EVTX_File()", e.Message.ToString() +"Event Log Missing due to improper format. Possible tampering or invalid format.", e.StackTrace.ToString(), Error_Operation.LogSeverity.FailureAudit);
                     }
                 }
             }
@@ -170,13 +170,13 @@ namespace SWELF
                 EventLogQuery eventsQuery = new EventLogQuery(Eventlog_FullName, PathType.LogName);
                 EventLogReader EventLogtoReader = new EventLogReader(eventsQuery);
 
+                EventLog_Entry SWELF_Eventlog;
+
                 while (GET_EventLogEntry_From_API(EventLogtoReader) != null)
                 {
-                    EventLog_Entry SWELF_Eventlog = new EventLog_Entry();
                     try
                     {
                         SWELF_Eventlog = new EventLog_Entry();
-
                         if (Windows_EventLog_from_API.RecordId.Value > RecordID_From_Last_Read)
                         {
                             SWELF_Eventlog.CreatedTime = Windows_EventLog_from_API.TimeCreated.Value;//if this doesnt work we have issues that we cant fix
@@ -261,7 +261,6 @@ namespace SWELF
                             {
                                 //unable to get file hashs from log
                             }
-
                             try
                             {
                                 SWELF_Eventlog.GET_IP_FromLogFile();
@@ -282,42 +281,46 @@ namespace SWELF
 
                             try
                             {
-                                EventLogName.ID_EVENTLOG = Windows_EventLog_from_API.RecordId.Value;
+                                EventLogName.ID_Number_Of_Individual_log_Entry_EVENTLOG = Windows_EventLog_from_API.RecordId.Value;
                             }
                             catch (Exception e)
                             {
-                                EventLogName.ID_EVENTLOG = EventLogName.ID_EVENTLOG++;
+                                EventLogName.ID_Number_Of_Individual_log_Entry_EVENTLOG = 0;
                             }
                             EventLogName.Enqueue_Log(SWELF_Eventlog);
                         }
                     }
                     catch (Exception e)
                     {
-                        Error_Operation.Log_Error("INDEX_Record_FROM_API() Missing Event Log(s) Due To Exception with log format while reading in eventlogs.", "EventLog='" + Eventlog_FullName + "' " + e.Message.ToString(), Error_Operation.LogSeverity.Warning);
+                        Error_Operation.Log_Error("INDEX_Record_FROM_API() Missing Event Log(s) Due To Exception with log format while reading in eventlogs.", "EventLog='" + Eventlog_FullName + "' " + e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Warning);
                         MissingLogInFileDueToException = true;
                     }
                 }
+
                 try
                 {
-                    Settings.IP_List_EVT_Logs.AddRange(Settings.IP_List_EVT_Logs.Distinct().ToList());
-                    Settings.Hashs_From_EVT_Logs.AddRange(Settings.Hashs_From_EVT_Logs.Distinct().ToList());
+                    if (Settings.AppConfig_File_Args.ContainsKey(Settings.SWELF_AppConfig_Args[12]) || Settings.AppConfig_File_Args.ContainsKey(Settings.SWELF_AppConfig_Args[11]))
+                    {
+                        Settings.IP_List_EVT_Logs.AddRange(Settings.IP_List_EVT_Logs.Distinct().ToList());
+                        Settings.Hashs_From_EVT_Logs.AddRange(Settings.Hashs_From_EVT_Logs.Distinct().ToList());
+                    }
                 }
                 catch (Exception e)
                 {
-                    Error_Operation.Log_Error("Settings.IP_List_EVT_Logs.AddRange() OR Settings.Hashs_From_EVT_Logs.AddRange()", e.Message.ToString(), Error_Operation.LogSeverity.Warning);
+                    Error_Operation.Log_Error("Settings.IP_List_EVT_Logs.AddRange() OR Settings.Hashs_From_EVT_Logs.AddRange()", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Warning);
                 }
                 MissingLogInFileDueToException = false;
             }
             catch (Exception e)
             {
-                Error_Operation.Log_Error("READ_WindowsEventLog_API() Missing All Event Log(s) Due To Exception. ", "EventLog='" + Eventlog_FullName + "' " + e.Message.ToString() + " " + Eventlog_FullName + " " + RecordID_From_Last_Read + " " + EventLogName.First_EventLogID_From_Check + " " +EventLogName.Last_EventLogID_From_Check + " " + EventLogName.Contents_of_EventLog.Count, Error_Operation.LogSeverity.FailureAudit);
+                Error_Operation.Log_Error("READ_WindowsEventLog_API() Missing All Event Log(s) Due To Exception. ", "EventLog='" + Eventlog_FullName + "' " + e.Message.ToString() + " " + Eventlog_FullName + " " + RecordID_From_Last_Read + " " + EventLogName.First_EventLogID_From_Check + " " +EventLogName.Last_EventLogID_From_Check + " " + EventLogName.Contents_of_EventLog.Count, e.StackTrace.ToString(), Error_Operation.LogSeverity.FailureAudit);
                 MissingLogInFileDueToException = true;
             }
-            GC.Collect();
+            
         }
 
         private static EventRecord GET_EventLogEntry_From_API(EventLogReader EventLogtoReader)
-        {
+        { 
             try
             {
                 return Windows_EventLog_from_API = EventLogtoReader.ReadEvent();

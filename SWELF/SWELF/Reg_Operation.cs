@@ -66,7 +66,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Error_Operation.Log_Error("CHECK_Eventlog_SWELF_Reg_Key_Exists()", e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
+                Error_Operation.Log_Error("CHECK_Eventlog_SWELF_Reg_Key_Exists()", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
                 return false;
             }
         }
@@ -102,7 +102,7 @@ namespace SWELF
             {
                 if (Key!=REG_KEY.logging_level)
                 {
-                    Error_Operation.Log_Error("CHECK_SWELF_Reg_Key_Exists()", e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
+                    Error_Operation.Log_Error("CHECK_SWELF_Reg_Key_Exists()", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
                     return false;
                 }
                 else
@@ -192,7 +192,7 @@ namespace SWELF
                     {
                         try
                         {
-                            return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(Key)));
+                            return (Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(Key)));
                         }
                         catch (Exception e)
                         {
@@ -202,7 +202,7 @@ namespace SWELF
                             }
                             try
                             {
-                                return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(Key)));
+                                return (Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(Key)));
                             }
                             catch (Exception ex)
                             {
@@ -212,7 +212,7 @@ namespace SWELF
                     }
                     else
                     {
-                        return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(Key)));
+                        return (Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(Key)));
                     }
                 }
                 else
@@ -222,7 +222,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Error_Operation.Log_Error("READ_SWELF_Reg_Key()", e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
+                Error_Operation.Log_Error("READ_SWELF_Reg_Key()", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
                 return "";
             }
         }
@@ -255,13 +255,13 @@ namespace SWELF
                             catch (Exception e)
                             {
                                 ADD_or_CHANGE_SWELF_Reg_Key(Key, SWELF_Keys[(int)Key]);
-                                return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key])));
+                                return Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
                             }
                         }
                         else
                         {
                             ADD_or_CHANGE_SWELF_Reg_Key(Key, Crypto_Operation.CONVERT_To_String_From_Bytes(Crypto_Operation.Protect_Data_Value(SWELF_Keys[(int)Key].ToString()), 1));
-                            return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key])));
+                            return Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
                         }
                     }
                     else
@@ -280,25 +280,25 @@ namespace SWELF
                         {
                             try
                             {
-                                return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key])));
+                                return Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
                             }
                             catch (Exception e)
                             {
                                 ADD_or_CHANGE_SWELF_Reg_Key(Key, SWELF_Keys[(int)Key]);
-                                return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key])));
+                                return Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
                             }
                         }
                         else
                         {
                             ADD_or_CHANGE_SWELF_Reg_Key(Key, Crypto_Operation.CONVERT_To_String_From_Bytes(Crypto_Operation.Protect_Data_Value(SWELF_Keys[(int)Key].ToString()), 1));
-                            return Crypto_Operation.Protect_Memory(Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key])));
+                            return Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
                         }
                     }
                     else
                     {
                         if (Log_Error)
                         {
-                            Error_Operation.Log_Error("CHANGE_Reg_Key()", "Reg Key does not exist. RegKey=" + Key, Error_Operation.LogSeverity.Warning);
+                            Error_Operation.Log_Error("CHANGE_Reg_Key()", "Reg Key does not exist. RegKey=" + Key,"", Error_Operation.LogSeverity.Warning);
                         }
                         return "";
                     }
@@ -307,7 +307,7 @@ namespace SWELF
                 {
                     if (Log_Error)
                     {
-                        Error_Operation.Log_Error("CHANGE_Reg_Key()", "Reg Key does not exist. RegKey=" + Key + ". " + e.Message.ToString(), Error_Operation.LogSeverity.Warning);
+                        Error_Operation.Log_Error("CHANGE_Reg_Key()", "Reg Key does not exist. RegKey=" + Key + ". " + e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Warning);
                     }
                     return "";
                 }
@@ -339,7 +339,7 @@ namespace SWELF
                 }
                 else
                 {
-                    Error_Operation.Log_Error("CHANGE_Reg_Key()", "Reg Key does not exist. RegKey=" + Key, Error_Operation.LogSeverity.Warning);
+                    Error_Operation.Log_Error("CHANGE_Reg_Key()", "Reg Key does not exist. RegKey=" + Key, "", Error_Operation.LogSeverity.Warning);
                     return "";
                 }
             }
@@ -359,7 +359,7 @@ namespace SWELF
                 }
                 catch (Exception e)
                 {
-                    Error_Operation.Log_Error("READ_ALL_SWELF_Reg_Keys()", e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
+                    Error_Operation.Log_Error("READ_ALL_SWELF_Reg_Keys()", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
                 }
             }
 
@@ -381,7 +381,7 @@ namespace SWELF
             {
                 if (e.Message.Contains("No value exists with that name")==false)
                 {
-                    Error_Operation.Log_Error("DELETE_SWELF_Reg_Key()", e.Message.ToString(), Error_Operation.LogSeverity.Verbose);
+                    Error_Operation.Log_Error("DELETE_SWELF_Reg_Key()", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
                 }
             }
         }
@@ -422,7 +422,7 @@ namespace SWELF
             RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Eventlog\" + LogName, true);
             if (key == null)
             {
-                Error_Operation.Log_Error("SET_Event_Log_MaxSize(string LogName)", "Registry key for this Event Log does not exist.", Error_Operation.LogSeverity.Warning);
+                Error_Operation.Log_Error("SET_Event_Log_MaxSize(string LogName)", "Registry key for this Event Log does not exist.","", Error_Operation.LogSeverity.Warning);
             }
             else
             {
