@@ -463,6 +463,7 @@ search_multiple:vbc.exe`Microsoft.Workflow.Compiler.exe
 search_multiple:csc.exe`Microsoft.Workflow.Compiler.exe 
 
 #KEYWORD SEARCHS to be run on all
+\dbgsrv.exe
 \appcmd.exe
 bitsadmin.exe /SetNotifyCmdLine
 sc.exe
