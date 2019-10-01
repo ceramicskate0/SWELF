@@ -1,4 +1,4 @@
-# DEV UPDATE: App development stalled unit completion of OSCP cert. Timeline unknown. Dev work stalled not halted.
+# DEV UPDATE: App development stalled unit completion of OSCP cert. Timeline unknown. Dev work on hold not halted.
 
 # [Simple-Windows-Event-Log-Forwarder (SWELF)](https://ceramicskate0.github.io/SWELF/)
 
