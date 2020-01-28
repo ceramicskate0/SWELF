@@ -387,6 +387,9 @@ search_multiple:Chrome`ReadData`Login Data~Security~4663
 #DNS-Client
 System~Microsoft-Windows-DNS-Client/Operational~1014
 
+#Just EventIDs
+~~1042
+
 #Commands COMMANDLINES to be run on all
 commandline_contains:rename
 commandline_length:900
@@ -463,6 +466,9 @@ search_multiple:vbc.exe`Microsoft.Workflow.Compiler.exe
 search_multiple:csc.exe`Microsoft.Workflow.Compiler.exe 
 
 #KEYWORD SEARCHS to be run on all
+DelegateExecute
+forfiles 
+\wsreset.exe
 \dbgsrv.exe
 \appcmd.exe
 bitsadmin.exe /SetNotifyCmdLine
@@ -553,6 +559,8 @@ mimilib
 {E430E93D-09A9-4DC5-80E3-CBB2FB9AF28E}
 
 #Everything Search REG Keys
+\software\classes\ms-settings\shell\open\command
+Software\Classes\AppX82a6gwre4fdg3bt635tn5ctqjf8msdd2\Shell\open\command 
 \CurrentControlSet\Control\SecurityProviders\WDigest
 \CurrentControlSet\Control\WMI\Autologger\
 \SOFTWARE\MICROSOFT\WINDOWS NT\CURRENTVERSION\WINLOGON\
