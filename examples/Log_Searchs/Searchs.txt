@@ -63,6 +63,7 @@ marshal~Microsoft-Windows-PowerShell/Operational~4104
 Remove-EtwTraceProvider~Microsoft-Windows-PowerShell/Operational~4104
 encoding-~Microsoft-Windows-PowerShell/Operational~4104
 invoke-~Microsoft-Windows-PowerShell/Operational~4104
+.vbs-~Microsoft-Windows-PowerShell/Operational~4104
 wp-content~Microsoft-Windows-PowerShell/Operational~4104
 rename~Microsoft-Windows-PowerShell/Operational~4104
 -ep bypass~Microsoft-Windows-PowerShell/Operational~4104
@@ -455,6 +456,8 @@ network_connect:443:explorer
 network_connect:80:explorer
 network_connect:443:rundll32
 network_connect:80:rundll32
+network_connect:80:notepad
+network_connect:443:notepad
 
 #Search all for Multiple
 search_multiple:vbc`.txt
@@ -464,8 +467,10 @@ search_multiple:rundll32.exe`.dat
 search_multiple:cmd.exe`del
 search_multiple:vbc.exe`Microsoft.Workflow.Compiler.exe 
 search_multiple:csc.exe`Microsoft.Workflow.Compiler.exe 
+search_multiple:dbgcore.dll`minidump
 
 #KEYWORD SEARCHS to be run on all
+minidump
 DelegateExecute
 forfiles 
 \wsreset.exe
