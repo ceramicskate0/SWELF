@@ -390,6 +390,7 @@ System~Microsoft-Windows-DNS-Client/Operational~1014
 
 #Just EventIDs
 ~~1042
+~~5145
 
 #Commands COMMANDLINES to be run on all
 commandline_contains:rename
@@ -556,7 +557,6 @@ mimikatz
 sekurlsa::logonpasswords
 privilege::debug
 mimilib
-~~5145
 
 #COM OBJS to watch, mostly watch reg changes
 {F5078F35-C551-11D3-89B9-0000F81FE221}
