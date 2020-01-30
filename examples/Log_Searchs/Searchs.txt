@@ -564,6 +564,7 @@ mimilib
 {E430E93D-09A9-4DC5-80E3-CBB2FB9AF28E}
 
 #Everything Search REG Keys
+HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\
 \software\classes\ms-settings\shell\open\command
 Software\Classes\AppX82a6gwre4fdg3bt635tn5ctqjf8msdd2\Shell\open\command 
 \CurrentControlSet\Control\SecurityProviders\WDigest
