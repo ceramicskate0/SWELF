@@ -235,6 +235,7 @@ commandline_contains:vssadmin delete shadows /all /quiet~Microsoft-Windows-Sysmo
 lsass~Microsoft-Windows-Sysmon/Operational~10
 dbguiremotebreakin~Microsoft-Windows-Sysmon/Operational~8
 System.Management.Automation.ni~Microsoft-Windows-Sysmon/Operational~10
+.Build.~Microsoft-Windows-Sysmon/Operational~7
 
 #Sysmon Connections to watch
 .opendns.com~Microsoft-Windows-Sysmon/Operational~3
