@@ -100,7 +100,8 @@ invoke-shellcode~Microsoft-Windows-PowerShell/Operational~4104
 adodb.stream~Microsoft-Windows-PowerShell/Operational~4104
 \start menu~Microsoft-Windows-PowerShell/Operational~4104
 count:&:10~Microsoft-Windows-PowerShell/Operational~4104
-count:,:25count:&:10~Microsoft-Windows-PowerShell/Operational~4104
+count:,:25~Microsoft-Windows-PowerShell/Operational~4104
+count:&:10~Microsoft-Windows-PowerShell/Operational~4104
 
 #Microsoft-Windows-SoftwareRestrictionPolicies
 ~Microsoft-Windows-SoftwareRestrictionPolicies~866
