@@ -3,8 +3,8 @@
 #SearchTerm~EventLogName~EventID
 
 #windows-bits
-/c~Microsoft-Windows-Bits-Client/Operational~59
-/c~Microsoft-Windows-Bits-Client/Operational~60
+/c ~Microsoft-Windows-Bits-Client/Operational~59
+/c ~Microsoft-Windows-Bits-Client/Operational~60
 ~Microsoft-Windows-Bits-Client/Operational~3
 
 #Windows Powershell
