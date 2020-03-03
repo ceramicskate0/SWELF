@@ -1,5 +1,3 @@
-# DEV UPDATE: App development stalled unit completion of OSCP cert. Timeline unknown. Dev work on hold not halted.
-
 # [Simple-Windows-Event-Log-Forwarder (SWELF)](https://ceramicskate0.github.io/SWELF/)
 
 <img src="https://user-images.githubusercontent.com/6934294/47841159-afd30b00-dd86-11e8-8e9d-36c8af61a4db.png" width="350" height="300">
