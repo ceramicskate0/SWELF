@@ -254,7 +254,7 @@ search_multiple:dllhost`443~Microsoft-Windows-Sysmon/Operational~3
 
 #Defender
 detected~microsoft-Windows-Windows Defender/Operational~
-detection~microsoft-Windows-Windows Defender/Operational~ 
+detection~microsoft-Windows-Windows Defender/Operational~
 malware~microsoft-Windows-Windows Defender/Operational~
 disabled~microsoft-Windows-Windows Defender/Operational~
 windows defender antivirus configuration has changed.~microsoft-Windows-Windows Defender/Operational~
