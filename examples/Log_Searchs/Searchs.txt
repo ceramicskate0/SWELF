@@ -607,3 +607,4 @@ CurrentControlSet\Control\Lsa\Security Packages
 \Software\Wow6432Node\Microsoft\Windows NT\CurrentVersion\Windows\Appinit_Dlls
 \System\CurrentControlSet\Control\Session Manager\AppCertDlls
 \Software\Microsoft\Windows NT\currentversion\image file execution options
+\SYSTEM\CurrentControlSet\Control\
