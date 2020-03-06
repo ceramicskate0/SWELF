@@ -241,6 +241,7 @@ lsass~Microsoft-Windows-Sysmon/Operational~10
 dbguiremotebreakin~Microsoft-Windows-Sysmon/Operational~8
 System.Management.Automation.ni~Microsoft-Windows-Sysmon/Operational~10
 .Build.~Microsoft-Windows-Sysmon/Operational~7
+search_multiple:wmiPrvSE.exe`parent~Microsoft-Windows-Sysmon/Operational~1
 
 #Sysmon Connections to watch
 .opendns.com~Microsoft-Windows-Sysmon/Operational~3
@@ -558,6 +559,7 @@ cdb.exe
 bginfo.exe
 WFC.exe
 mofcomp.exe
+scrcons.exe
 
 #Search everything your looking at for mimikatz
 mimikatz
