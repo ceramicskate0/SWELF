@@ -557,6 +557,7 @@ kd.exe
 cdb.exe
 bginfo.exe
 WFC.exe
+mofcomp.exe
 
 #Search everything your looking at for mimikatz
 mimikatz
