@@ -28,3 +28,5 @@ logging_level:Error~Application~
 search_multiple:cmd`comhost~Security~
 
 network_connect:1900:svchost~Security~
+
+powershell.exe~Microsoft-Windows-Sysmon/Operational~1
