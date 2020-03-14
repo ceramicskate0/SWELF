@@ -88,9 +88,9 @@
     <Compile Include="AMSI.cs" />
     <Compile Include="Compression_Operation.cs" />
     <Compile Include="Crypto_Operation.cs" />
+    <Compile Include="Data_Store.cs" />
     <Compile Include="Error_Operation.cs" />
     <Compile Include="EventLog_Entry.cs" />
-    <Compile Include="EventLog_File.cs" />
     <Compile Include="EventLog_SWELF.cs" />
     <Compile Include="File_Operation.cs" />
     <Compile Include="Log_Network_Forwarder.cs" />

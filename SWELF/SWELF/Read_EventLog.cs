@@ -11,16 +11,15 @@ namespace SWELF
     internal class Read_EventLog
     {
         internal static EventRecord Windows_EventLog_from_API { get; set; }
-        internal EventLog_File EventLog_Log_API;//windows live api read
+        internal static long First_EventLogID_From_Check;
+        internal static long Last_EventLogID_From_Check;
         private static bool MissingLogInFileDueToException = false;
-        internal Queue<EventLog_Entry> EVTX_File_Logs = new Queue<EventLog_Entry>();
-
-
 
         internal Read_EventLog()
         {
 
         }
+
 
         internal void READ_EventLog(string Eventlog_FullName,long PlaceKeeper_EventRecordID=1)
         {
@@ -40,15 +39,13 @@ namespace SWELF
 
             if (Settings.CHECK_If_EventLog_Exsits(Eventlog_FullName))
             {
-                EventLog_Log_API = new EventLog_File(Eventlog_FullName, PlaceKeeper_EventRecordID);
-
-                long First_EventID = EventLog_Log_API.First_EventLogID_From_Check;
-                long Last_EventID = EventLog_Log_API.Last_EventLogID_From_Check;
+                long First_EventID = GET_First_EventRecordID_InLogFile(Eventlog_FullName);
+                long  Last_EventID= GET_Last_EventRecordID_InLogFile(Eventlog_FullName);
 
                 if (PlaceKeeper_EventRecordID > First_EventID && PlaceKeeper_EventRecordID < Last_EventID)//Normal operation placekkeeper in middle of log file
                 {
                     EVTlog_PlaceHolder = PlaceKeeper_EventRecordID;
-                    READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder, EventLog_Log_API);
+                    READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder);
                     Settings.EventLog_w_PlaceKeeper[Eventlog_FullName] = Last_EventID;
                 }
                 else if (Last_EventID == PlaceKeeper_EventRecordID)//no logs added
@@ -57,22 +54,19 @@ namespace SWELF
                 }
                 else if (PlaceKeeper_EventRecordID<=1)
                 {
-                    EVTlog_PlaceHolder = First_EventID;
-                    READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder, EventLog_Log_API);
+                    READ_WindowsEventLog_API(Eventlog_FullName, First_EventID);
                     EventLog_SWELF.WRITE_Warning_EventLog("Logging as EventLog Source 1st run for Eventlog named '"+ Eventlog_FullName +"' on machine named '"+ Settings.ComputerName+ "' due to PlaceKeeper_EventRecordID<=1");
                     Settings.EventLog_w_PlaceKeeper[Eventlog_FullName] = Last_EventID;
                 }
                 else if (First_EventID > PlaceKeeper_EventRecordID)//missed all logs and missing log files send alert for missing log files
                 {
-                    EVTlog_PlaceHolder = First_EventID;
-                    READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder, EventLog_Log_API);
+                    READ_WindowsEventLog_API(Eventlog_FullName, First_EventID);
                     EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog("Missed "+ (First_EventID-PlaceKeeper_EventRecordID) + " logs from '"+ Eventlog_FullName+"' on machine '"+Settings.ComputerName +"' the first eventlog id was older than where app left off. Possible log file cycle/overwrite between runs. First event log id number in the log is "+ First_EventID+" SWELF left off from last run at "+PlaceKeeper_EventRecordID);
                     Settings.EventLog_w_PlaceKeeper[Eventlog_FullName.ToLower()] = Last_EventID;
                 }
                 else//unknown/catch condition assume 1st run
                 {
-                    EVTlog_PlaceHolder = First_EventID;
-                    READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder, EventLog_Log_API);
+                    READ_WindowsEventLog_API(Eventlog_FullName, First_EventID);
                     EventLog_SWELF.WRITE_Warning_EventLog("ERROR: App unable to determine app reading state in event log. App starting over. App not told to reset. '"+Eventlog_FullName +"' '"+ Settings.ComputerName+ "'. unknown/catch condition assume 1st run");
                     Settings.EventLog_w_PlaceKeeper[Eventlog_FullName] = Last_EventID;
                 }
@@ -143,7 +137,7 @@ namespace SWELF
                             }
 
                         }
-                        EVTX_File_Logs.Enqueue(Eventlog);
+                        Data_Store.EVTX_File_Logs.Enqueue(Eventlog);
                     }
                     catch (Exception e)
                     {
@@ -163,7 +157,7 @@ namespace SWELF
             }
         }
 
-        private static void READ_WindowsEventLog_API(string Eventlog_FullName, long RecordID_From_Last_Read, EventLog_File EventLogName)
+        private static void READ_WindowsEventLog_API(string Eventlog_FullName, long RecordID_From_Last_Read)
         {
             try
             {
@@ -270,24 +264,24 @@ namespace SWELF
                                 //unable to get IP values from log
                             }
 
-                            try
-                            {
-                                EventLogName.EventlogMissing = Sec_Checks.CHECK_If_EventLog_Missing(EventLogName, SWELF_Eventlog);
-                            }
-                            catch (Exception e)
-                            {
-                                EventLogName.EventlogMissing = true;
-                            }
+                            //try
+                            //{
+                            //    EventLogName.EventlogMissing = Sec_Checks.CHECK_If_EventLog_Missing(EventLogName, SWELF_Eventlog);
+                            //}
+                            //catch (Exception e)
+                            //{
+                            //    EventLogName.EventlogMissing = true;
+                            //}
 
-                            try
-                            {
-                                EventLogName.ID_Number_Of_Individual_log_Entry_EVENTLOG = Windows_EventLog_from_API.RecordId.Value;
-                            }
-                            catch (Exception e)
-                            {
-                                EventLogName.ID_Number_Of_Individual_log_Entry_EVENTLOG = 0;
-                            }
-                            EventLogName.Enqueue_Log(SWELF_Eventlog);
+                            //try
+                            //{
+                            //    EventLogName.ID_Number_Of_Individual_log_Entry_EVENTLOG = Windows_EventLog_from_API.RecordId.Value;
+                            //}
+                            //catch (Exception e)
+                            //{
+                            //    EventLogName.ID_Number_Of_Individual_log_Entry_EVENTLOG = 0;
+                            //}
+                            Data_Store.contents_of_EventLog.Enqueue(SWELF_Eventlog);
                         }
                     }
                     catch (Exception e)
@@ -313,7 +307,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Error_Operation.Log_Error("READ_WindowsEventLog_API() Missing All Event Log(s) Due To Exception. ", "EventLog='" + Eventlog_FullName + "' " + e.Message.ToString() + " " + Eventlog_FullName + " " + RecordID_From_Last_Read + " " + EventLogName.First_EventLogID_From_Check + " " +EventLogName.Last_EventLogID_From_Check + " " + EventLogName.Contents_of_EventLog.Count, e.StackTrace.ToString(), Error_Operation.LogSeverity.FailureAudit);
+                Error_Operation.Log_Error("READ_WindowsEventLog_API() Missing All Event Log(s) Due To Exception. ", "EventLog='" + Eventlog_FullName + "' " + e.Message.ToString() + " " + Eventlog_FullName + " " + RecordID_From_Last_Read , e.StackTrace.ToString(), Error_Operation.LogSeverity.FailureAudit);
                 MissingLogInFileDueToException = true;
             }
             
@@ -329,6 +323,31 @@ namespace SWELF
             {
                 return Windows_EventLog_from_API;
             }
+        }
+
+        private static long GET_Last_EventRecordID_InLogFile(string Eventlog_FullName)
+        {
+            TimeSpan Timeout = new TimeSpan(0, 30, 0);
+            EventLogReader EventLogtoReader = new EventLogReader(Eventlog_FullName, PathType.LogName);
+            EventLogtoReader.BatchSize = 100;
+            EventRecord Windows_EventLog_API = EventLogtoReader.ReadEvent();
+
+            First_EventLogID_From_Check = Windows_EventLog_API.RecordId.Value;
+
+            while ((Windows_EventLog_API = EventLogtoReader.ReadEvent(Timeout)) != null)
+            {
+                Last_EventLogID_From_Check = Windows_EventLog_API.RecordId.Value;
+            }
+            return Last_EventLogID_From_Check;
+        }
+
+        private static long GET_First_EventRecordID_InLogFile(string Eventlog_FullName)
+        {
+            EventLogReader EventLogtoReader = new EventLogReader(Eventlog_FullName, PathType.LogName);
+            EventLogtoReader.BatchSize = 100;
+            EventRecord Windows_EventLog_API = EventLogtoReader.ReadEvent();
+            EventLog_Entry Eventlog = new EventLog_Entry();
+            return Windows_EventLog_API.RecordId.Value;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
+using System.Net.NetworkInformation;
 
 namespace SWELF
 {
@@ -16,23 +17,16 @@ namespace SWELF
 
         //cache web data
         private static string Central_Config_File_Web_Cache = "";
-
-        internal static void UPDATE_Local_Config_With_Central_Config(string WebPath, string LocalPath, string FileName)
+        internal static bool Connection_Successful = true ;
+        internal static string UPDATE_Reg_Config_With_Central_Config(string WebPath)
         {
-            if (string.IsNullOrEmpty(Central_Config_File_Web_Cache))
+            if (string.IsNullOrEmpty(Central_Config_File_Web_Cache)==false)
             {
-                File_Operation.DELETE_File(LocalPath);//remove old config file
-                Wclient.DownloadFile(WebPath, LocalPath); //if match read local files
+                return Wclient.DownloadString(WebPath);
             }
             else
             {
-                File_Operation.DELETE_File(LocalPath);//remove old config file
-                File_Operation.APPEND_AllTXT(LocalPath, Central_Config_File_Web_Cache);
-            }
-            Error_Operation.Log_Error("GET_Central_Config_File()", "Updated " + FileName + " from " + WebPath + ". It was downloaded to " + LocalPath,"", Error_Operation.LogSeverity.Verbose, Error_Operation.EventID.SWELF_Central_Config_Changed);//log change
-            if (File_Operation.CHECK_File_Encrypted(LocalPath) == false)
-            {
-                Crypto_Operation.Secure_File(LocalPath);
+                return "";
             }
         }
 
@@ -53,7 +47,8 @@ namespace SWELF
 
                 if (string.IsNullOrEmpty(Central_Config_File_Web_Cache))
                 {
-                    WebContents = response.DownloadString(Web_Config_URL);//this will make app try to download data only once
+                    Uri uri = new Uri(Web_Config_URL);
+                    WebContents = response.DownloadString(uri);//this will make app try to download data only once
                     Central_Config_File_Web_Cache = WebContents;
                 }
                 else
@@ -112,7 +107,8 @@ namespace SWELF
                     }
                     else//no cache version get from network
                     {
-                        Central_Config_File_Web_Cache = Crypto_Operation.CONVERT_To_String_From_Bytes(response.DownloadData(HTTP_File_Path), 2);//get file has from Network
+                        Uri uri = new Uri(HTTP_File_Path);
+                        Central_Config_File_Web_Cache = Crypto_Operation.CONVERT_To_String_From_Bytes(response.DownloadData(uri), 2);//get file has from Network
                         using (var sha256 = SHA256.Create())
                         {
                             HTTPFileHash = BitConverter.ToString(sha256.ComputeHash(Encoding.UTF8.GetBytes(Central_Config_File_Web_Cache)));
@@ -146,12 +142,84 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                Error_Operation.WRITE_Errors_To_Log("VERIFY_Central_File_Config_Hash()", e.Message.ToString() + " " + HTTP_File_Path + " " + Local_File_Path, Error_Operation.LogSeverity.Informataion);//log change
+                if ((!e.Message.Contains("The operation has timed out") || !e.Message.Contains("The remote name could not be resolved: ")) || (Settings.Logging_Level_To_Report.ToLower() == "informataion" || Settings.Logging_Level_To_Report.ToLower() == "verbose"))
+                {
+                    Error_Operation.WRITE_Errors_To_Log("VERIFY_Central_File_Config_Hash()", e.Message.ToString() + " " + HTTP_File_Path + " " + Local_File_Path, Error_Operation.LogSeverity.Informataion);
+                }
                 return false;
             }
             finally
             {
-                Wclient.Dispose();              
+                Wclient.Dispose();
+            }
+        }
+
+        internal static bool VERIFY_Central_Reg_Config_Hash(string HTTP_File_Path, string RegContents)
+        {
+            string HTTPFileHash;
+            string LocalFileHash;
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HTTP_File_Path);
+                request.AllowAutoRedirect = false;
+                request.UnsafeAuthenticatedConnectionSharing = false;
+                request.Timeout = 150000;
+
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.CheckCertificateRevocationList = false;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls | SecurityProtocolType.Ssl3;
+
+                using (CustomWebClient response = new CustomWebClient())
+                {
+                    //string Web_Config_File_Contents = response.DownloadString(HTTP_File_Path);
+                    if (Settings.Central_Config_Hashs.ContainsKey(HTTP_File_Path) == true)//determine if we use cache version 
+                    {
+                        HTTPFileHash = Settings.Central_Config_Hashs[HTTP_File_Path];
+                    }
+                    else//no cache version get from network
+                    {
+                        Uri uri = new Uri(HTTP_File_Path);
+                        Central_Config_File_Web_Cache = Crypto_Operation.CONVERT_To_String_From_Bytes(response.DownloadData(uri), 2);//get file has from Network
+                        using (var sha256 = SHA256.Create())
+                        {
+                            HTTPFileHash = BitConverter.ToString(sha256.ComputeHash(Encoding.UTF8.GetBytes(Central_Config_File_Web_Cache)));
+                        }
+                        if (Settings.Central_Config_Hashs.ContainsKey(HTTP_File_Path) == false)
+                        {
+                            Settings.Central_Config_Hashs.Add(HTTP_File_Path, HTTPFileHash);
+                        }
+                    }
+                    using (var sha2562 = SHA256.Create())//Get local file hash
+                    {
+                       LocalFileHash = BitConverter.ToString(sha2562.ComputeHash(Encoding.UTF8.GetBytes(RegContents)));
+                    }
+                    Connection_Successful = true;
+                    if (HTTPFileHash == LocalFileHash)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Connection_Successful = false;
+                if (e.Message.Contains("has timed out")==false && e.Message.Contains("The remote name could not be resolved: ")==false)
+                {
+                    Error_Operation.Log_Error("VERIFY_Central_File_Config_Hash()", e.Message.ToString() + " " + HTTP_File_Path + " ",e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
+                }
+                else if ((e.Message.Contains("The operation has timed out") || e.Message.Contains("The remote name could not be resolved: ")))
+                {
+                    Error_Operation.WRITE_Errors_To_Log("VERIFY_Central_File_Config_Hash()", "Network unavaiulable for SWELF." +e.Message.ToString() + " " + HTTP_File_Path + " ", Error_Operation.LogSeverity.Informataion);
+                }
+                return false;
+            }
+            finally
+            {
+                Wclient.Dispose();
             }
         }
 
@@ -187,6 +255,44 @@ namespace SWELF
                 return Hostname;
             }
         }
+
+        internal static bool IsNetworkAvailable()
+        {
+            try
+            {
+                // only recognizes changes related to Internet adapters
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+                    // however, this will include all adapters
+                    NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+
+                    foreach (NetworkInterface face in interfaces)
+                    {
+                        // filter so we see only Internet adapters
+                        if (face.OperationalStatus == OperationalStatus.Up)
+                        {
+                            if ((face.NetworkInterfaceType != NetworkInterfaceType.Tunnel) && (face.NetworkInterfaceType != NetworkInterfaceType.Loopback))
+                            {
+                                IPv4InterfaceStatistics statistics = face.GetIPv4Statistics();
+                                //see if any bytes sent recieved
+                                if ((statistics.BytesReceived > 500) && (statistics.BytesSent > 500))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception e)
+            {
+                Error_Operation.Log_Error("IsNetworkAvailable()", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
+                return false;
+            }
+
+        }
     }
 
     internal class CustomWebClient : WebClient
@@ -195,7 +301,7 @@ namespace SWELF
         {
             WebRequest w = base.GetWebRequest(uri);
             w.UseDefaultCredentials = true;
-            w.Timeout = 1000;
+            w.Timeout = 2000;
             return w;
         }
     }

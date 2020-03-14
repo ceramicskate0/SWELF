@@ -91,7 +91,7 @@ namespace SWELF
         {
             if (Settings.Logs_Sent_to_ALL_Collectors==true)//if no logs sent, none to write
             {
-                if (Check_If_SWELF_Event_Logs_Written(Convert.ToInt32(Eventlog_Count_Before_Write), Settings.SWELF_Events_Of_Interest_Matching_EventLogs.Count))//check samde number of logs written to eventlog
+                if (Check_If_SWELF_Event_Logs_Written(Convert.ToInt32(Eventlog_Count_Before_Write), Data_Store.SWELF_Events_Of_Interest_Matching_EventLogs.Count))//check samde number of logs written to eventlog
                 {
                     return true;//the same number was written
                 }
@@ -108,19 +108,19 @@ namespace SWELF
 
 
 
-        internal static bool CHECK_If_EventLog_Missing(EventLog_File ELF, EventLog_Entry EVE)
-        {
-            if ((EVE.EventLog_Seq_num != ELF.ID_Number_Of_Individual_log_Entry_EVENTLOG + 1) && ELF.EventlogMissing == false && (ELF.ID_Number_Of_Individual_log_Entry_EVENTLOG != 0 && EVE.EventRecordID != 0))
-            {
-                ELF.EventlogMissing = true;
-                LOG_SEC_CHECK_Fail("CHECK_If_EventLog_Missing() Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.");
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //internal static bool CHECK_If_EventLog_Missing(EventLog_Entry EVE)
+        //{
+        //    if ((EVE.EventLog_Seq_num != ELF.ID_Number_Of_Individual_log_Entry_EVENTLOG + 1) && ELF.EventlogMissing == false && (ELF.ID_Number_Of_Individual_log_Entry_EVENTLOG != 0 && EVE.EventRecordID != 0))
+        //    {
+        //        ELF.EventlogMissing = true;
+        //        LOG_SEC_CHECK_Fail("CHECK_If_EventLog_Missing() Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.");
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
 
         internal static void GET_EventLog_Count_Before_Write(string EVT_Log_Name)
         {

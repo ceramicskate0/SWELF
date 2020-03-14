@@ -244,13 +244,9 @@ namespace SWELF
             {
                 try
                 {
-                    if (string.IsNullOrEmpty(searchrule) && searchrule.Contains(Settings.Search_Commands[8]) == false)
+                    if (searchrule == "" || string.IsNullOrEmpty(searchrule) || string.IsNullOrWhiteSpace(searchrule))
                     {
                         searchrule = value;
-                    }
-                    else
-                    {
-
                     }
                 }
                 catch (Exception e)

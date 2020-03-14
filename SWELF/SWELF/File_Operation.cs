@@ -238,43 +238,8 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             }
             catch (Exception e)
             {
+                Error_Operation.Log_Error("CHECK_if_File_Exists()", "FilePath="+ FilePath+" "+e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
                 return false;
-            }
-        }
-
-        internal static bool CHECK_If_ALL_SWELF_Config_Files_Exist()
-        {
-            if (CHECK_if_File_Exists(Settings.GET_AppConfigFile_Path) == false)
-            {
-                return false;
-            }
-            else if (CHECK_if_File_Exists(Settings.GET_ErrorLog_Location) == false)
-            {
-                return false;
-            }
-            else if (CHECK_if_File_Exists(Settings.GET_EventLogID_PlaceHolder_Path) == false)
-            {
-                return false;
-            }
-            else if (CHECK_if_File_Exists(Settings.GET_SearchTermsFile_Path) == false)
-            {
-                return false;
-            }
-            else if (CHECK_if_File_Exists(Settings.GET_WhiteList_SearchTermsFile_Path) == false)
-            {
-                return false;
-            }
-            else if (CHECK_if_File_Exists(Settings.GET_WhiteList_SearchTermsFile_PLUGIN_Path) == false)
-            {
-                return false;
-            }
-            else if (CHECK_if_File_Exists(Settings.GET_SearchTermsFile_PLUGIN_Path) == false)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
             }
         }
 
@@ -290,7 +255,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             }
             if (CHECK_if_File_Exists(Settings.GET_SearchTermsFile_PLUGIN_Path) == false)
             {
-                File.Create(Settings.GET_SearchTermsFile_PLUGIN_Path);
+                File.Create(Settings.GET_SearchTermsFile_PLUGIN_Path).Close();
             }
         }
 
@@ -311,23 +276,21 @@ Microsoft-WindowsCodeIntegrity/Operational=1
         /// </summary>
         internal static void VERIFY_AppConfig_Default_Files_Ready()//Writes default CONSOLEAPPCONFIG default configs
         {
-            if (!CHECK_if_File_Exists(Settings.GET_AppConfigFile_Path))
+            if (CHECK_if_File_Exists(Settings.GET_AppConfigFile_Path) == false)
             {
                 CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.AppConfigFile_FileName, GET_Default_ConsoleAppConfig_File_Contents);
-                Crypto_Operation.Secure_File(Settings.GET_AppConfigFile_Path);
             }
-            if (!CHECK_if_File_Exists(Settings.GET_EventLogID_PlaceHolder_Path))//eventlogplaceholder
+            if (CHECK_if_File_Exists(Settings.GET_EventLogID_PlaceHolder_Path) == false)//eventlogplaceholder
             {
                 CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.EventLogID_PlaceHolde_FileName, GET_Default_Eventlog_with_PlaceKeeper_File_Contents);
-                Crypto_Operation.Secure_File(Settings.GET_EventLogID_PlaceHolder_Path);
             }
-            if (!CHECK_if_File_Exists(Settings.GET_FilesToMonitor_Path))
+            if (CHECK_if_File_Exists(Settings.GET_FilesToMonitor_Path) == false)
             {
-                CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.FilesToMonitor_FileName, @"#C:\MyCustomApp\LogFile.log");
+                CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.FilesToMonitor_FileName, @"");
             }
-            if (!CHECK_if_File_Exists(Settings.GET_DirectoriesToMonitor_Path))
+            if (CHECK_if_File_Exists(Settings.GET_DirectoriesToMonitor_Path)==false)
             {
-                CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.DirectoriesToMonitor_FileName, @"#%SystemDrive%\inetpub\logs\LogFiles");
+                CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.DirectoriesToMonitor_FileName, @"");
             }
         }
 
@@ -372,7 +335,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             {
                 if (e.Message.Contains("FileNotFoundException"))
                 {
-                    File.Create(path);
+                    File.Create(path).Close();
                     Error_Operation.Log_Error("GET_CreationTime()", path+" "+e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
                     return DateTime.Now.ToString();
                 }
@@ -388,9 +351,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
         {
             if (CHECK_File_Encrypted(FilePath) == true)
             {
-                Crypto_Operation.UnSecure_File(FilePath);
                 List<string> TEMP_Contents = File.ReadAllLines(FilePath).ToList();
-                Crypto_Operation.Secure_File(FilePath);
                 return TEMP_Contents;
             }
             else
@@ -399,33 +360,14 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             }
         }
 
-        internal static string[] READ_File_In_StringArray(string FilePath)
-        {
-            if (CHECK_if_File_Exists(FilePath))
-            {
-                Crypto_Operation.UnSecure_File(FilePath);
-                string[] Contents = File.ReadAllLines(FilePath);
-                Crypto_Operation.Secure_File(FilePath);
-                return Contents;
-            }
-            else
-            {
-                Error_Operation.Log_Error("READ_File_In_StringArray()", "File not found " + FilePath, "",Error_Operation.LogSeverity.Informataion);
-                return File.ReadAllLines(FilePath);
-            }
-        }
-
         internal static string READ_AllText(string FilePath)
         {
             bool FIleExists = CHECK_if_File_Exists(FilePath);
 
-            if (FIleExists && CHECK_File_Encrypted(FilePath))
+            if (FIleExists)
             {
-                Crypto_Operation.UnSecure_File(FilePath);
                 string Contents = File.ReadAllText(FilePath);
-                Crypto_Operation.Secure_File(FilePath);
                 return Contents;
-
             }
             else
             {
@@ -471,7 +413,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
                 bool FileExists = File_Operation.CHECK_if_File_Exists(FilePath);
                 if(FileExists==true && e.Message.Contains("Access to the path") && e.Message.Contains("denied"))
                 {
-                    File_Operation.DELETE_File(FilePath);
+                    //File_Operation.DELETE_File(FilePath);
                 }
                 Error_Operation.Log_Error("CHECK_File_Encrypted()", e.Message.ToString() + ". Is file on disk check="+ FileExists.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
                 return false;//File NOT Encrypted
@@ -554,7 +496,14 @@ Microsoft-WindowsCodeIntegrity/Operational=1
 
         internal static void DELETE_File(string FilePath)
         {
-            File.Delete(FilePath);
+            try
+            {
+                File.Delete(FilePath);
+            }
+            catch (Exception e)
+            {
+
+            }
         }
 
         internal static void APPEND_AllTXT(string FilePath,string Content)

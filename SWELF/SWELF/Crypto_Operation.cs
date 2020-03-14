@@ -68,7 +68,7 @@ namespace SWELF
                         File.Decrypt(FilePath);
                     }
                 }
-                if (e.Message.Contains("Padding"))
+                if (e.Message.Contains("Padding"))//TODO REMOVE THIS
                 {
                     Sec_Checks.CHECK_Reg_vs_File_Config(FilePath);
                 }

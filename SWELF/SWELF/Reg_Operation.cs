@@ -19,12 +19,25 @@ namespace SWELF
 
         private static long Default_Size = EventLogSession.GlobalSession.GetLogInformation("security", PathType.LogName).FileSize.Value;
 
+        private static readonly String[] sWELF_AppConfig_Args = new String[]{
+            "log_collector", "log_collector1","log_collector2","log_collector3","log_collector4","log_collector5",
+            "central_search_config","central_app_config","central_plugin_search_config","central_whitelist_search_config",
+            "output_format","output_ips","output_hashs","check_service_up","transport_protocol","delete_local_log_files_when_done","debug","logging_level"
+        };
+        internal static String[] SWELF_AppConfig_Args
+        {
+            get
+            {
+                return sWELF_AppConfig_Args;
+            }
+        }
+
         internal static string[] SWELF_Keys =
         {"First_Run", "Encryption",Settings.SWELF_AppConfig_Args[17], Settings.SWELF_AppConfig_Args[10],
             "SWELF_Current_Version","SWELF_CWD","SWELF_FAILED_SEC_CHECK",
              Settings.SWELF_AppConfig_Args[7],Settings.SWELF_AppConfig_Args[8],Settings.SWELF_AppConfig_Args[6], Settings.SWELF_AppConfig_Args[9],
             Settings.SWELF_AppConfig_Args[1],Settings.SWELF_AppConfig_Args[2],Settings.SWELF_AppConfig_Args[3],Settings.SWELF_AppConfig_Args[4],Settings.SWELF_AppConfig_Args[5],Settings.SWELF_AppConfig_Args[0],
-            "ConsoleAppConfig_CreationDate","ConsoleAppConfig_Contents","SearchTerms_File_Contents","Logs_Last_Sent"};
+            "ConsoleAppConfig_CreationDate","ConsoleAppConfig_Contents","SearchTerms_File_Contents","Logs_Last_Sent","WhiteList_SearchTerms_File_Contents","PLUGIN_SearchTerms_File_Contents"};
 
         internal enum REG_KEY : int
         {
@@ -35,9 +48,9 @@ namespace SWELF
             SWELF_Current_Version = 4,
             SWELF_CWD = 5,
             SWELF_FAILED_SEC_CHECK = 6,
-            central_app_config = 7,
+            central_app_config_Web_Path = 7,
             central_plugin_search_config = 8,
-            central_search_config = 9,
+            central_search_config_Web_Path = 9,
             central_whitelist_search_config = 10,
             LogCollecter_1 = 11,
             LogCollecter_2 = 12,
@@ -48,7 +61,9 @@ namespace SWELF
             ConsoleAppConfig_CreationDate = 17,
             ConsoleAppConfig_Contents = 18,
             SearchTerms_File_Contents = 19,
-            Logs_Last_Sent=20
+            Logs_Last_Sent = 20,
+            WhiteList_SearchTerms_File_Contents =21,
+            PLUGIN_SearchTerms_File_Contents =22
         };
 
         internal static bool CHECK_Eventlog_SWELF_Reg_Key_Exists(string Key)
@@ -314,6 +329,93 @@ namespace SWELF
             }
         }
 
+        internal static string READ_SWELF_Reg_Key_ToList(REG_KEY Key, bool Log_Error = true)
+        {
+            try
+            {
+                if (Settings.REG_Keys.Count > 1)
+                {
+                    if (Settings.REG_Keys.ContainsKey(SWELF_Keys[(int)Key].ToString()))
+                    {
+                        return Settings.REG_Keys[SWELF_Keys[(int)Key]].ToString();
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
+                else
+                {
+                    if (CHECK_SWELF_Reg_Key_Exists(Key))
+                    {
+                        if (Crypto_Operation.CHECK_Value_Encrypted(Crypto_Operation.ObjectToByteArray(BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]))))
+                        {
+                            try
+                            {
+                                return Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
+                            }
+                            catch (Exception e)
+                            {
+                                ADD_or_CHANGE_SWELF_Reg_Key(Key, SWELF_Keys[(int)Key]);
+                                return Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
+                            }
+                        }
+                        else
+                        {
+                            ADD_or_CHANGE_SWELF_Reg_Key(Key, Crypto_Operation.CONVERT_To_String_From_Bytes(Crypto_Operation.Protect_Data_Value(SWELF_Keys[(int)Key].ToString()), 1));
+                            return Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
+                        }
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
+            }
+            catch
+            {
+                try
+                {
+                    if (CHECK_SWELF_Reg_Key_Exists(Key))
+                    {
+                        if (Crypto_Operation.CHECK_Value_Encrypted(Crypto_Operation.ObjectToByteArray(BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]))))
+                        {
+                            try
+                            {
+                                return Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
+                            }
+                            catch (Exception e)
+                            {
+                                ADD_or_CHANGE_SWELF_Reg_Key(Key, SWELF_Keys[(int)Key]);
+                                return Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
+                            }
+                        }
+                        else
+                        {
+                            ADD_or_CHANGE_SWELF_Reg_Key(Key, Crypto_Operation.CONVERT_To_String_From_Bytes(Crypto_Operation.Protect_Data_Value(SWELF_Keys[(int)Key].ToString()), 1));
+                            return Crypto_Operation.UnProtect_Data_Value((byte[])BASE_SWELF_KEY.GetValue(SWELF_Keys[(int)Key]));
+                        }
+                    }
+                    else
+                    {
+                        if (Log_Error)
+                        {
+                            Error_Operation.Log_Error("CHANGE_Reg_Key()", "Reg Key does not exist. RegKey=" + Key, "", Error_Operation.LogSeverity.Warning);
+                        }
+                        return "";
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (Log_Error)
+                    {
+                        Error_Operation.Log_Error("CHANGE_Reg_Key()", "Reg Key does not exist. RegKey=" + Key + ". " + e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Warning);
+                    }
+                    return "";
+                }
+            }
+        }
+
         internal static object READ_Eventlog_SWELF_Reg_Key(string Key)
         {
             if (Settings.REG_Keys.Count > 1)
@@ -348,18 +450,21 @@ namespace SWELF
 
         internal static void READ_ALL_SWELF_Reg_Keys()
         {
-            foreach (string sub in BASE_SWELF_KEY.GetValueNames())
+            foreach (string RegKeyValue in BASE_SWELF_KEY.GetValueNames())
             {
                 try
                 {
-                    if (String.IsNullOrEmpty(BASE_SWELF_KEY.GetValue(sub).ToString()) == false)
+                    if (String.IsNullOrEmpty(BASE_SWELF_KEY.GetValue(RegKeyValue).ToString()) == false)
                     {
-                        Settings.REG_Keys.Add(sub, READ_SWELF_Reg_Key(sub));
+                        Settings.REG_Keys.Add(RegKeyValue, READ_SWELF_Reg_Key(RegKeyValue));
                     }
                 }
                 catch (Exception e)
                 {
-                    Error_Operation.Log_Error("READ_ALL_SWELF_Reg_Keys()", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
+                    if (e.Message.Contains("An item with the same key has already been added.") == false)
+                    {
+                        Error_Operation.Log_Error("READ_ALL_SWELF_Reg_Keys()", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
+                    }
                 }
             }
 

@@ -9,7 +9,6 @@ namespace SWELF
 {
     internal class Error_Operation
     {
-        private static List<string> ErrorsLog = new List<string>();
         internal readonly static string[] Severity_Levels = { "verbose", "informataion", "warning", "critical", "","","","","","","","","","","","", "failureaudit" };
         internal static int Logging_Level_To_Report = 3;
 
@@ -63,7 +62,7 @@ namespace SWELF
                     }
                     else
                     {
-                        ErrorsLog.Add("ErrorLogging_Level()"+ "Possible Tampering (Reg.Reg_Keys_and_Values[\"logging_level\"] != Settings.AppConfig_File_Args[\"logging_level\"] settings changed to match.");
+                        Data_Store.ErrorsLog.Add("ErrorLogging_Level()"+ "Possible Tampering (Reg.Reg_Keys_and_Values[\"logging_level\"] != Settings.AppConfig_File_Args[\"logging_level\"] settings changed to match.");
                         Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.logging_level, Settings.AppConfig_File_Args[Settings.SWELF_AppConfig_Args[17]]);
                     }
                 }
@@ -105,7 +104,7 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                ErrorsLog.Add(msg);
+                Data_Store.ErrorsLog.Add(msg);
             }
         }
 
@@ -223,11 +222,11 @@ namespace SWELF
 
         internal static void WRITE_Stored_Errors()
         {
-            if (ErrorsLog.Count > 0)
+            if (Data_Store.ErrorsLog.Count > 0)
             {
-                for (int x = 0; x < ErrorsLog.Count; ++x)
+                for (int x = 0; x < Data_Store.ErrorsLog.Count; ++x)
                 {
-                    File.AppendAllText(Settings.SWELF_Log_File_Location + "\\" + Path.GetRandomFileName() + "_SWELF_HAD_IO_ERROR.log", ErrorsLog.ElementAt(x));
+                    File.AppendAllText(Settings.SWELF_Log_File_Location + "\\" + Path.GetRandomFileName() + "_SWELF_HAD_IO_ERROR.log", Data_Store.ErrorsLog.ElementAt(x));
                 }
             }
         }
