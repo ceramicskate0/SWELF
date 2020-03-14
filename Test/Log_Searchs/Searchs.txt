@@ -31,3 +31,5 @@ network_connect:1900:svchost~Security~
 
 #Should Def return a log on testing machine
 ~Microsoft-Windows-Sysmon/Operational~3
+~Microsoft-Windows-Sysmon/Operational~1
+~Microsoft-Windows-Sysmon/Operational~22
