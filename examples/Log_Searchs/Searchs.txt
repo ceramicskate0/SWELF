@@ -192,6 +192,7 @@ search_multiple:.sct`regsvr32.exe~Microsoft-Windows-Sysmon/Operational~1
 search_multiple:svchost.exe`wevtsvc.dll~Microsoft-Windows-Sysmon/Operational~8
 search_multiple:svchost.exe`EventLog~Microsoft-Windows-Sysmon/Operational~10
 search_multiple:lsass`0x1010`EventLog~Microsoft-Windows-Sysmon/Operational~10
+search_multiple:reg.exe`.dat`Servicedll~Microsoft-Windows-Sysmon/Operational~1
 rename~Microsoft-Windows-Sysmon/Operational~1
 takeown~Microsoft-Windows-Sysmon/Operational~1
 received files\~Microsoft-Windows-Sysmon/Operational~1
