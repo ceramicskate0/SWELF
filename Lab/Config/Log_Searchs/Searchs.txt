@@ -1,0 +1,487 @@
+#Layout of Searchs.txt File for searching:
+#NOTE: Upper or Lower case doesnt matter. Search will find both.
+#SearchTerm~EventLogName~EventID
+
+#windows-bits
+/c ~Microsoft-Windows-Bits-Client/Operational~59
+/c ~Microsoft-Windows-Bits-Client/Operational~60
+~Microsoft-Windows-Bits-Client/Operational~3
+
+#Windows Powershell
+webclient~windows powershell~
+iex~windows powershell~
+wscript~windows powershell~
+New-Service~windows powershell~
+schtask~windows powershell~
+task~windows powershell~
+count:|:2~windows powershell~
+hidden~windows powershell~
+invoke-item~windows powershell~
+
+#AMSI
+#Idea to turn on located at https://gist.github.com/mattifestation/dfdd41e5020f4286e9b6486545abc359
+~AMSI/Operational~
+
+#Microsoft-Windows-Security-Mitigations/KernelMode
+~Microsoft-Windows-Security-Mitigations/KernelMode~
+
+#Microsoft-Windows-Win32k/Concurrency
+~Microsoft-Windows-Win32k/Concurrency~
+
+#Microsoft-Windows-Win32k/Contention
+~Microsoft-Windows-Win32k/Contention~
+
+#Microsoft-Windows-Win32k/Messages
+~Microsoft-Windows-Win32k/Messages~
+
+#Microsoft-Windows-Win32k/Operational
+~Microsoft-Windows-Win32k/Operational~
+
+#Microsoft-Windows-Security-Mitigations/UserMode
+~Microsoft-Windows-Security-Mitigations/UserMode~
+
+#Microsoft-Windows-Win32k/UIPI
+~Microsoft-Windows-Win32k/UIPI~
+
+#Microsoft-Windows-Win32k/Tracing
+~Microsoft-Windows-Win32k/Tracing~
+
+#Microsoft-Windows-Win32k/Render
+~Microsoft-Windows-Win32k/Render~
+
+#Microsoft-Windows-Win32k/Power
+~Microsoft-Windows-Win32k/Power~
+
+#Windows-PowerShell/Operational
+kernel32.dll~Microsoft-Windows-PowerShell/Operational~4104
+reflection~Microsoft-Windows-PowerShell/Operational~4104
+dllimport~Microsoft-Windows-PowerShell/Operational~4104
+interopservices~Microsoft-Windows-PowerShell/Operational~4104
+assembly~Microsoft-Windows-PowerShell/Operational~4104
+appdomain~Microsoft-Windows-PowerShell/Operational~4104
+marshal~Microsoft-Windows-PowerShell/Operational~4104
+Remove-EtwTraceProvider~Microsoft-Windows-PowerShell/Operational~4104
+encoding-~Microsoft-Windows-PowerShell/Operational~4104
+invoke-~Microsoft-Windows-PowerShell/Operational~4104
+.vbs-~Microsoft-Windows-PowerShell/Operational~4104
+wp-content~Microsoft-Windows-PowerShell/Operational~4104
+rename~Microsoft-Windows-PowerShell/Operational~4104
+-ep bypass~Microsoft-Windows-PowerShell/Operational~4104
+amsi~Microsoft-Windows-PowerShell/Operational~4104
+InvoKE-expResSioN~Microsoft-Windows-PowerShell/Operational~4104
+.Download~Microsoft-Windows-PowerShell/Operational~4104
+Remove-EventLog~Microsoft-Windows-PowerShell/Operational~4104
+Clear-EventLog~Microsoft-Windows-PowerShell/Operational~4104
+Limit-EventLog~Microsoft-Windows-PowerShell/Operational~4104
+count:-join:2~Microsoft-Windows-PowerShell/Operational~4104
+#count:':21~Microsoft-Windows-PowerShell/Operational~4104
+count:+:8~Microsoft-Windows-PowerShell/Operational~4104
+#count:;:12~Microsoft-Windows-PowerShell/Operational~4104
+count:|:3~Microsoft-Windows-PowerShell/Operational~4104
+count:&:10~Microsoft-Windows-PowerShell/Operational~4104
+iwr('http~Microsoft-Windows-PowerShell/Operational~4104
+eventdata_length:12000~Microsoft-Windows-PowerShell/Operational~4104
+webclient~Microsoft-Windows-PowerShell/Operational~4104
+iex~Microsoft-Windows-PowerShell/Operational~4104
+wscript~Microsoft-Windows-PowerShell/Operational~4104
+powershell New-Service~Microsoft-Windows-PowerShell/Operational~4104
+$env~Microsoft-Windows-PowerShell/Operational~4104
+http~Microsoft-Windows-PowerShell/Operational~4104
+base64decode~Microsoft-Windows-PowerShell/Operational~4104
+|iex~Microsoft-Windows-PowerShell/Operational~4104
+frombase64string~Microsoft-Windows-PowerShell/Operational~4104
+[System.Reflection.Assembly]::Load~Microsoft-Windows-PowerShell/Operational~4104
+Invoke-Item~Microsoft-Windows-PowerShell/Operational~4104
+Gzipstream~Microsoft-Windows-PowerShell/Operational~4104
+-nop~Microsoft-Windows-PowerShell/Operational~4104
+encodedcommand~Microsoft-Windows-PowerShell/Operational~4104
+noprofile~Microsoft-Windows-PowerShell/Operational~4104
+invoke-shellcode~Microsoft-Windows-PowerShell/Operational~4104
+adodb.stream~Microsoft-Windows-PowerShell/Operational~4104
+\start menu~Microsoft-Windows-PowerShell/Operational~4104
+count:&:10~Microsoft-Windows-PowerShell/Operational~4104
+count:,:25~Microsoft-Windows-PowerShell/Operational~4104
+count:&:10~Microsoft-Windows-PowerShell/Operational~4104
+
+#Microsoft-Windows-SoftwareRestrictionPolicies
+~Microsoft-Windows-SoftwareRestrictionPolicies~866
+
+#WMI
+ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
+root\cimv2
+
+#Microsoft-Windows-WMI-Activity/Operational
+root\~Microsoft-Windows-WMI-Activity/Operational~5858
+0x0~Microsoft-Windows-WMI-Activity/Operational~5857
+~Microsoft-Windows-WMI-Activity/Operational~5861
+Temporary~Microsoft-Windows-WMI-Activity/Operational~5860
+Win32_Bios~Microsoft-Windows-WMI-Activity/Operational~
+
+#Windows-Sysmon/Operational
+~Microsoft-Windows-Sysmon/Operational~
+
+#Sysmon Connections to watch
+.opendns.com~Microsoft-Windows-Sysmon/Operational~3
+ddns.net~Microsoft-Windows-Sysmon/Operational~3
+net.exe~Microsoft-Windows-Sysmon/Operational~3
+powershell~Microsoft-Windows-Sysmon/Operational~3
+~Microsoft-Windows-Sysmon/Operational~3
+rundll32~Microsoft-Windows-Sysmon/Operational~3
+search_multiple:dllhost`80~Microsoft-Windows-Sysmon/Operational~3
+search_multiple:dllhost`443~Microsoft-Windows-Sysmon/Operational~3
+
+#Defender
+detected~microsoft-Windows-Windows Defender/Operational~
+detection~microsoft-Windows-Windows Defender/Operational~
+malware~microsoft-Windows-Windows Defender/Operational~
+disabled~microsoft-Windows-Windows Defender/Operational~
+windows defender antivirus configuration has changed.~microsoft-Windows-Windows Defender/Operational~
+~microsoft-Windows-Windows Defender/Operational~5007
+windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
+~microsoft-Windows-Windows Defender/Operational~1007
+~microsoft-Windows-Windows Defender/Operational~1008
+~microsoft-Windows-Windows Defender/Operational~1015
+~microsoft-Windows-Windows Defender/Operational~1116
+~microsoft-Windows-Windows Defender/Operational~1117
+~microsoft-Windows-Windows Defender/Operational~3007
+#~microsoft-Windows-Windows Defender/Operational~5001
+#~microsoft-Windows-Windows Defender/Operational~5007
+~Microsoft-Windows-Windows Defender/Operational~1121
+~Microsoft-Windows-Windows Defender/Operational~1122
+~Microsoft-Windows-Windows Defender/Operational~1123
+~Microsoft-Windows-Windows Defender/Operational~1125
+~Microsoft-Windows-Windows Defender/Operational~1126
+
+#Microsoft-Windows-Windows Defender/WHC
+~Microsoft-Windows-Windows Defender/WHC~1123
+~Microsoft-Windows-Windows Defender/WHC~1125
+~Microsoft-Windows-Windows Defender/WHC~1126
+~Microsoft-Windows-Windows Defender/WHC~1124
+~Microsoft-Windows-Windows Defender/WHC~5007
+
+#DistributedCOM
+System~Microsoft-Windows-DistributedCOM~10016
+
+#RemoteConnectionManager/Operational
+~Microsoft-Windows-TerminalServices-RemoteConnectionManager~1056
+~Microsoft-Windows-TerminalServices-RemoteConnectionManager~1149
+
+#Microsoft-Windows-TerminalServices-LocalSessionManager/Operational
+#~Microsoft-Windows-TerminalServices-LocalSessionManager~21
+#~Microsoft-Windows-TerminalServices-LocalSessionManager~23
+#~Microsoft-Windows-TerminalServices-LocalSessionManager~24
+#~Microsoft-Windows-TerminalServices-LocalSessionManager~25
+
+#Microsoft-WindowsCodeIntegrity/Operational
+~Microsoft-WindowsCodeIntegrity/Operational~3033
+~Microsoft-Windows-CodeIntegrity/Operational~3076
+~Microsoft-Windows-CodeIntegrity/Operational~3099
+logging_level:error~Microsoft-Windows-CodeIntegrity/Operational~
+logging_level:warning~Microsoft-Windows-CodeIntegrity/Operational~
+
+#Microsoft-Windows-Shell-Core/Operational
+~Microsoft-Windows-Shell-Core/Operational~9707
+~Microsoft-Windows-Shell-Core/Operational~9708
+
+#Microsoft-Windows-Kernel-Audit-API-Calls
+SetThreadContext~Microsoft-Windows-Kernel-Audit-API-Calls~
+CreateRemoteThread~Microsoft-Windows-Kernel-Audit-API-Calls~
+WriteProcessMemory~Microsoft-Windows-Kernel-Audit-API-Calls~
+QueueUserAPC~Microsoft-Windows-Kernel-Audit-API-Calls~
+NTMapViewOfSection~Microsoft-Windows-Kernel-Audit-API-Calls~
+
+#Microsoft-Windows-Kernel-EventTracing/Analytic 
+~Microsoft-Windows-Kernel-EventTracing/Analytic~12
+
+#Microsoft-TerminalServices-LocalSessionmanager Operational
+~Microsoft-TerminalServices-LocalSessionmanager Operational~21
+
+#AppLocker
+8000~Microsoft-Windows-AppLocker/EXE and DLL~
+8000~Microsoft-Windows-AppLocker/MSI and Script~
+logging_level:warning~Microsoft-Windows-AppLocker/EXE and DLL~
+logging_level:warning~Microsoft-Windows-AppLocker/MSI and Script~
+
+#Application
+~Application~866
+0xc0000409~Application~1000
+#~Application~1534
+http~Application~1040
+\\~Application~1040
+msi~Application~1040
+Application: SWELF.exe~Application~1026
+#SWELF.exe~Application~
+clrguard~Application~
+
+#System
+~System~104
+~System~7045
+~System~7040
+#~System~7045
+cmd~System~7045
+powershell~System~7045
+~System~7022
+~System~4719
+~System~7009
+#~System~1014
+SAM database has been denied~System~16965
+
+#Security
+#~Security~517
+#~Security~576
+#~Security~577
+#~Security~578
+~Security~1100
+~Security~1101
+~Security~1102 
+~Security~1108
+nTSecurityDescriptor~Security~5136
+WRITE_DAC~Security~4662
+EventConsumer~Security~4662
+PutClass~Security~4662
+~Security~7045 
+~Security~5140
+~Security~4719
+~Security~4720 
+~Security~4729
+search_multiple:A security-enabled local group membership was enumerated.`net1.exe`admin~Security~4798
+search_multiple:A security-enabled local group membership was enumerated.`net1.exe`admin~Security~4799
+search_multiple:-`A user account was changed.~Security~4738
+search_multiple:-`A user account was changed.~Security~4742
+#~Security~4648
+#~Security~5156
+Destination Port:  445~Security~5156
+#~Security~4689
+#~Security~4672
+#~Security~4688
+0xC000015B~Security~4625
+search_multiple:Logon Type:		9`seclogo~Security~4624
+Logon Type:		9~Security~4624 
+Logon Type:		3~Security~4624 
+Logon Type:		10~Security~4624
+IPC$~Security~5145
+ADMIN$~Security~5145
+C$~Security~5145
+RPCSS~Security~4648
+search_multiple:Chrome`ReadData`Login Data~Security~4663
+
+#Microsoft-Windows-TaskScheduler/Operational
+#~Microsoft-Windows-TaskScheduler/Operational~106
+#~Microsoft-Windows-TaskScheduler/Operational~141
+
+#DNS-Client
+System~Microsoft-Windows-DNS-Client/Operational~1014
+
+#Just EventIDs
+~~1042
+~~5145
+
+#Commands COMMANDLINES to be run on all
+commandline_contains:rename
+commandline_length:900
+commandline_contains:<
+commandline_contains:>
+commandline_contains:^
+commandline_contains:*
+commandline_contains:$env
+commandline_contains:print /D:
+commandline_contains:expand
+commandline_contains:cmstp.exe /ni /s
+commandline_contains:odbcconf -f
+commandline_contains:-windowstyle hidden
+commandline_contains:runscripthelper.exe surfacecheck
+commandline_contains:Scriptrunner.exe -appvscript
+commandline_contains:javascript
+commandline_contains:vbscript
+commandline_contains:sc create
+commandline_contains:java.exe -jar 
+commandline_contains:vssadmin delete shadows
+commandline_contains:-ep bypass -w hidden -file
+commandline_contains:Split(
+commandline_contains:-wddisable
+commandline_contains:/format
+commandline_contains:rename
+commandline_contains:/Create
+commandline_contains:/stext
+commandline_contains:/shellexec
+commandline_contains:& del
+commandline_contains:/download
+commandline_contains:/transfer
+commandline_contains:/shtml
+commandline_contains:.php.exe
+commandline_contains:cl Microsoft-Windows-WMI-Activity/Trace
+commandline_contains:process call create 
+
+#Command COUNT to be run on all
+#count:+:12
+count:-split:4
+count:^:9
+count:`:9
+count:call:4
+count:set:5
+count:-join:5
+count:;:50
+count:*:8
+count:?:7
+
+#Network Connections
+network_connect:443:powershell
+network_connect:80:powershell
+network_connect:443:cmd
+network_connect:80:cmd
+network_connect:443:javaw
+network_connect:80:javaw
+network_connect:443:wmic
+network_connect:80:wmic
+network_connect:443:bitsadmin
+network_connect:80:bitsadmin
+network_connect:443:wscript
+network_connect:80:wscript
+network_connect:443:explorer
+network_connect:80:explorer
+network_connect:443:rundll32
+network_connect:80:rundll32
+network_connect:80:notepad
+network_connect:443:notepad
+
+#Search all for Multiple
+search_multiple:vbc`.txt
+search_multiple:%COMPSPEC%`cmd~~7045
+search_multiple:%COMPSPEC%`powershell~~7045
+search_multiple:rundll32.exe`.dat
+search_multiple:cmd.exe`del
+search_multiple:vbc.exe`Microsoft.Workflow.Compiler.exe 
+search_multiple:csc.exe`Microsoft.Workflow.Compiler.exe 
+search_multiple:dbgcore.dll`minidump
+
+#KEYWORD SEARCHS to be run on all
+minidump
+DelegateExecute
+forfiles 
+\wsreset.exe
+\dbgsrv.exe
+\appcmd.exe
+bitsadmin.exe /SetNotifyCmdLine
+sc.exe
+jscript
+cvtres
+vbscript
+csript
+\cmstp.exe
+\Iexpress.exe
+\psr.exe
+\CMSTP.exe
+\expand.exe
+\control.exe
+\ieexec.exe
+\makecab.exe
+\extrac.exe
+\ftp.exe
+qwinsta.exe
+accesschk.exe
+accesschk64.exe
+mshta
+#regedit
+.bgi
+.scr
+.cst
+.url 
+rundll32.exe javascript:
+rundll32.exe http:
+.SettingContent-ms
+#regserv32
+#msbuild
+\attrib.exe
+\vbc.exe
+#vbc
+\installutil.exe
+\at.exe
+netsh 
+advfirewall
+mklink
+\appvlp.exe
+\timeout.exe
+logman
+\wpr.exe
+EtwTraceProvider
+auditpol
+scrobj.dll,NI,
+RunAs 
+pastebin
+\msinfo32.exe
+C:\$Recycle.bin\
+C:\WINDOWS\system32\wbem\scrcons.exe
+\arp.exe
+\systeminfo.exe
+\net.exe
+\ping.exe 0x
+\Microsoft.Workflow.Compiler.exe
+\nc.exe
+\control.exe
+\ieexec.exe
+\wab.exe
+MSXSL.EXE
+runonce.exe
+lsasrv.dll
+#<unknown process>
+Microsoft.Workflow.Compiler.exe
+powershellcustomhost.exe
+texttransform.exe
+runscripthelper.exe
+visualuiaverifynative.exe
+fsiAny
+ntkd.exe
+kd.exe
+cdb.exe
+bginfo.exe
+WFC.exe
+mofcomp.exe
+scrcons.exe
+
+#Search everything your looking at for mimikatz
+mimikatz
+sekurlsa::logonpasswords
+privilege::debug
+mimilib
+
+#COM OBJS to watch, mostly watch reg changes
+{F5078F35-C551-11D3-89B9-0000F81FE221}
+{0F87369F-A4E5-4CFC-BD3E-73E6154572DD}
+{E430E93D-09A9-4DC5-80E3-CBB2FB9AF28E}
+
+#Everything Search REG Keys
+HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\
+\software\classes\ms-settings\shell\open\command
+Software\Classes\AppX82a6gwre4fdg3bt635tn5ctqjf8msdd2\Shell\open\command 
+\CurrentControlSet\Control\SecurityProviders\WDigest
+\CurrentControlSet\Control\WMI\Autologger\
+\SOFTWARE\MICROSOFT\WINDOWS NT\CURRENTVERSION\WINLOGON\
+\CURRENTVERSION\WINLOGON\Shell
+\Windows\CurrentVersion\RunOnceEx\
+\Shell\
+\SYSTEM\CurrentControlSet\Services\NTDS
+\CLSID\
+\InProcServer32
+Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders
+Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders
+\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run
+\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce\
+\Microsoft\Windows\CurrentVersion\Run
+\software\microsoft\windows\currentversion\policies\system\enableLUA
+\SOFTWARE\Wow6432Node\Google\Update\ClientState\
+\StartupItems
+CurrentControlSet\Control\Lsa\Security Packages
+\CurrentControlSet\Control\Lsa\OSConfig\Security Packages
+\SYSTEM\CurrentControlSet\Services\PortProxy\v4tov4
+\SYSTEM\CurrentControlSet\Control\WMI\Autologger\
+\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Publishers\
+\SYSTEM\CurrentControlSet\Control\LSA
+\System\CurrentControlSet\Control\SecurityProviders\WDigest
+\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest\UseLogonCredential
+\Shell\open\command
+#Reg Injection Locations
+\Software\Microsoft\Windows NT\CurrentVersion\Windows\Appinit_Dlls
+\Software\Wow6432Node\Microsoft\Windows NT\CurrentVersion\Windows\Appinit_Dlls
+\System\CurrentControlSet\Control\Session Manager\AppCertDlls
+\Software\Microsoft\Windows NT\currentversion\image file execution options
+\SYSTEM\CurrentControlSet\Control\
