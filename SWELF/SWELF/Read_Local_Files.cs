@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright 2018
+//Copyright 2020
 using System;
 using System.Collections.Generic;
 using System.Linq;

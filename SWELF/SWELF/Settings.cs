@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright
+//Copyright 2020
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,8 @@ namespace SWELF
         private static readonly String[] sWELF_AppConfig_Args = new String[]{
             "log_collector", "log_collector1","log_collector2","log_collector3","log_collector4","log_collector5",
             "central_search_config","central_app_config","central_plugin_search_config","central_whitelist_search_config",
-            "output_format","output_ips","output_hashs","check_service_up","transport_protocol","delete_local_log_files_when_done","debug","logging_level"
+            "output_format","output_ips","output_hashs","check_service_up","transport_protocol","delete_local_log_files_when_done","debug","logging_level",
+            "parse_sysmon_logs"
         };
         internal static String[] SWELF_AppConfig_Args
         {
@@ -81,7 +82,6 @@ namespace SWELF
         internal readonly static string SWELF_Version = fvi.FileVersion;
 
         //MultiThread settings
-        internal static int Max_Thread_Count = 1;//Environment.ProcessorCount / 2; TODO: change this to multi thread. storage structs not thread safe
         internal static bool PS_PluginDone = false;
         internal static int Running_Thread_Count = 0;
         internal static int Total_Threads_Run = 0;
@@ -330,7 +330,7 @@ namespace SWELF
                     if (Web_Operation.Connection_Successful)
                     {
                         Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_Contents, Web_Operation.UPDATE_Reg_Config_With_Central_Config(AppConfig_File_Args[SWELF_AppConfig_Args[7]].ToString()));
-                        //TODO write log central config updated
+                        Error_Operation.Log_Error("RUN_Setup_AppConfig()", "Reg key for Central Config ConsoleAppConfig_Contents source updated from web source.", "", Error_Operation.LogSeverity.Informataion, Error_Operation.EventID.SWELF_Central_Config_Changed);
                     }
                 }
             }
@@ -346,7 +346,8 @@ namespace SWELF
                     if (Web_Operation.Connection_Successful)
                     {
                         Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.SearchTerms_File_Contents, Web_Operation.UPDATE_Reg_Config_With_Central_Config(AppConfig_File_Args[SWELF_AppConfig_Args[6]].ToString()));
-                        //TODO write log central config updated
+                        Error_Operation.Log_Error("RUN_Setup_AppConfig()", "Reg key for Central Config SearchTerms_File_Contents source updated from web source.", "", Error_Operation.LogSeverity.Informataion, Error_Operation.EventID.SWELF_Central_Config_Changed);
+
                     }
                 }
             }
@@ -362,7 +363,8 @@ namespace SWELF
                     if (Web_Operation.Connection_Successful)
                     {
                         Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.WhiteList_SearchTerms_File_Contents, Web_Operation.UPDATE_Reg_Config_With_Central_Config(AppConfig_File_Args[SWELF_AppConfig_Args[9]].ToString()));
-                        //TODO write log central config updated
+                        Error_Operation.Log_Error("RUN_Setup_AppConfig()", "Reg key for Central Config WhiteList_SearchTerms_File_Contents source updated from web source.", "", Error_Operation.LogSeverity.Informataion, Error_Operation.EventID.SWELF_Central_Config_Changed);
+
                     }
                 }
             }
@@ -378,7 +380,8 @@ namespace SWELF
                     if (Web_Operation.Connection_Successful)
                     {
                         Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.PLUGIN_SearchTerms_File_Contents, Web_Operation.UPDATE_Reg_Config_With_Central_Config(AppConfig_File_Args[SWELF_AppConfig_Args[8]].ToString()));
-                        //TODO write log central config updated
+                        Error_Operation.Log_Error("RUN_Setup_AppConfig()", "Reg key for Central Config PLUGIN_SearchTerms_File_Contents source updated from web source.", "", Error_Operation.LogSeverity.Informataion, Error_Operation.EventID.SWELF_Central_Config_Changed);
+
                     }
                 }
             }

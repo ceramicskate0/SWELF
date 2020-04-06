@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright 
+//Copyright 2020
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,29 +43,6 @@ namespace SWELF
                 {
                     Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.logging_level, Settings.AppConfig_File_Args[Settings.SWELF_AppConfig_Args[17]]);
                 }
-                else if (string.IsNullOrEmpty(Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.logging_level)))
-                {
-                    if (File_Operation.CHECK_File_Encrypted(Settings.GET_AppConfigFile_Path) && File_Operation.GET_CreationTime(Settings.GET_AppConfigFile_Path) == Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_CreationDate))
-                    {
-                        Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.logging_level, Settings.AppConfig_File_Args[Settings.SWELF_AppConfig_Args[17]]);
-                    }
-                    else
-                    {
-                        //error in logic here
-                    }
-                }
-                else if (Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.logging_level) != Settings.AppConfig_File_Args[Settings.SWELF_AppConfig_Args[17]])
-                {
-                    if (File_Operation.CHECK_File_Encrypted(Settings.GET_AppConfigFile_Path) && File_Operation.GET_CreationTime(Settings.GET_AppConfigFile_Path) == Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_CreationDate))
-                    {
-                        Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.logging_level, Settings.AppConfig_File_Args[Settings.SWELF_AppConfig_Args[17]]);
-                    }
-                    else
-                    {
-                        Data_Store.ErrorsLog.Add("ErrorLogging_Level()"+ "Possible Tampering (Reg.Reg_Keys_and_Values[\"logging_level\"] != Settings.AppConfig_File_Args[\"logging_level\"] settings changed to match.");
-                        Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.logging_level, Settings.AppConfig_File_Args[Settings.SWELF_AppConfig_Args[17]]);
-                    }
-                }
                 else
                 {
                     Settings.Logging_Level_To_Report = Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.logging_level);
@@ -94,12 +71,13 @@ namespace SWELF
                 Message = Message + " Stack_Info=" + StackDetails; 
             }
             string msg = "DateTime=" + DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + "   SourceComputer=" + Settings.ComputerName + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   MethodInCode=" + MethodNameInCode + "   Message=" + Message + "\n";
+            ErrorLogging_Level();
             try
             {
-                ErrorLogging_Level();
                 if (Logging_Level_To_Report <= (int)LogSeverity)
                 {
                     WRITE_Errors_To_Log(msg, LogSeverity, eventID);
+                    Log_Network_Forwarder.SEND_SINGLE_LOG(msg);
                 }
             }
             catch (Exception e)
@@ -128,7 +106,7 @@ namespace SWELF
 
                 if (LogSeverity == LogSeverity.Informataion)
                 {
-                    EventLog_SWELF.WRITE_Warning_EventLog("DateTime=" + DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + " SWELF Immediate" + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   Message=" + err_msg + "\n", eventID);
+                    EventLog_SWELF.WRITE_Info_EventLog("DateTime=" + DateTime.Now.ToString(Settings.SWELF_Date_Time_Format) + " SWELF Immediate" + "   Severity=" + Severity_Levels[(int)LogSeverity] + "   Message=" + err_msg + "\n", eventID);
                 }
                 else if (LogSeverity == LogSeverity.Verbose)
                 {
@@ -170,7 +148,7 @@ namespace SWELF
 
             if (LogSeverity== LogSeverity.Informataion)
             {
-                EventLog_SWELF.WRITE_Warning_EventLog(msg, eventID);
+                EventLog_SWELF.WRITE_Info_EventLog(msg, eventID);
             }
             else if (LogSeverity == LogSeverity.Verbose)
             {

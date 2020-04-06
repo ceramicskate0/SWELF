@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright
+//Copyright 2020
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -316,77 +316,6 @@ namespace SWELF
             {
                 LOG_SEC_CHECK_Fail("Check_Event_Log_Is_Blank() EventLogSession.GlobalSession.GetLogInformation("+ EVT_Log_Name+", PathType.LogName). EventLog Name was " + EVT_Log_Name + ". Error message was "+e.Message.ToString());
                 return false;//FAILED
-            }
-        }
-
-        internal static void CHECK_Reg_vs_File_Config(string Settings_FilePath)
-        {
-            if (Settings.GET_AppConfigFile_Path == Settings_FilePath)//Appconfig
-            {
-                if (CHECK_File_vs_Reg_Contents(Settings_FilePath, Reg_Operation.REG_KEY.ConsoleAppConfig_Contents)==false)
-                {
-                    EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog("CHECK_Reg_vs_File_Config() The app config file(ConsoleAppConfig.conf) did not match what was stored in the registry on this machine. Config File was " + Settings_FilePath);
-                    if (Reg_Operation.CHECK_SWELF_Reg_Key_Exists(Reg_Operation.REG_KEY.ConsoleAppConfig_Contents))
-                    {
-                        File_Operation.DELETE_AND_CREATE_File(Settings.GET_AppConfigFile_Path);
-                        File_Operation.CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.AppConfigFile_FileName, File_Operation.GET_Default_ConsoleAppConfig_File_Contents);
-                    }
-                    else
-                    {
-                        File_Operation.DELETE_AND_CREATE_File(Settings.GET_AppConfigFile_Path);
-                        File_Operation.CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.AppConfigFile_FileName, Reg_Operation.READ_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_Contents));
-                        Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_Contents, Crypto_Operation.Decrypt_File_Contents(Settings.GET_AppConfigFile_Path));
-                    }
-                }
-            }
-            else if (Settings.GET_EventLogID_PlaceHolder_Path == Settings_FilePath)//EventLog ID
-            {
-                EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog("CHECK_Reg_vs_File_Config() The file that tracks the event id of an eventlog config file (Eventlog_with_PlaceKeeper.txt) did not match what was stored in the registry on this machine. Config File was " + Settings_FilePath);
-                File_Operation.DELETE_AND_CREATE_File(Settings.GET_EventLogID_PlaceHolder_Path);
-                File_Operation.CREATE_NEW_Files_And_Dirs(Settings.Config_File_Location, Settings.AppConfigFile_FileName, File_Operation.GET_Default_ConsoleAppConfig_File_Contents);
-            }
-            else if (Settings.GET_SearchTermsFile_Path == Settings_FilePath)//Search SearchFile
-            {
-                if (CHECK_File_vs_Reg_Contents(Settings_FilePath, Reg_Operation.REG_KEY.SearchTerms_File_Contents) ==false)
-                {
-                    EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog("CHECK_Reg_vs_File_Config() The Search term file (Searchs.txt) config file did not match what was stored in the registry on this machine. Config File was " + Settings_FilePath);
-                    File_Operation.DELETE_AND_CREATE_File(Settings.GET_SearchTermsFile_Path);
-                    File_Operation.CREATE_NEW_Files_And_Dirs(Settings.Search_File_Location, Settings.SearchTermsFileName_FileName, File_Operation.GET_Default_Eventlog_with_PlaceKeeper_File_Contents);
-                }
-            }
-            else if (Settings.GET_WhiteList_SearchTermsFile_Path == Settings_FilePath)//Search WHitelist
-            {
-                EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog("CHECK_Reg_vs_File_Config() The white list search terms file (WhiteList_Searchs.txt) did not match what was stored in the registry on this machine. Config File was " + Settings_FilePath);
-                File_Operation.DELETE_AND_CREATE_File(Settings.GET_WhiteList_SearchTermsFile_Path);
-                File_Operation.CREATE_NEW_Files_And_Dirs(Settings.Search_File_Location, Settings.Search_WhiteList_FileName, File_Operation.GET_Default_Whitelist_File_Contents);
-            }
-            else if (Settings.GET_SearchTermsFile_PLUGIN_Path == Settings_FilePath)//PLUGIN Search
-            {
-                EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog("CHECK_Reg_vs_File_Config() The Plugin config file (Search.txt in the Plugins Folder) did not match what was stored in the registry on this machine. Config File was " + Settings_FilePath);
-                File_Operation.DELETE_AND_CREATE_File(Settings.GET_SearchTermsFile_PLUGIN_Path);
-                File_Operation.CREATE_NEW_Files_And_Dirs(Settings.Plugin_Files_Location, Settings.SearchTermsFileName_FileName, File_Operation.GET_Default_Powershell_Plugins_File_Contents);
-            }
-            else if (Settings.GET_WhiteList_SearchTermsFile_PLUGIN_Path == Settings_FilePath)//PLugin WHitelist
-            {
-                EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog("CHECK_Reg_vs_File_Config() The Plugin config file (WhiteList_Searchs.txt in the Plugins Folder) did not match what was stored in the registry on this machine. Config File was " + Settings_FilePath);
-                File_Operation.DELETE_AND_CREATE_File(Settings.GET_WhiteList_SearchTermsFile_PLUGIN_Path);
-                File_Operation.CREATE_NEW_Files_And_Dirs(Settings.Plugin_Files_Location, Settings.Search_WhiteList_FileName, File_Operation.GET_Default_Whitelist_File_Contents);
-            }
-            else
-            {
-                LOG_SEC_CHECK_Fail("CHECK_Reg_vs_File_Config() File Path:" + Settings_FilePath + " did not match encrypted config file path");
-            }
-        }
-
-        internal static bool CHECK_File_vs_Reg_Contents(string SettingsConfigFilePath,Reg_Operation.REG_KEY RegKey)
-        {
-            if (Crypto_Operation.Decrypt_File_Contents(SettingsConfigFilePath).ToLower()==Reg_Operation.READ_SWELF_Reg_Key(RegKey).ToLower())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
             }
         }
 

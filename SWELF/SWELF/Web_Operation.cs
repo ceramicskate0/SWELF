@@ -1,4 +1,6 @@
-﻿using System;
+﻿//Written by Ceramicskate0
+//Copyright 2020
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -301,7 +303,7 @@ namespace SWELF
         {
             WebRequest w = base.GetWebRequest(uri);
             w.UseDefaultCredentials = true;
-            w.Timeout = 2000;
+            w.Timeout = 5000;
             return w;
         }
     }

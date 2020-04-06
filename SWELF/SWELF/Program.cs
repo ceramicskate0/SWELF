@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright 
+//Copyright 2020
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,33 +29,34 @@ namespace SWELF
                     {
                         Program_Start_Args.Add(Settings.GET_AppConfigFile_Path);
                     }
-                    //TODO make sure config file passed in is one of the correct file (by location) then update that reg key, then delete the file once read in
+                    //TODO make sure config file passed in is one of the correct file (by location and parsability) then update that reg key, then delete the file once read in
                     if (File_Operation.CHECK_if_File_Exists(Program_Start_Args.ElementAt(2).ToLower()))
                     {
                         if (File_Operation.CHECK_if_File_Exists(Program_Start_Args.ElementAt(2).ToLower()))
                         {
                             Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_Contents, File_Operation.READ_AllText(Program_Start_Args.ElementAt(2).ToLower()));
-                            //TODO: LOG CONFIG UPDATE VIA THIS METHOD
+                            Error_Operation.Log_Error("MAIN()", "Config update. ConsoleAppConfig_Contents reg key from file "+ Program_Start_Args.ElementAt(2).ToLower(), "", Error_Operation.LogSeverity.Warning, Error_Operation.EventID.SWELF_Central_Config_Changed);
                         }
                         else if (File_Operation.CHECK_if_File_Exists(Settings.GET_AppConfigFile_Path))
                         {
                             Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.ConsoleAppConfig_Contents, File_Operation.READ_AllText(Settings.GET_AppConfigFile_Path));
-                            //TODO: LOG CONFIG UPDATE VIA THIS METHOD
+                            Error_Operation.Log_Error("MAIN()", "Config update. ConsoleAppConfig_Contents reg key from file "+ Settings.GET_AppConfigFile_Path, "", Error_Operation.LogSeverity.Warning, Error_Operation.EventID.SWELF_Central_Config_Changed);
                         }
 
                         if (File_Operation.CHECK_if_File_Exists(Settings.GET_SearchTermsFile_Path))
                         {
                             Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.SearchTerms_File_Contents, File_Operation.READ_AllText(Settings.GET_SearchTermsFile_Path));
-                            //TODO: LOG CONFIG UPDATE VIA THIS METHOD
+                            Error_Operation.Log_Error("MAIN()", "Config update. SearchTerms_File_Contents reg key from file "+ Settings.GET_SearchTermsFile_Path, "", Error_Operation.LogSeverity.Warning, Error_Operation.EventID.SWELF_Central_Config_Changed);
                         }
+
                         if (File_Operation.CHECK_if_File_Exists(Settings.GET_WhiteList_SearchTermsFile_Path))
                         {
                             Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.WhiteList_SearchTerms_File_Contents, File_Operation.READ_AllText(Settings.GET_WhiteList_SearchTermsFile_Path));
-                            //TODO: LOG CONFIG UPDATE VIA THIS METHOD
+                            Error_Operation.Log_Error("MAIN()", "Config update. WhiteList_SearchTerms_File_Contents reg key from file " + Settings.GET_WhiteList_SearchTermsFile_Path, "", Error_Operation.LogSeverity.Warning, Error_Operation.EventID.SWELF_Central_Config_Changed);
                         }
                         Start_Process_Live_Method();
                         //TODO add option for password in config file to allow updates this way
-                        //if no password allow update
+                        //if no password allow update??
                         //store password in reg
                     }
                     else
@@ -84,7 +85,6 @@ namespace SWELF
                     Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE, "Start_Live_Process()", e.Message.ToString() + ", Also the app halted.", e.StackTrace.ToString());
                 }
             }
-            Environment.Exit(0);
         }
 
         internal static void Start_EVTX_Process()

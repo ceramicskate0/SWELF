@@ -1,7 +1,10 @@
-﻿using System;
+﻿//Written by Ceramicskate0
+//Copyright 2020
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Security.AccessControl;
 
 namespace SWELF
 {
@@ -156,7 +159,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
                 }
                 catch (Exception e)
                 {
-                    Error_Operation.WRITE_Errors_To_Log("Write_Hash_Output()", e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
+                    Error_Operation.WRITE_Errors_To_Log("Write_Hash_Output()", e.Message.ToString(), Error_Operation.LogSeverity.Warning);
                 }
             }
             CHECK_File_Size(Settings.Hashs_File_Path, .0002);
@@ -174,7 +177,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
                 }
                 catch (Exception e)
                 {
-                    Error_Operation.WRITE_Errors_To_Log("Write_IP_Output()", e.Message.ToString(), Error_Operation.LogSeverity.Informataion);
+                    Error_Operation.WRITE_Errors_To_Log("Write_IP_Output()", e.Message.ToString(), Error_Operation.LogSeverity.Warning);
                 }
             }
             CHECK_File_Size(Settings.IPs_File_Path, .0002);
@@ -457,43 +460,6 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             }
         }
 
-        internal static bool READ_Config_File_For_Value(string valueToFind, string FileToRead)
-        {
-            if (CHECK_if_File_Exists(FileToRead))
-            {
-                foreach (string ConfigFileline in READ_File_In_List(FileToRead))//File_Args are read in here 1 by 1
-                {
-                    if (!ConfigFileline.Contains(Settings.CommentCharConfigs) && ConfigFileline.Contains(Settings.SplitChar_ConfigVariableEquals[0]) && ConfigFileline.Split(Settings.SplitChar_ConfigVariableEquals, StringSplitOptions.RemoveEmptyEntries).ToList().ElementAt(0).ToLower().Contains(valueToFind.ToLower()))//split the read in arg
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        internal static void APPEND_Data_To_File(string FilePath, string Values)
-        {
-            if (CHECK_if_File_Exists(FilePath))
-            {
-                if (CHECK_Data_Encrypted(FilePath))
-                {
-                    Crypto_Operation.UnSecure_File(FilePath);
-                    File.AppendAllText(FilePath,Values);
-                    Crypto_Operation.Secure_File(FilePath);
-
-                }
-                else
-                {
-                    File.AppendAllText(FilePath, Values);
-                }
-            }
-        }
-
         internal static void DELETE_File(string FilePath)
         {
             try
@@ -514,6 +480,31 @@ Microsoft-WindowsCodeIntegrity/Operational=1
         internal static void WRITE_ALLTXT(string FilePath, string Content)
         {
             File.WriteAllText(FilePath, Content);
+        }
+
+        private static void Harden_SWELF_Working_Dir(bool SetToOnlySystem=false)
+        {
+            DirectorySecurity dirSec = new DirectorySecurity();
+            if (SetToOnlySystem == false)
+            {
+                dirSec.AddAccessRule(new FileSystemAccessRule("Administrators", FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow));
+            }
+            dirSec.AddAccessRule(new FileSystemAccessRule(@"NT-AUTHORITY\SYSTEM",FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit,PropagationFlags.None, AccessControlType.Allow));
+
+            Directory.CreateDirectory(Settings.SWELF_CWD + "\\" + Settings.SWELF_PROC_Name +"\\"+ Settings.SWELF_PROC_Name+".exe", dirSec);
+          
+            File.Copy(Settings.SWELF_CWD + "\\" + Settings.SWELF_PROC_Name + ".exe", Settings.SWELF_CWD + "\\" + Settings.SWELF_PROC_Name + "\\" + Settings.SWELF_PROC_Name + ".exe", true);
+
+            foreach (string newPath in Directory.GetFiles(Settings.SWELF_CWD, "*.*", SearchOption.AllDirectories))
+            {
+                if (newPath.Contains("Config") || newPath.Contains("Log_Searchs") || newPath.Contains("SWELF_Logs") || newPath.Contains("Plugins"))
+                {
+                    File.Copy(newPath, newPath.Replace(Settings.SWELF_CWD, Settings.SWELF_CWD + "\\" + Settings.SWELF_PROC_Name), true);
+                }
+            }
+
+            Console.WriteLine("[*] " + Settings.SWELF_PROC_Name + ".exe" + " was moved to " + Settings.SWELF_CWD + "\\" + Settings.SWELF_PROC_Name + "\\" + ".\nThis Directory was access controlled to only the accounts in the Administrators group and NT-SYSTEM.");
+            Console.WriteLine("[!] You will have to manually remove the original contents of " + Settings.SWELF_PROC_Name + " located at " + Settings.SWELF_CWD);
         }
     }
 }

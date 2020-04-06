@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright
+//Copyright 2020
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
@@ -14,7 +14,7 @@ namespace SWELF
     //Persist Sub Key,Value
     internal class Reg_Operation
     {
-        internal static RegistryKey BASE_SWELF_KEY = Registry.LocalMachine.CreateSubKey("Software\\SWELF");
+        internal static RegistryKey BASE_SWELF_KEY = Registry.LocalMachine.CreateSubKey("Software\\"+Settings.SWELF_PROC_Name);
         internal static RegistryKey EventLog_Base_Key = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\Eventlog\\");
 
         private static long Default_Size = EventLogSession.GlobalSession.GetLogInformation("security", PathType.LogName).FileSize.Value;

@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright
+//Copyright 2020
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -284,7 +284,33 @@ namespace SWELF
             }
         }
 
+        internal string GET_Parsed_Sysmon_EventData()
+        {
+            string Parsed_Sysmon_String = "";
 
+            if (LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && (Settings.AppConfig_File_Args.ContainsKey(Settings.SWELF_AppConfig_Args[18]) && Settings.AppConfig_File_Args[Settings.SWELF_AppConfig_Args[18]].ToLower()=="true"))
+            {
+                string[] Data = EventData.Split(new[] { "\r\n" }, StringSplitOptions.None).ToArray();
+
+                for (int x = 0; x < Data.Length; ++x)
+                {
+                    int index = Data[x].IndexOf(':');
+                    string first = Data[x].Substring(0, index);
+                    string second = Data[x].Substring(index + 1);
+
+                    if (string.IsNullOrEmpty(second))
+                    {
+                        second="";
+                    }
+                    if (second.Length>0 && char.IsWhiteSpace(second.ElementAt(0)))
+                    {
+                        second = second.Trim();
+                    }
+                    Parsed_Sysmon_String += first + "=" +"\""+ second + "\"" + "\t";
+                }
+            }
+            return Parsed_Sysmon_String.Trim();
+        }
 
         internal void GET_IP_FromLogFile()
         {
@@ -300,18 +326,14 @@ namespace SWELF
                 {
                     if (Eventdata.Contains("destinationip: "))
                     {
-                        string[] delm1 = { "destinationip: ", "destinationhostname: " };
-
-                        string[] datA_IP = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                        string[] datA_IP = Eventdata.Split(new[] { "destinationip: ", "destinationhostname: " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                         if (datA_IP[1].Length > 0 && (!string.IsNullOrEmpty(datA_IP[1])))
                         {
                             if (Eventdata.Contains("image: "))
                             {
-                                string[] delm2= { "image: " };
-                                string[] delm3 = { "user: " };
-                                string[] datA_img1 = Eventdata.Split(delm2, StringSplitOptions.RemoveEmptyEntries).ToArray();
-                                string[] datA_img2 = datA_img1[1].Split(delm3, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                string[] datA_img1 = Eventdata.Split(new[] { "image: " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                                string[] datA_img2 = datA_img1[1].Split(new[] { "user: " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                                 if (datA_img2[0].Length > 0 && (!string.IsNullOrEmpty(datA_img2[0])))
                                 {
@@ -324,9 +346,7 @@ namespace SWELF
                     {
                         if (Eventdata.Contains("image: ") )
                         {
-                            string[] delm2 = { "image: " };
-
-                            string[] datA_img = Eventdata.Split(delm2, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                            string[] datA_img = Eventdata.Split(new[] { "image: " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                             if (datA_img[1].Length > 0 && (!string.IsNullOrEmpty(datA_img[1])))
                             {
@@ -349,28 +369,22 @@ namespace SWELF
 
                 if (Eventdata.Contains("hashes: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 1)
                 {
-                    string[] delm1 = { "hashes: ", "parentprocessguid: " };
-
-                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(new[] { "hashes: ", "parentprocessguid: " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
                     {
                         Settings.Hashs_From_EVT_Logs.Add(datA[1].Replace("\r\n", ""));
                     }
-                    delm1 = null;
                     datA = null;
                 }
                 if (Eventdata.Contains("hashes: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 6)
                 {
-                    string[] delm1 = { "hashes: ", "signed: " };
-
-                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(new[] { "hashes: ", "signed: " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
                     {
                         Settings.Hashs_From_EVT_Logs.Add(datA[1].Replace("\r\n", ""));
                     }
-                    delm1 = null;
                     datA = null;
                 }
                 else if (Settings.SHA256_RegX.Matches(Eventdata).Count > 0)
@@ -397,9 +411,7 @@ namespace SWELF
                 {
                     if (Eventdata.Contains("destinationhostname: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 3)
                     {
-                        string[] delm1 = { "destinationhostname: ", "destinationhostname: " };
-
-                        string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                        string[] datA = Eventdata.Split(new[] { "destinationhostname: ", "destinationhostname: " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                         if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
                         {
@@ -435,9 +447,7 @@ namespace SWELF
                 
                 if (Eventdata.Contains("Creator Process Name: ") && LogName.ToLower().Equals("Security"))
                 {
-                    string[] delm1 = { "Creator Process Name: ", "Token " };
-
-                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(new[] { "Creator Process Name: ", "Token " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if (datA[1].Length > commandLine.Length && (!string.IsNullOrEmpty(datA[1])))
                     {
@@ -449,9 +459,7 @@ namespace SWELF
                 {
                     if (Eventdata.Contains("commandline: "))
                     {
-                        string[] delm1 = { "commandline: ", "currentdirectory: " };
-
-                        string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                        string[] datA = Eventdata.Split(new[] { "commandline: ", "currentdirectory: " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                         if (datA[1].Length > commandLine.Length && (!string.IsNullOrEmpty(datA[1])))
                         {
@@ -461,9 +469,7 @@ namespace SWELF
                     }
                     if (Eventdata.Contains("parentcommandline: "))
                     {
-                        string[] delm1 = { "parentcommandline: ", "" };
-
-                        string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                        string[] datA = Eventdata.Split(new[] { "parentcommandline: ", "" }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                         if ((datA[1].Length + "Target-CommandLine: ".Length) > commandLine.Length && (!string.IsNullOrEmpty(datA[1])))
                         {
@@ -474,9 +480,7 @@ namespace SWELF
                 }
                 else if (Eventdata.Contains("commandline= ") && LogName.ToLower().Equals("windows powershell"))
                 {
-                    string[] delm1 = { "commandline=  ", "details: " };
-
-                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(new[] { "commandline=  ", "details: " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if (!string.IsNullOrEmpty(datA[1]))
                         {
@@ -489,9 +493,7 @@ namespace SWELF
                 }
                 else  if (Eventdata.Contains("process command line: ") && LogName.ToLower().Equals("microsoft-windows-security-auditing") && EventID==4688)
                 {
-                    string[] delm1 = { "process command line:  ", "token elevation type " };
-
-                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(new[] { "process command line:  ", "token elevation type " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if (!string.IsNullOrEmpty(datA[1]))
                     {
@@ -526,9 +528,7 @@ namespace SWELF
 
                 if (Eventdata.Contains("destinationport: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID==3)
                 {
-                    string[] delm1 = { "destinationport: ", "destinationportname: "};
-
-                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(new[] { "destinationport: ", "destinationportname: " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
                     if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
                     {
@@ -552,9 +552,7 @@ namespace SWELF
 
                 if (Eventdata.Contains("image: ") && LogName.ToLower().Equals("microsoft-windows-sysmon/operational") && EventID == 3)
                 {
-                    string[] delm1 = { "image: ", "user: " };
-
-                    string[] datA = Eventdata.Split(delm1, StringSplitOptions.RemoveEmptyEntries).ToArray();
+                    string[] datA = Eventdata.Split(new[] { "image: ", "user: " }, StringSplitOptions.RemoveEmptyEntries).ToArray();
                     if (datA[1].Length > 0 && (!string.IsNullOrEmpty(datA[1])))
                     {
                         string[] filepath = datA[1].Split('\\').ToArray();

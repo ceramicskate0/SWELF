@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright 2018
+//Copyright 2020
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -177,6 +177,7 @@ namespace SWELF
                             SWELF_Eventlog.EventLog_Seq_num = Windows_EventLog_from_API.RecordId.Value;//if this doesnt work we have issues that we cant fix
                             SWELF_Eventlog.EventID = Windows_EventLog_from_API.Id; //if this doesnt work we have issues that we cant fix
                             SWELF_Eventlog.LogName = Windows_EventLog_from_API.LogName;
+
                             try
                             {
                                 SWELF_Eventlog.ComputerName = Windows_EventLog_from_API.MachineName;
@@ -263,7 +264,6 @@ namespace SWELF
                             {
                                 //unable to get IP values from log
                             }
-
                             //try
                             //{
                             //    EventLogName.EventlogMissing = Sec_Checks.CHECK_If_EventLog_Missing(EventLogName, SWELF_Eventlog);

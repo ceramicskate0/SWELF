@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright 2018
+//Copyright 2020
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace SWELF
                         catch (Exception e)
                         { 
                             Settings.Logs_Sent_to_ALL_Collectors = false;
-                            Error_Operation.Log_Error("SEND_Logs() [transport_protocol] == tcp", Settings.Log_Forwarders_HostNames.ElementAt(x)+" "+ e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
+                            Error_Operation.Log_Error("SEND_Logs() [transport_protocol] == tcp", Settings.Log_Forwarders_HostNames.ElementAt(x)+" "+ e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Warning);
                         }
                     }
                     Settings.Logs_Sent_to_ALL_Collectors = true;
@@ -56,7 +56,7 @@ namespace SWELF
                         catch (Exception e)
                         {
                             Settings.Logs_Sent_to_ALL_Collectors = false;
-                            Error_Operation.Log_Error("SEND_Logs() else//Default send logs UDP", Settings.Log_Forwarders_HostNames.ElementAt(x) + " " + e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Verbose);
+                            Error_Operation.Log_Error("SEND_Logs() else//Default send logs UDP", Settings.Log_Forwarders_HostNames.ElementAt(x) + " " + e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Warning);
                         }
                     }
                     Settings.Logs_Sent_to_ALL_Collectors = true;
@@ -111,6 +111,42 @@ namespace SWELF
             }
             return Data_Sent;
         }
+        internal static void SEND_SINGLE_LOG(string Log)
+        {
+            bool Data_Sent = true;
+
+            if (Settings.Log_Forwarders_HostNames.Any(s => string.Equals(s, "127.0.0.1", StringComparison.OrdinalIgnoreCase)) == false && Settings.Log_Forwarders_HostNames.Any(s => string.IsNullOrEmpty(s)) == false)
+            {
+                if (Settings.AppConfig_File_Args[Settings.SWELF_AppConfig_Args[14]] == "tcp")//If user wants send logs tcp
+                {
+                    for (int x = 0; x < Settings.Log_Forwarders_HostNames.Count; ++x)
+                    {
+                        try
+                        {
+                            Socket_Client_TCP(GET_Encoding_to_Return(Log), x);
+                        }
+                        catch (Exception e)
+                        {
+                        }
+                    }
+                }
+                else//Default send logs UDP
+                {
+                    for (int x = 0; x < Settings.Log_Forwarders_HostNames.Count; ++x)
+                    {
+                        try
+                        {
+                            UdpClient client = new UdpClient(Get_IP_from_Socket_string(Settings.Log_Forwarders_HostNames.ElementAt(x)), Settings.Log_Forwarders_Port.ElementAt(x));
+                            Data_Sent = SEND_Data_from_File_UDP(Log, client);
+                            client.Close();
+                        }
+                        catch (Exception e)
+                        {
+                        }
+                    }
+                }
+            }
+        }
         public static void Socket_Client_UDP(byte[] Data,int x)
         {
                 IPAddress ipAddress = IPAddress.Parse(Settings.Log_Forwarders_HostNames.ElementAt(x));
@@ -162,7 +198,7 @@ namespace SWELF
         private static string GET_Log_Output_Format(EventLog_Entry data)
         {
             string format=Settings.AppConfig_File_Args[Settings.SWELF_AppConfig_Args[10]];
-            string Data;
+            string Data="";
             format=Regex.Replace(format, @"\s+", String.Empty);//remove spaces from value
             switch (format.ToLower())
             {
@@ -196,7 +232,7 @@ namespace SWELF
                     {
                         string EventData="";
                         EventData= data.EventData.Replace("\n", "").Replace("\r", "\n").Replace(":", ": ").Replace(": ",": ").Replace(" \r ","");
-                        Data = " CreatedTime=\"" + data.CreatedTime +"\"" + "\t" + "SourceComputer=\"" + Settings.ComputerName + "\"" + "\t" + "EventID=\"" + data.EventID.ToString() + "\"" + "\t" + "EventLogName=\"" + data.LogName + "\"" + "\t" + "EventRecordID=\"" + data.EventLog_Seq_num + "\"" + "\t" + "DisplayName=\"" + data.TaskDisplayName + "\"" + "\t" + "Severity=\"" + data.Severity + "\"" + "\t" + "UserID=\"" + data.UserID + "\"" + "\t" + "Search_Rule=\"" + data.SearchRule + "\"" + "\t" + "ParentCommandLine=\"" + data.ParentCMDLine + "\"" + "\t" + "ChildCommandLine=\"" + data.ChildCMDLine + "\"" + "\t" + "EventData=\""+EventData+"\"";
+                        Data = " CreatedTime=\"" + data.CreatedTime +"\"" + "\t" + "SourceComputer=\"" + Settings.ComputerName + "\"" + "\t" + "EventID=\"" + data.EventID.ToString() + "\"" + "\t" + "EventLogName=\"" + data.LogName + "\"" + "\t" + "EventRecordID=\"" + data.EventLog_Seq_num + "\"" + "\t" + "DisplayName=\"" + data.TaskDisplayName + "\"" + "\t" + "Severity=\"" + data.Severity + "\"" + "\t" + "UserID=\"" + data.UserID + "\"" + "\t" + "Search_Rule=\"" + data.SearchRule + "\"" + "\t" + "ParentCommandLine=\"" + data.ParentCMDLine + "\"" + "\t" + "ChildCommandLine=\"" + data.ChildCMDLine + "\"" + "\t" + "EventData=\""+EventData+"\"" + "\t" + data.GET_Parsed_Sysmon_EventData().Replace("\n", "").Replace("\r", "\n").Replace(":", ": ").Replace(": ", ": ").Replace(" \r ", "")+"\t";
                         break;
                     }
                 default:

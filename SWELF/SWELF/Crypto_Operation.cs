@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright
+//Copyright 2020
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -67,10 +67,6 @@ namespace SWELF
                     {
                         File.Decrypt(FilePath);
                     }
-                }
-                if (e.Message.Contains("Padding"))//TODO REMOVE THIS
-                {
-                    Sec_Checks.CHECK_Reg_vs_File_Config(FilePath);
                 }
                 else if (e.Message.Contains("The input data is not a complete block."))
                 {

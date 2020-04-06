@@ -1,5 +1,5 @@
 ﻿//Written by Ceramicskate0
-//Copyright 
+//Copyright 2020
 using System;
 using System.Linq;
 using System.Diagnostics;
