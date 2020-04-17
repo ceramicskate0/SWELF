@@ -337,6 +337,8 @@ Application: SWELF.exe~Application~1026
 #SWELF.exe~Application~
 clrguard~Application~
 EventSystem~Application~4625
+~Application~4006
+~Application~1026
 
 #System
 ~System~104
