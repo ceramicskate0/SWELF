@@ -321,10 +321,8 @@ NTMapViewOfSection~Microsoft-Windows-Kernel-Audit-API-Calls~
 ~Microsoft-TerminalServices-LocalSessionmanager Operational~21
 
 #AppLocker
-8000~Microsoft-Windows-AppLocker/EXE and DLL~
-8000~Microsoft-Windows-AppLocker/MSI and Script~
-logging_level:warning~Microsoft-Windows-AppLocker/EXE and DLL~
-logging_level:warning~Microsoft-Windows-AppLocker/MSI and Script~
+~Microsoft-Windows-AppLocker/EXE and DLL~
+~Microsoft-Windows-AppLocker/MSI and Script~
 
 #Application
 ~Application~866
