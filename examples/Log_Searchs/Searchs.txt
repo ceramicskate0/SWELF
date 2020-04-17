@@ -350,6 +350,7 @@ powershell~System~7045
 ~System~7009
 #~System~1014
 SAM database has been denied~System~16965
+#~System~36882
 
 #Security
 #~Security~517
@@ -389,6 +390,8 @@ ADMIN$~Security~5145
 C$~Security~5145
 RPCSS~Security~4648
 search_multiple:Chrome`ReadData`Login Data~Security~4663
+Test Signing:		Yes~Security~4826
+~Security~4699
 
 #Microsoft-Windows-TaskScheduler/Operational
 #~Microsoft-Windows-TaskScheduler/Operational~106
