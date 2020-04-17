@@ -612,3 +612,4 @@ CurrentControlSet\Control\Lsa\Security Packages
 \Software\Microsoft\Windows NT\currentversion\image file execution options
 \SYSTEM\CurrentControlSet\Control\
 \Software\Microsoft\EventSystem\EventLog
+\SYSTEM\CurrentControlSet\Control\Lsa\RunAsPPL
