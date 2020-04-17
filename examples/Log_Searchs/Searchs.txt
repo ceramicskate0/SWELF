@@ -611,3 +611,4 @@ CurrentControlSet\Control\Lsa\Security Packages
 \System\CurrentControlSet\Control\Session Manager\AppCertDlls
 \Software\Microsoft\Windows NT\currentversion\image file execution options
 \SYSTEM\CurrentControlSet\Control\
+\Software\Microsoft\EventSystem\EventLog
