@@ -351,6 +351,7 @@ powershell~System~7045
 #~System~1014
 SAM database has been denied~System~16965
 #~System~36882
+from address~System~10016
 
 #Security
 #~Security~517
