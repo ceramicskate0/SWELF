@@ -336,6 +336,7 @@ msi~Application~1040
 Application: SWELF.exe~Application~1026
 #SWELF.exe~Application~
 clrguard~Application~
+EventSystem~Application~4625
 
 #System
 ~System~104
@@ -561,6 +562,7 @@ bginfo.exe
 WFC.exe
 mofcomp.exe
 scrcons.exe
+EventSystem 
 
 #Search everything your looking at for mimikatz
 mimikatz
