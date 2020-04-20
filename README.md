@@ -1,5 +1,8 @@
 # [Simple-Windows-Event-Log-Forwarder (SWELF)](https://github.com/ceramicskate0/SWELF/wiki)
 
+### Shameless plug to allow Support:
+<a href="https://patreon.com/ceramicskate0"><img src="https://img.shields.io/endpoint.svg?url=https://moshef9.wixsite.com/patreon-badge/_functions/badge/?username=codingcoach_io" alt="Patreon donate button" /> </a>
+
 <img src="https://user-images.githubusercontent.com/6934294/47841159-afd30b00-dd86-11e8-8e9d-36c8af61a4db.png" width="350" height="300">
 
 ## [Get Latest Release](https://github.com/ceramicskate0/SWELF/releases/latest)
