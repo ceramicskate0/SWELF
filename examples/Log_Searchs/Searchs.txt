@@ -610,7 +610,6 @@ CurrentControlSet\Control\Lsa\Security Packages
 \System\CurrentControlSet\Control\SecurityProviders\WDigest
 \SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest\UseLogonCredential
 \Shell\open\command
-#Reg Injection Locations
 \Software\Microsoft\Windows NT\CurrentVersion\Windows\Appinit_Dlls
 \Software\Wow6432Node\Microsoft\Windows NT\CurrentVersion\Windows\Appinit_Dlls
 \System\CurrentControlSet\Control\Session Manager\AppCertDlls
