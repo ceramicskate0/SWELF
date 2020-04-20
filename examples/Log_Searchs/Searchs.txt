@@ -618,3 +618,4 @@ CurrentControlSet\Control\Lsa\Security Packages
 \SYSTEM\CurrentControlSet\Control\
 \Software\Microsoft\EventSystem\EventLog
 \SYSTEM\CurrentControlSet\Control\Lsa\RunAsPPL
+\Software\Microsoft\Office\16.0\Outlook\Profiles\Outlook
