@@ -362,6 +362,7 @@ from address~System~10016
 ~Security~1101
 ~Security~1102 
 ~Security~1108
+- Enabled~Security~4738
 nTSecurityDescriptor~Security~5136
 WRITE_DAC~Security~4662
 EventConsumer~Security~4662
@@ -618,3 +619,4 @@ CurrentControlSet\Control\Lsa\Security Packages
 \Software\Microsoft\EventSystem\EventLog
 \SYSTEM\CurrentControlSet\Control\Lsa\RunAsPPL
 \Outlook\
+\CurrentVersion\Policies\System\DisableChangePassword
