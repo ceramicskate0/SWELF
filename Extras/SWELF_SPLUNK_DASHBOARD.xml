@@ -16,6 +16,7 @@
     <panel>
       <title>IP</title>
       <table>
+        <title>IP</title>
         <search>
           <query>sourcetype=SWELF $SourceComputer$ | stats count by host</query>
           <earliest>-7d@h</earliest>
@@ -81,7 +82,7 @@
       <table>
         <title>EventLogName</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$  | stats count by EventLogName</query>
+          <query>sourcetype=SWELF $SourceComputer$  | stats count by EventLogName| sort - count limit=10</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -89,8 +90,12 @@
         <option name="dataOverlayMode">none</option>
         <option name="drilldown">row</option>
         <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
         <option name="rowNumbers">true</option>
         <option name="totalsRow">false</option>
+        <drilldown>
+          <link target="_blank">search?q=sourcetype=SWELF%20$SourceComputer$%20%20%7C%20stats%20count%20by%20EventLogName%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
+        </drilldown>
       </table>
     </panel>
     <panel>
@@ -107,24 +112,21 @@
         <option name="height">389</option>
       </chart>
     </panel>
-  </row>
-  <row>
     <panel>
-      <title>Search_Rule Hits</title>
-      <table>
-        <title>Search_Rule Hits</title>
+      <title>DisplayName</title>
+      <chart>
+        <title>DisplayName</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ | table EventLogName,Search_Rule,EventID | stats count by Search_Rule | sort by _count</query>
+          <query>sourcetype=SWELF $SourceComputer$ | table DisaplyName, ComputerName | stats count by DisplayName</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
-        <option name="count">10</option>
-        <option name="drilldown">cell</option>
-        <option name="refresh.display">progressbar</option>
-        <option name="rowNumbers">true</option>
-        <option name="wrap">true</option>
-      </table>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
     </panel>
+  </row>
+  <row>
     <panel>
       <title>Search_Rule Hits</title>
       <chart>
@@ -143,23 +145,39 @@
         <option name="height">389</option>
       </chart>
     </panel>
-  </row>
-  <row>
     <panel>
+      <title>Rulename TTPs</title>
       <table>
-        <title>Search_Rule Distro Hit</title>
+        <title>TTP Rulename</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ | table EventLogName,Search_Rule,EventID | stats count by EventLogName,Search_Rule,EventID | sort by _count</query>
+          <query>sourcetype=SWELF $SourceComputer$  rulename=* | stats count by rulename | sort - count limit=10</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
-        <option name="count">25</option>
-        <option name="dataOverlayMode">none</option>
-        <option name="drilldown">row</option>
-        <option name="percentagesRow">true</option>
-        <option name="refresh.display">preview</option>
+        <option name="count">10</option>
+        <option name="drilldown">cell</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Search_Rule Hits</title>
+      <table>
+        <title>Search_Rule Hits</title>
+        <search>
+          <query>sourcetype=SWELF $SourceComputer$ | table EventLogName, Search_Rule, EventID 
+|stats count by  EventLogName, Search_Rule, EventID | sort - count limit=10</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">cell</option>
+        <option name="refresh.display">progressbar</option>
         <option name="rowNumbers">true</option>
-        <option name="totalsRow">true</option>
+        <option name="wrap">true</option>
+        <drilldown>
+          <link target="_blank">search?q=sourcetype=SWELF%20$SourceComputer$%20%7C%20table%20EventLogName,%20Search_Rule,%20EventID%20%0A%7Cstats%20count%20by%20%20EventLogName,%20Search_Rule,%20EventID%20%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
+        </drilldown>
       </table>
     </panel>
   </row>
@@ -183,21 +201,6 @@
       </chart>
     </panel>
     <panel>
-      <title>DisplayName</title>
-      <chart>
-        <title>DisplayName</title>
-        <search>
-          <query>sourcetype=SWELF $SourceComputer$ | table DisaplyName, ComputerName | stats count by DisplayName</query>
-          <earliest>-7d@h</earliest>
-          <latest>now</latest>
-        </search>
-        <option name="charting.chart">pie</option>
-        <option name="charting.drilldown">none</option>
-      </chart>
-    </panel>
-  </row>
-  <row>
-    <panel>
       <table>
         <title>ERRORS</title>
         <search>
@@ -205,7 +208,11 @@
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
+        <option name="count">10</option>
         <option name="drilldown">cell</option>
+        <drilldown>
+          <link target="_blank">search?q=sourcetype=SWELF%20$SourceComputer$%20MethodInCode=*%20%7C%20table%20ComputerName,MethodInCode,Severity,LogSeverity%20%7C%20stats%20count%20by%20MethodInCode%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
+        </drilldown>
       </table>
     </panel>
   </row>
