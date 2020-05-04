@@ -32,52 +32,6 @@
   </row>
   <row>
     <panel>
-      <title>TimeLine Most Common</title>
-      <viz type="timeline_app.timeline">
-        <title>EventsTimeLine</title>
-        <search>
-          <query>sourcetype=SWELF $SourceComputer$ | stats count by DateTime,Search_Rule,EventID,EventLogName |  table DateTime,Search_Rule,EventID,EventLogName</query>
-          <earliest>-7d@h</earliest>
-          <latest>now</latest>
-        </search>
-        <option name="drilldown">all</option>
-        <option name="height">987</option>
-        <option name="refresh.display">progressbar</option>
-        <option name="timeline_app.timeline.axisTimeFormat">DAYS</option>
-        <option name="timeline_app.timeline.colorMode">categorical</option>
-        <option name="timeline_app.timeline.maxColor">#DA5C5C</option>
-        <option name="timeline_app.timeline.minColor">#006d9c</option>
-        <option name="timeline_app.timeline.numOfBins">9</option>
-        <option name="timeline_app.timeline.tooltipTimeFormat">DAYS</option>
-        <option name="timeline_app.timeline.useColors">1</option>
-      </viz>
-    </panel>
-  </row>
-  <row>
-    <panel>
-      <title>TimeLine Least Common</title>
-      <viz type="timeline_app.timeline">
-        <title>EventsTimeLine</title>
-        <search>
-          <query>sourcetype=SWELF $SourceComputer$  | stats count by DateTime,Search_Rule,EventID,EventLogName | rare DateTime,Search_Rule,EventID,EventLogName  | table DateTime,Search_Rule,EventID,EventLogName</query>
-          <earliest>-7d@h</earliest>
-          <latest>now</latest>
-        </search>
-        <option name="drilldown">all</option>
-        <option name="height">321</option>
-        <option name="refresh.display">progressbar</option>
-        <option name="timeline_app.timeline.axisTimeFormat">DAYS</option>
-        <option name="timeline_app.timeline.colorMode">categorical</option>
-        <option name="timeline_app.timeline.maxColor">#DA5C5C</option>
-        <option name="timeline_app.timeline.minColor">#006d9c</option>
-        <option name="timeline_app.timeline.numOfBins">9</option>
-        <option name="timeline_app.timeline.tooltipTimeFormat">DAYS</option>
-        <option name="timeline_app.timeline.useColors">1</option>
-      </viz>
-    </panel>
-  </row>
-  <row>
-    <panel>
       <title>EventLogName</title>
       <table>
         <title>EventLogName</title>
@@ -213,6 +167,126 @@
         <drilldown>
           <link target="_blank">search?q=sourcetype=SWELF%20$SourceComputer$%20MethodInCode=*%20%7C%20table%20ComputerName,MethodInCode,Severity,LogSeverity%20%7C%20stats%20count%20by%20MethodInCode%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
         </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Top 10 Images using DNS</title>
+      <table>
+        <title>Images Using DNS</title>
+        <search>
+          <query>sourcetype=SWELF $SourceComputer$ queryname=* image=*
+| table queryname, image| stats count by queryname, image
+| sort - count limit=10</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">true</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">true</option>
+        <drilldown>
+          <link target="_blank">search?q=sourcetype=SWELF%20$SourceComputer$%20queryname=*%20image=*%0A%7C%20table%20queryname,%20image%7C%20stats%20count%20by%20queryname,%20image%0A%7C%20sort%20-%20count%20limit=10&amp;earliest=-24h@h&amp;latest=now</link>
+        </drilldown>
+      </table>
+    </panel>
+    <panel>
+      <title>Top 10 Images using HTTP(s)</title>
+      <table>
+        <title>Images using HTTP(s)</title>
+        <search>
+          <query>sourcetype=SWELF $SourceComputer$ image=* destinationportname=http* | table image,destinationport| stats count by image,destinationport
+| sort - count limit=10</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">true</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="totalsRow">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Rare Bottom 10 DNS Images</title>
+      <table>
+        <title>Rare Bottom 10 DNS Images</title>
+        <search>
+          <query>sourcetype=SWELF $SourceComputer$ queryname=* image=*
+| table queryname, image| stats count by queryname, image
+| sort - count
+| rare queryname,image limit=10</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">true</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="totalsRow">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Rare Bottom 10 HTTPs</title>
+      <table>
+        <title>Rare Bottom 10 HTTPs</title>
+        <search>
+          <query>sourcetype=SWELF $SourceComputer$ image=* destinationportname=http* 
+| table image,destinationport
+| stats count by image,destinationport
+| sort - count
+| rare image,destinationport limit=10</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">true</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="totalsRow">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Top 10 Parnet Child Processes</title>
+      <table>
+        <title>Parnet Child Processes</title>
+        <search>
+          <query>sourcetype=SWELF $SourceComputer$  image=* parentimage=* | table image,parentimage| stats count by image,parentimage
+| sort - count limit=10</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">true</option>
+        <option name="totalsRow">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Bottom 10 Parnet Child Processes</title>
+      <table>
+        <title>Parnet Child Processes</title>
+        <search>
+          <query>sourcetype=SWELF $SourceComputer$  image=* parentimage=* | table image,parentimage| stats count by image,parentimage
+| sort - count 
+| rare image,parentimage limit=10</query>
+         <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">true</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">true</option>
       </table>
     </panel>
   </row>
