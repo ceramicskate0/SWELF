@@ -11,6 +11,18 @@
         <latest>now</latest>
       </search>
     </input>
+    <input type="dropdown" token="sourcetype" searchWhenChanged="true">
+      <label>sourcetype</label>
+      <fieldForLabel>sourcetype</fieldForLabel>
+      <fieldForValue>sourcetype</fieldForValue>
+      <search>
+        <query>sourcetype=* | dedup sourcetype | table sourcetype</query>
+        <earliest>-7d@h</earliest>
+        <latest>now</latest>
+      </search>
+      <default>SWELF</default>
+      <initialValue>SWELF</initialValue>
+    </input>
   </fieldset>
   <row>
     <panel>
@@ -18,7 +30,7 @@
       <table>
         <title>IP</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ | stats count by host</query>
+          <query>sourcetype=$sourcetype$ $SourceComputer$ | stats count by host</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -36,7 +48,7 @@
       <table>
         <title>EventLogName</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$  | stats count by EventLogName| sort - count limit=10</query>
+          <query>sourcetype=$sourcetype$ $SourceComputer$  | stats count by EventLogName| sort - count limit=10</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -48,7 +60,7 @@
         <option name="rowNumbers">true</option>
         <option name="totalsRow">false</option>
         <drilldown>
-          <link target="_blank">search?q=sourcetype=SWELF%20$SourceComputer$%20%20%7C%20stats%20count%20by%20EventLogName%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
+          <link target="_blank">search?q=sourcetype=$sourcetype$%20$SourceComputer$%20%20%7C%20stats%20count%20by%20EventLogName%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
         </drilldown>
       </table>
     </panel>
@@ -57,7 +69,7 @@
       <chart>
         <title>EventID</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ | table EventID | stats count by EventID</query>
+          <query>sourcetype=$sourcetype$ $SourceComputer$ | table EventID | stats count by EventID</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -71,7 +83,7 @@
       <chart>
         <title>DisplayName</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ | table DisaplyName, ComputerName | stats count by DisplayName</query>
+          <query>sourcetype=$sourcetype$ $SourceComputer$ | table DisaplyName, ComputerName | stats count by DisplayName</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -86,7 +98,7 @@
       <chart>
         <title>Search_Rule Hits</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ | table Search_Rule, ComputerName | stats count by Search_Rule</query>
+          <query>sourcetype=$sourcetype$ $SourceComputer$ | table Search_Rule, ComputerName | stats count by Search_Rule</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -104,7 +116,7 @@
       <table>
         <title>TTP Rulename</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$  rulename=* | stats count by rulename | sort - count limit=10</query>
+          <query>sourcetype=$sourcetype$ $SourceComputer$  rulename=* | stats count by rulename | sort - count limit=10</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -119,7 +131,7 @@
       <table>
         <title>Search_Rule Hits</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ | table EventLogName, Search_Rule, EventID 
+          <query>sourcetype=$sourcetype$ $SourceComputer$ | table EventLogName, Search_Rule, EventID 
 |stats count by  EventLogName, Search_Rule, EventID | sort - count limit=10</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
@@ -130,7 +142,7 @@
         <option name="rowNumbers">true</option>
         <option name="wrap">true</option>
         <drilldown>
-          <link target="_blank">search?q=sourcetype=SWELF%20$SourceComputer$%20%7C%20table%20EventLogName,%20Search_Rule,%20EventID%20%0A%7Cstats%20count%20by%20%20EventLogName,%20Search_Rule,%20EventID%20%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
+          <link target="_blank">search?q=sourcetype=$sourcetype$%20$SourceComputer$%20%7C%20table%20EventLogName,%20Search_Rule,%20EventID%20%0A%7Cstats%20count%20by%20%20EventLogName,%20Search_Rule,%20EventID%20%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
         </drilldown>
       </table>
     </panel>
@@ -141,7 +153,7 @@
       <chart>
         <title>ComputerName Logs Sent</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ | table * | stats count by SourceComputer</query>
+          <query>sourcetype=$sourcetype$ $SourceComputer$ | table * | stats count by SourceComputer</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -158,14 +170,14 @@
       <table>
         <title>ERRORS</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ MethodInCode=* | table ComputerName,MethodInCode,Severity,LogSeverity | stats count by MethodInCode</query>
+          <query>sourcetype=$sourcetype$ $SourceComputer$ MethodInCode=* | table ComputerName,MethodInCode,Severity,LogSeverity | stats count by MethodInCode</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
         <option name="count">10</option>
         <option name="drilldown">cell</option>
         <drilldown>
-          <link target="_blank">search?q=sourcetype=SWELF%20$SourceComputer$%20MethodInCode=*%20%7C%20table%20ComputerName,MethodInCode,Severity,LogSeverity%20%7C%20stats%20count%20by%20MethodInCode%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
+          <link target="_blank">search?q=sourcetype=$sourcetype$%20$SourceComputer$%20MethodInCode=*%20%7C%20table%20ComputerName,MethodInCode,Severity,LogSeverity%20%7C%20stats%20count%20by%20MethodInCode%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
         </drilldown>
       </table>
     </panel>
@@ -176,7 +188,7 @@
       <table>
         <title>Images Using DNS</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ queryname=* image=*
+          <query>sourcetype=$sourcetype$ $SourceComputer$ queryname=* image=*
 | table queryname, image| stats count by queryname, image
 | sort - count limit=10</query>
           <earliest>-7d@h</earliest>
@@ -190,7 +202,7 @@
         <option name="rowNumbers">false</option>
         <option name="totalsRow">true</option>
         <drilldown>
-          <link target="_blank">search?q=sourcetype=SWELF%20$SourceComputer$%20queryname=*%20image=*%0A%7C%20table%20queryname,%20image%7C%20stats%20count%20by%20queryname,%20image%0A%7C%20sort%20-%20count%20limit=10&amp;earliest=-24h@h&amp;latest=now</link>
+          <link target="_blank">search?q=sourcetype=$sourcetype$%20$SourceComputer$%20queryname=*%20image=*%0A%7C%20table%20queryname,%20image%7C%20stats%20count%20by%20queryname,%20image%0A%7C%20sort%20-%20count%20limit=10&amp;earliest=-24h@h&amp;latest=now</link>
         </drilldown>
       </table>
     </panel>
@@ -199,7 +211,7 @@
       <table>
         <title>Images using HTTP(s)</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ image=* destinationportname=http* | table image,destinationport| stats count by image,destinationport
+          <query>sourcetype=$sourcetype$ $SourceComputer$ image=* destinationportname=http* | table image,destinationport| stats count by image,destinationport
 | sort - count limit=10</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
@@ -218,7 +230,7 @@
       <table>
         <title>Rare Bottom 10 DNS Images</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ queryname=* image=*
+          <query>sourcetype=$sourcetype$ $SourceComputer$ queryname=* image=*
 | table queryname, image| stats count by queryname, image
 | sort - count
 | rare queryname,image limit=10</query>
@@ -237,7 +249,7 @@
       <table>
         <title>Rare Bottom 10 HTTPs</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ image=* destinationportname=http* 
+          <query>sourcetype=$sourcetype$ $SourceComputer$ image=* destinationportname=http* 
 | table image,destinationport
 | stats count by image,destinationport
 | sort - count
@@ -259,7 +271,7 @@
       <table>
         <title>Parnet Child Processes</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$  image=* parentimage=* | table image,parentimage| stats count by parentimage,image
+          <query>sourcetype=$sourcetype$ $SourceComputer$  image=* parentimage=* | table image,parentimage| stats count by parentimage,image
 | sort - count limit=10</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
@@ -276,7 +288,7 @@
       <table>
         <title>Parnet Child Processes</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$  image=* parentimage=* | table image,parentimage| stats count by image,parentimage
+          <query>sourcetype=$sourcetype$ $SourceComputer$  image=* parentimage=* | table image,parentimage| stats count by image,parentimage
 | sort - count 
 | rare parentimage,image limit=10</query>
           <earliest>-7d@h</earliest>
@@ -297,7 +309,7 @@
       <table>
         <title>Top 10 DLL Loads</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ * | top limit=10 imageloaded</query>
+          <query>sourcetype=$sourcetype$ $SourceComputer$ * | top limit=10 imageloaded</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -313,7 +325,7 @@
       <table>
         <title>Rare DLL Loads</title>
         <search>
-          <query>sourcetype=SWELF $SourceComputer$ 
+          <query>sourcetype=$sourcetype$ $SourceComputer$ 
 | rare limit=10 imageloaded</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
@@ -324,7 +336,7 @@
         <option name="refresh.display">progressbar</option>
         <option name="totalsRow">true</option>
         <drilldown>
-          <link target="_blank">search?q=sourcetype=SWELF%20$SourceComputer$%20%0A%7C%20rare%20limit=10%20imageloaded&amp;earliest=-7d@h&amp;latest=now</link>
+          <link target="_blank">search?q=sourcetype=$sourcetype$%20$SourceComputer$%20%0A%7C%20rare%20limit=10%20imageloaded&amp;earliest=-7d@h&amp;latest=now</link>
         </drilldown>
       </table>
     </panel>
