@@ -153,7 +153,7 @@
       <chart>
         <title>ComputerName Logs Sent</title>
         <search>
-          <query>sourcetype=$sourcetype$ $SourceComputer$ | table * | stats count by SourceComputer</query>
+          <query>sourcetype=$sourcetype$ | timechart span=1d count(EventRecordID) BY SourceComputer</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
@@ -167,6 +167,7 @@
       </chart>
     </panel>
     <panel>
+      <title>SWELF Self Reporting</title>
       <table>
         <title>ERRORS</title>
         <search>
@@ -176,6 +177,7 @@
         </search>
         <option name="count">10</option>
         <option name="drilldown">cell</option>
+        <option name="refresh.display">progressbar</option>
         <drilldown>
           <link target="_blank">search?q=sourcetype=$sourcetype$%20$SourceComputer$%20MethodInCode=*%20%7C%20table%20ComputerName,MethodInCode,Severity,LogSeverity%20%7C%20stats%20count%20by%20MethodInCode%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
         </drilldown>
