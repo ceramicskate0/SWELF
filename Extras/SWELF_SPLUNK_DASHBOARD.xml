@@ -23,12 +23,19 @@
       <default>SWELF</default>
       <initialValue>SWELF</initialValue>
     </input>
+    <input type="time" token="TimeFrame">
+      <label>TimeFrame</label>
+      <default>
+        <earliest>-7d@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
   </fieldset>
   <row>
     <panel>
-      <title>IP</title>
+      <title>IP and Log Count</title>
       <table>
-        <title>IP</title>
+        <title>IP and Log Count</title>
         <search>
           <query>sourcetype=$sourcetype$ $SourceComputer$ | stats count by host</query>
           <earliest>-7d@h</earliest>
@@ -39,6 +46,20 @@
         <format type="number" field="count">
           <option name="precision">0</option>
         </format>
+      </table>
+    </panel>
+    <panel>
+      <title>Top 10 Recent Log Received by Date</title>
+      <table>
+        <title>Top 10 Recent Log Received by Date</title>
+        <search>
+          <query>| metadata type=hosts | sort recentTime desc | convert ctime(recentTime) as Recent_Time 
+| head 10
+| table Recent_Time,host</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
       </table>
     </panel>
   </row>
@@ -60,7 +81,7 @@
         <option name="rowNumbers">true</option>
         <option name="totalsRow">false</option>
         <drilldown>
-          <link target="_blank">search?q=sourcetype=$sourcetype$%20$SourceComputer$%20%20%7C%20stats%20count%20by%20EventLogName%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
+          <link target="_blank">search?q=sourcetype=$sourcetype$%20$SourceComputer$%20%20%7C%20stats%20count%20by%20EventLogName%7C%20sort%20-%20count%20limit=10&amp;earliest=$TimeFrame$&amp;latest=now</link>
         </drilldown>
       </table>
     </panel>
@@ -340,6 +361,24 @@
         <drilldown>
           <link target="_blank">search?q=sourcetype=$sourcetype$%20$SourceComputer$%20%0A%7C%20rare%20limit=10%20imageloaded&amp;earliest=-7d@h&amp;latest=now</link>
         </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Possible Log Forwarding Stopped</title>
+        <search>
+          <query>| metasearch sourcetype=$sourcetype$ $SourceComputer$ 
+ | eval host=upper(host)
+ | stats count by host
+ | append [ | inputlookup critical_systems | eval host=upper(Host_name), count=0 | fields host count ]
+ | stats sum(count) AS Total BY host
+ | where Total&lt;=1</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
       </table>
     </panel>
   </row>
