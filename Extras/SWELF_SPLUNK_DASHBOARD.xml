@@ -133,9 +133,9 @@
       </chart>
     </panel>
     <panel>
-      <title>Rulename TTPs</title>
+      <title>10 Most Common Sysmon rulenames</title>
       <table>
-        <title>TTP Rulename</title>
+        <title>10 Most Common Sysmon rulenames</title>
         <search>
           <query>sourcetype=$sourcetype$ $SourceComputer$  rulename=* | stats count by rulename | sort - count limit=10</query>
           <earliest>-7d@h</earliest>
