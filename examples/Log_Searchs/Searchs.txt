@@ -106,20 +106,16 @@ count:&:10~Microsoft-Windows-PowerShell/Operational~4104
 #Microsoft-Windows-SoftwareRestrictionPolicies
 ~Microsoft-Windows-SoftwareRestrictionPolicies~866
 
-#WMI
-ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider
-root\cimv2
-
 #Microsoft-Windows-WMI-Activity/Operational
 root\~Microsoft-Windows-WMI-Activity/Operational~5858
 0x0~Microsoft-Windows-WMI-Activity/Operational~5857
 ~Microsoft-Windows-WMI-Activity/Operational~5861
 Temporary~Microsoft-Windows-WMI-Activity/Operational~5860
 Win32_Bios~Microsoft-Windows-WMI-Activity/Operational~
+ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider~Microsoft-Windows-WMI-Activity/Operational~
+root\cimv2~Microsoft-Windows-WMI-Activity/Operational~
 
 #Windows-Sysmon/Operational
-\appdata\~Microsoft-Windows-Sysmon/Operational~2
-\windows\~Microsoft-Windows-Sysmon/Operational~2
 ~Microsoft-Windows-Sysmon/Operational~2
 ~Microsoft-Windows-Sysmon/Operational~6
 ~Microsoft-Windows-Sysmon/Operational~7
@@ -136,6 +132,8 @@ Win32_Bios~Microsoft-Windows-WMI-Activity/Operational~
 ~Microsoft-Windows-Sysmon/Operational~21
 ~Microsoft-Windows-Sysmon/Operational~22
 ~Microsoft-Windows-Sysmon/Operational~255
+\appdata\~Microsoft-Windows-Sysmon/Operational~2
+\windows\~Microsoft-Windows-Sysmon/Operational~2
 sysmon~Microsoft-Windows-Sysmon/Operational~5
 #powershell.exe~Microsoft-Windows-Sysmon/Operational~10
 #wmiprvse.exe~Microsoft-Windows-Sysmon/Operational~10
@@ -243,6 +241,8 @@ dbguiremotebreakin~Microsoft-Windows-Sysmon/Operational~8
 System.Management.Automation.ni~Microsoft-Windows-Sysmon/Operational~10
 .Build.~Microsoft-Windows-Sysmon/Operational~7
 search_multiple:wmiPrvSE.exe`parent~Microsoft-Windows-Sysmon/Operational~1
+ROOT/Microsoft/Windows/EventTracingManagement:MSFT_EtwTraceProvider~Microsoft-Windows-Sysmon/Operational~
+root\cimv2~Microsoft-Windows-Sysmon/Operational~
 
 #Sysmon Connections to watch
 .opendns.com~Microsoft-Windows-Sysmon/Operational~3
@@ -261,7 +261,7 @@ malware~microsoft-Windows-Windows Defender/Operational~
 disabled~microsoft-Windows-Windows Defender/Operational~
 windows defender antivirus configuration has changed.~microsoft-Windows-Windows Defender/Operational~
 ~microsoft-Windows-Windows Defender/Operational~5007
-windows defender antivirus scanning for spyware and other potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
+potentially unwanted software is disabled.~microsoft-Windows-Windows Defender/Operational~
 ~microsoft-Windows-Windows Defender/Operational~1007
 ~microsoft-Windows-Windows Defender/Operational~1008
 ~microsoft-Windows-Windows Defender/Operational~1015
