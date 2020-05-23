@@ -62,6 +62,26 @@
         <option name="drilldown">none</option>
       </table>
     </panel>
+  </row>
+  <row>
+    <panel>
+      <title>ComputerName Logs Sent</title>
+      <chart>
+        <title>ComputerName Logs Sent</title>
+        <search>
+          <query>sourcetype=$sourcetype$ | timechart span=1d count(EventRecordID) BY SourceComputer</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.chart">bar</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
     <panel>
       <title>Recent Log Usage</title>
       <chart>
@@ -104,6 +124,23 @@
         <option name="trellis.scales.shared">1</option>
         <option name="trellis.size">medium</option>
       </chart>
+    </panel>
+    <panel>
+      <title>Possible Log Forwarding Stopped</title>
+      <table>
+        <title>Possible Log Forwarding Stopped</title>
+        <search>
+          <query>| metasearch sourcetype=$sourcetype$ $SourceComputer$ 
+ | eval host=upper(host)
+ | stats count by host
+ | append [ | inputlookup critical_systems | eval host=upper(Host_name), count=0 | fields host count ]
+ | stats sum(count) AS Total BY host
+ | where Total&lt;=1</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
     </panel>
   </row>
   <row>
@@ -207,43 +244,6 @@
         <option name="wrap">true</option>
         <drilldown>
           <link target="_blank">search?q=sourcetype=$sourcetype$%20$SourceComputer$%20%7C%20table%20EventLogName,%20Search_Rule,%20EventID%20%0A%7Cstats%20count%20by%20%20EventLogName,%20Search_Rule,%20EventID%20%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
-        </drilldown>
-      </table>
-    </panel>
-  </row>
-  <row>
-    <panel>
-      <title>ComputerName Logs Sent</title>
-      <chart>
-        <title>ComputerName Logs Sent</title>
-        <search>
-          <query>sourcetype=$sourcetype$ | timechart span=1d count(EventRecordID) BY SourceComputer</query>
-          <earliest>-7d@h</earliest>
-          <latest>now</latest>
-        </search>
-        <option name="charting.axisTitleX.visibility">visible</option>
-        <option name="charting.axisTitleY.visibility">visible</option>
-        <option name="charting.axisTitleY2.visibility">visible</option>
-        <option name="charting.chart">bar</option>
-        <option name="charting.drilldown">none</option>
-        <option name="charting.legend.placement">right</option>
-        <option name="refresh.display">progressbar</option>
-      </chart>
-    </panel>
-    <panel>
-      <title>SWELF Self Reporting</title>
-      <table>
-        <title>ERRORS</title>
-        <search>
-          <query>sourcetype=$sourcetype$ $SourceComputer$ MethodInCode=* | table ComputerName,MethodInCode,Severity,LogSeverity | stats count by MethodInCode</query>
-          <earliest>-7d@h</earliest>
-          <latest>now</latest>
-        </search>
-        <option name="count">10</option>
-        <option name="drilldown">cell</option>
-        <option name="refresh.display">progressbar</option>
-        <drilldown>
-          <link target="_blank">search?q=sourcetype=$sourcetype$%20$SourceComputer$%20MethodInCode=*%20%7C%20table%20ComputerName,MethodInCode,Severity,LogSeverity%20%7C%20stats%20count%20by%20MethodInCode%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
         </drilldown>
       </table>
     </panel>
@@ -409,19 +409,20 @@
   </row>
   <row>
     <panel>
+      <title>SWELF Self Reporting</title>
       <table>
-        <title>Possible Log Forwarding Stopped</title>
+        <title>ERRORS</title>
         <search>
-          <query>| metasearch sourcetype=$sourcetype$ $SourceComputer$ 
- | eval host=upper(host)
- | stats count by host
- | append [ | inputlookup critical_systems | eval host=upper(Host_name), count=0 | fields host count ]
- | stats sum(count) AS Total BY host
- | where Total&lt;=1</query>
+          <query>sourcetype=$sourcetype$ $SourceComputer$ MethodInCode=* | table ComputerName,MethodInCode,Severity,LogSeverity | stats count by MethodInCode</query>
           <earliest>-7d@h</earliest>
           <latest>now</latest>
         </search>
-        <option name="drilldown">none</option>
+        <option name="count">10</option>
+        <option name="drilldown">cell</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">search?q=sourcetype=$sourcetype$%20$SourceComputer$%20MethodInCode=*%20%7C%20table%20ComputerName,MethodInCode,Severity,LogSeverity%20%7C%20stats%20count%20by%20MethodInCode%7C%20sort%20-%20count%20limit=10&amp;earliest=-7d@h&amp;latest=now</link>
+        </drilldown>
       </table>
     </panel>
   </row>
