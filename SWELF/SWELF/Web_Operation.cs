@@ -32,70 +32,12 @@ namespace SWELF
             }
         }
 
-        internal static void GET_All_Files_HTTP(string Web_Config_URL)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Web_Config_URL);
-            request.AllowAutoRedirect = false;
-            request.UnsafeAuthenticatedConnectionSharing = false;
-            request.Timeout = 150000;
-
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.CheckCertificateRevocationList = false;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls | SecurityProtocolType.Ssl3;
-
-            using (CustomWebClient response = new CustomWebClient())
-            {
-                string WebContents = "";
-
-                if (string.IsNullOrEmpty(Central_Config_File_Web_Cache))
-                {
-                    Uri uri = new Uri(Web_Config_URL);
-                    WebContents = response.DownloadString(uri);//this will make app try to download data only once
-                    Central_Config_File_Web_Cache = WebContents;
-                }
-                else
-                {
-                    WebContents = Central_Config_File_Web_Cache;
-                }
-                Regex regex = new Regex(GET_DirectoryListingRegexForUrl(WebContents));
-                MatchCollection matches = regex.Matches(WebContents);
-                if (matches.Count > 0)
-                {
-                    if (Config_Files_on_the_Web_Server.Count > 1)
-                    {
-                        Config_Files_on_the_Web_Server.Clear();
-                    }
-                    foreach (Match match in matches)
-                    {
-                        if (match.Success && Web_Config_URL.Contains(".txt") == false && Web_Config_URL.Contains(".conf") == false)
-                        {
-                            Config_Files_on_the_Web_Server.Add(Web_Config_URL + match.Groups["name"].ToString());
-                        }
-                        else
-                        {
-                            Config_Files_on_the_Web_Server.Add(Web_Config_URL);
-                        }
-                    }
-                }
-                else
-                {
-                    Config_Files_on_the_Web_Server.Add(Web_Config_URL);
-                }
-                WebContents = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-            }
-        }
-
         internal static bool VERIFY_Central_File_Config_Hash(string HTTP_File_Path, string Local_File_Path)
         {
             string HTTPFileHash;
             string LocalFileHash;
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HTTP_File_Path);
-                request.AllowAutoRedirect = false;
-                request.UnsafeAuthenticatedConnectionSharing = false;
-                request.Timeout = 150000;
-
                 ServicePointManager.Expect100Continue = true;
                 ServicePointManager.CheckCertificateRevocationList = false;
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls | SecurityProtocolType.Ssl3;
@@ -146,7 +88,7 @@ namespace SWELF
             {
                 if ((!e.Message.Contains("The operation has timed out") || !e.Message.Contains("The remote name could not be resolved: ")) || (Settings.Logging_Level_To_Report.ToLower() == "informataion" || Settings.Logging_Level_To_Report.ToLower() == "verbose"))
                 {
-                    Error_Operation.WRITE_Errors_To_Log("VERIFY_Central_File_Config_Hash()", e.Message.ToString() + " " + HTTP_File_Path + " " + Local_File_Path, Error_Operation.LogSeverity.Informataion);
+                    Error_Operation.Log_Error("VERIFY_Central_File_Config_Hash()", e.Message.ToString() + " " + HTTP_File_Path + " " + Local_File_Path,e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
                 }
                 return false;
             }
@@ -162,11 +104,6 @@ namespace SWELF
             string LocalFileHash;
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(HTTP_File_Path);
-                request.AllowAutoRedirect = false;
-                request.UnsafeAuthenticatedConnectionSharing = false;
-                request.Timeout = 150000;
-
                 ServicePointManager.Expect100Continue = true;
                 ServicePointManager.CheckCertificateRevocationList = false;
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls | SecurityProtocolType.Ssl3;
@@ -215,7 +152,7 @@ namespace SWELF
                 }
                 else if ((e.Message.Contains("The operation has timed out") || e.Message.Contains("The remote name could not be resolved: ")))
                 {
-                    Error_Operation.WRITE_Errors_To_Log("VERIFY_Central_File_Config_Hash()", "Network unavaiulable for SWELF." +e.Message.ToString() + " " + HTTP_File_Path + " ", Error_Operation.LogSeverity.Informataion);
+                    Error_Operation.Log_Error("VERIFY_Central_File_Config_Hash()", "Network unavaiulable for SWELF." +e.Message.ToString() + " " + HTTP_File_Path + " ", e.StackTrace.ToString(),Error_Operation.LogSeverity.Informataion);
                 }
                 return false;
             }

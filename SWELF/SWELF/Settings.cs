@@ -257,7 +257,7 @@ namespace SWELF
         //Settings ThreadInfo 1 per file
         private static int ThreadsDone_Setup = 0;
 
-        //cahced
+        //cached
         internal static Dictionary<string, string> Central_Config_Hashs = new Dictionary<string, string>();
 
         //-----------------------------End Settings Config------------------------------------
@@ -597,13 +597,20 @@ namespace SWELF
             catch (Exception e)
             {
                 Searchs = Searchs.Distinct().ToList();
-                Stop(SWELF_CRIT_ERROR_EXIT_CODE, "CHECK_if_all_Search_Terms_have_Indexed_LogsSources() ", e.Message.ToString() + Searchs.Count,e.StackTrace.ToString());
+                Stop(SWELF_CRIT_ERROR_EXIT_CODE, "CHECK_if_all_Search_Terms_have_Indexed_LogsSources() ", e.Message.ToString() + Searchs.Count,e.StackTrace.ToString(), Error_Operation.LogSeverity.Critical);
             }
         }
 
         internal static bool CHECK_If_EventLog_Exsits(string EventLog_ToFind)
         {
-            return EventLogs_List_Of_Avaliable.Any(s => string.Equals(s.ToLower(), EventLog_ToFind.ToLower(), StringComparison.OrdinalIgnoreCase));
+            try
+            {
+                return EventLogs_List_Of_Avaliable.Any(s => string.Equals(s.ToLower(), EventLog_ToFind.ToLower(), StringComparison.OrdinalIgnoreCase));
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
         private static void READ_Powershell_SearchTerms(string Contents)
@@ -621,7 +628,7 @@ namespace SWELF
                 }
             }
             catch (Exception e)
-            {
+            {  
                 EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog("READ_Powershell_SearchTerms()  " + e.Message.ToString());
                 File_Operation.CREATE_NEW_Files_And_Dirs(Plugin_Search_Location, SearchTermsFileName_FileName, "#File Path to Powershell Script~ SearchTerm~ Powershell Script Arguments");
             }
@@ -714,7 +721,7 @@ namespace SWELF
         internal static void Log_Storage_Location_Unavailable(string e)
         {
             EventLog_w_PlaceKeeper = EventLog_w_PlaceKeeper_Backup;
-            Error_Operation.WRITE_Errors_To_Log("Log_Storage_Location_Unavailable(string e)", e + " Access to log storage location may not be available.", Error_Operation.LogSeverity.Critical);
+            Error_Operation.Log_Error("Log_Storage_Location_Unavailable(string"+ e + ")",e,"",Error_Operation.LogSeverity.Warning);
         }
 
         internal static void SHOW_Help_Menu()
@@ -787,11 +794,10 @@ Manual Located At:https://github.com/ceramicskate0/SWELF/wiki/CommandLine-Inputs
 """, "Simmple Windows EventLog Forwarder (SWELF)",MessageBoxButtons.OK,MessageBoxIcon.Question,MessageBoxDefaultButton.Button1,MessageBoxOptions.DefaultDesktopOnly);
         }
 
-        internal static void Stop(int error_code,string ErrorMethod,string Message,string StackInfo)
+        internal static void Stop(int error_code,string ErrorMethod,string Message,string StackInfo,Error_Operation.LogSeverity Ls)
         {
             EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog("ALERT: SWELF MAIN UNSALVAGEABLE ERROR: "+ ErrorMethod + "   " + Message +" "+ StackInfo, Error_Operation.EventID.SWELF_MAIN_APP_ERROR);
-            Error_Operation.WRITE_Stored_Errors();
-            Error_Operation.SEND_Errors_To_Central_Location();
+            Error_Operation.Log_Error("STOP(" + error_code + ErrorMethod + ")", Message, StackInfo, Ls);
             Environment.Exit(error_code);
         }
 
@@ -822,7 +828,7 @@ Manual Located At:https://github.com/ceramicskate0/SWELF/wiki/CommandLine-Inputs
 
             Reg_Operation.WRITE_Default_SWELF_Reg_Keys();
 
-            Error_Operation.WRITE_Errors_To_Log("WRITE_Default_Configs()", "SWELF created new default config files for all settings", Error_Operation.LogSeverity.FailureAudit);
+            Error_Operation.Log_Error("WRITE_Default_Configs()", "SWELF created new default config files for all settings","", Error_Operation.LogSeverity.FailureAudit);
         }
     }
 }

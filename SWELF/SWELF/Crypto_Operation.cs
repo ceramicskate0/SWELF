@@ -57,7 +57,7 @@ namespace SWELF
             {
                 if (RetryNumber == 0)
                 {
-                    if (e.Message.ToString().Contains("The input data is not a complete block.") && File_Operation.CHECK_File_Encrypted(FilePath) == false)
+                    if (e.Message.ToString().Contains("The input data is not a complete block."))
                     {
                         Encrypt_File_Contents(FilePath);
                         File.Encrypt(FilePath);
@@ -394,9 +394,9 @@ namespace SWELF
             var sha256 = SHA256.Create();
             try
             {
-                if (File_Operation.CHECK_if_File_Exists(Value) && (File_Operation.CHECK_File_Encrypted(Value)))
+                if (File_Operation.CHECK_if_File_Exists(Value))
                 {
-                    return (BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Decrypt_File_Contents(Value, false)))));
+                    return (BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(Value))));
                 }
                 else
                 {
@@ -430,38 +430,6 @@ namespace SWELF
                 content += (Cipher_Parts.ElementAt(System.Convert.ToInt32(PWarray[x])));
             }
            return (Hash(content));
-        }
-
-        internal static bool VERIFY_String_Hashs(string String1, string string2)
-        {
-            string File1Hash;
-            string File2Hash;
-            try
-            {
-                using (var sha256 = SHA256.Create())
-                {
-                    File1Hash = BitConverter.ToString(sha256.ComputeHash(CONVERT_To_ASCII_Bytes(String1.Trim().Replace('\n', ' ').ToCharArray().ToString()))).ToLowerInvariant();
-                }
-                using (var sha2562 = SHA256.Create())
-                {
-                    File2Hash = BitConverter.ToString(sha2562.ComputeHash(CONVERT_To_ASCII_Bytes(string2.Trim().Replace('\n', ' ').ToCharArray().ToString()))).ToLowerInvariant();
-
-                }
-
-                if (File1Hash == File2Hash)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception e)
-            {
-                Error_Operation.WRITE_Errors_To_Log("VERIFY_File_Hashs()", "Error " + e.Message.ToString() +e.StackTrace, Error_Operation.LogSeverity.Warning);//log change
-                return false;
-            }
         }
 
         internal static bool CHECK_Value_Encrypted(string Value)

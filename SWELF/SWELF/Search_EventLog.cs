@@ -852,7 +852,7 @@ namespace SWELF
             }
             else
             {
-                Error_Operation.Log_Error("SEARCH_CMD_Search_Multiple_SearchTerms()", SearchTerm + " has to many things to search for per log. Limit is less than " + Limit, "", Error_Operation.LogSeverity.Warning);
+                Error_Operation.Log_Error("SEARCH_CMD_Search_Multiple_SearchTerms()", SearchTerm + " has to many terms to search for per log. Limit is less than " + Limit, "", Error_Operation.LogSeverity.Warning);
                 return ADD_Search_Tagging(MultSearchList, SearchRule);
             }
         }

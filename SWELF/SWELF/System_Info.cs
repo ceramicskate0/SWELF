@@ -74,11 +74,6 @@ namespace SWELF
 
         }
 
-        private static long Get_Allocated_Memory()
-        {
-            return Process.GetCurrentProcess().WorkingSet64 / 1000000;
-        }
-
         internal static decimal CHECK_Total_Memory_Useage()
         {
             Int64 phav = System_Info.GetPhysicalAvailableMemoryInMiB();
@@ -125,7 +120,7 @@ namespace SWELF
             {
                 if (Current_Memory_Dump_Retry_Number >= Max_Memory_Dump_Retry_Number)
                 {
-                    Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE, "CHECK_Memory()", "SWELF Detected MAXIMUM Memory useage and stopped after " + Max_Memory_Dump_Retry_Number.ToString() + " tries to resolve issue.","");
+                    Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE, "CHECK_Memory()", "SWELF Detected MAXIMUM Memory useage and stopped after " + Max_Memory_Dump_Retry_Number.ToString() + " tries to resolve issue.","",Error_Operation.LogSeverity.Critical);
                 }
                 else
                 {

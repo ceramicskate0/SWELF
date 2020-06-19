@@ -39,10 +39,32 @@ namespace SWELF
 
             if (Settings.CHECK_If_EventLog_Exsits(Eventlog_FullName))
             {
-                long First_EventID = GET_First_EventRecordID_InLogFile(Eventlog_FullName);
-                long  Last_EventID= GET_Last_EventRecordID_InLogFile(Eventlog_FullName);
+                long First_EventID;
+                long Last_EventID;
 
-                if (PlaceKeeper_EventRecordID > First_EventID && PlaceKeeper_EventRecordID < Last_EventID)//Normal operation placekkeeper in middle of log file
+                try
+                {
+                     First_EventID = GET_First_EventRecordID_InLogFile(Eventlog_FullName);
+                }
+                catch
+                {
+                    First_EventID = -1;
+                }
+                try
+                {
+                    Last_EventID = GET_Last_EventRecordID_InLogFile(Eventlog_FullName);
+                }
+                catch
+                {
+                    Last_EventID = -1;
+                }
+
+                if (First_EventID==-1 || Last_EventID==-1)
+                {
+                    Error_Operation.Log_Error("READ_EventLog() GET_Last_EventRecordID_InLogFile && GET_First_EventRecordID_InLogFile", Eventlog_FullName + " EventLog is empty or null.", "", Error_Operation.LogSeverity.Informataion);
+                    Settings.EventLog_w_PlaceKeeper[Eventlog_FullName] = 0;
+                }
+                else if (PlaceKeeper_EventRecordID > First_EventID && PlaceKeeper_EventRecordID < Last_EventID)//Normal operation placekkeeper in middle of log file
                 {
                     EVTlog_PlaceHolder = PlaceKeeper_EventRecordID;
                     READ_WindowsEventLog_API(Eventlog_FullName, EVTlog_PlaceHolder);
@@ -62,7 +84,7 @@ namespace SWELF
                 {
                     READ_WindowsEventLog_API(Eventlog_FullName, First_EventID);
                     EventLog_SWELF.WRITE_FailureAudit_Error_To_EventLog("Missed "+ (First_EventID-PlaceKeeper_EventRecordID) + " logs from '"+ Eventlog_FullName+"' on machine '"+Settings.ComputerName +"' the first eventlog id was older than where app left off. Possible log file cycle/overwrite between runs. First event log id number in the log is "+ First_EventID+" SWELF left off from last run at "+PlaceKeeper_EventRecordID);
-                    Settings.EventLog_w_PlaceKeeper[Eventlog_FullName.ToLower()] = Last_EventID;
+                    Settings.EventLog_w_PlaceKeeper[Eventlog_FullName] = Last_EventID;
                 }
                 else//unknown/catch condition assume 1st run
                 {

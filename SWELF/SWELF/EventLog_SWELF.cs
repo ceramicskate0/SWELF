@@ -129,26 +129,6 @@ namespace SWELF
             }
         }
 
-        internal static void WRITE_Critical_EventLog_DataType(EventLog_Entry EvntLog)
-        {
-            Settings.SWELF_EvtLog_OBJ.Source = Settings.SWELF_EventLog_Name;
-
-            using (EventLog myLogger = new EventLog(Settings.SWELF_EvtLog_OBJ.Source, Environment.MachineName, CHECK_If_Protected_Log_Name(EvntLog.LogName)))
-            {
-                myLogger.WriteEntry(EvntLog.EventData, EventLogEntryType.FailureAudit, EvntLog.EventID);
-            }
-        }
-
-        internal static void WRITE_Warning_EventLog_DataType(EventLog_Entry EvntLog)
-        {
-            Settings.SWELF_EvtLog_OBJ.Source = Settings.SWELF_EventLog_Name;
-
-            using (EventLog myLogger = new EventLog(Settings.SWELF_EvtLog_OBJ.Source, Environment.MachineName, CHECK_If_Protected_Log_Name(EvntLog.LogName)))
-            {
-                myLogger.WriteEntry(EvntLog.EventData, EventLogEntryType.Warning, EvntLog.EventID);
-            }
-        }
-
         internal static string CHECK_If_Protected_Log_Name (string EvntLog_LogName)
         {
             if (Protected_Event_Log_Names.Any(s => EvntLog_LogName.ToLower().IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0))

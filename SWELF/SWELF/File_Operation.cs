@@ -159,7 +159,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
                 }
                 catch (Exception e)
                 {
-                    Error_Operation.WRITE_Errors_To_Log("Write_Hash_Output()", e.Message.ToString(), Error_Operation.LogSeverity.Warning);
+                    Error_Operation.Log_Error("Write_Hash_Output()", e.Message.ToString(),e.StackTrace.ToString(), Error_Operation.LogSeverity.Warning);
                 }
             }
             CHECK_File_Size(Settings.Hashs_File_Path, .0002);
@@ -177,7 +177,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
                 }
                 catch (Exception e)
                 {
-                    Error_Operation.WRITE_Errors_To_Log("Write_IP_Output()", e.Message.ToString(), Error_Operation.LogSeverity.Warning);
+                    Error_Operation.Log_Error("Write_IP_Output()", e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Warning);
                 }
             }
             CHECK_File_Size(Settings.IPs_File_Path, .0002);
@@ -223,7 +223,7 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             }
             catch (Exception e)
             {
-                Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE, "CREATE_NEW_Files_And_Dirs() check IO restrictions on machine for app.", e.Message.ToString(), e.StackTrace.ToString());
+                Settings.Stop(Settings.SWELF_CRIT_ERROR_EXIT_CODE, "CREATE_NEW_Files_And_Dirs() check IO restrictions on machine for app.", e.Message.ToString(), e.StackTrace.ToString(),Error_Operation.LogSeverity.Critical);
             }
         }
 
@@ -305,12 +305,10 @@ Microsoft-WindowsCodeIntegrity/Operational=1
             if (!CHECK_if_File_Exists(Settings.GET_SearchTermsFile_Path))
             {
                 CREATE_NEW_Files_And_Dirs(Settings.Search_File_Location, Settings.SearchTermsFileName_FileName, GET_Default_Logs_Search_File_Contents);
-                Crypto_Operation.Secure_File(Settings.GET_SearchTermsFile_Path);
             }
             if (!CHECK_if_File_Exists(Settings.GET_WhiteList_SearchTermsFile_Path))
             {
                 CREATE_NEW_Files_And_Dirs(Settings.Search_File_Location, Settings.Search_WhiteList_FileName, GET_Default_Whitelist_File_Contents);
-                Crypto_Operation.Secure_File(Settings.GET_WhiteList_SearchTermsFile_Path);
             }
         }
 
@@ -321,11 +319,6 @@ Microsoft-WindowsCodeIntegrity/Operational=1
         {
             VERIFY_AppConfig_Default_Files_Ready();
             VERIFY_Search_Default_Files_Ready();
-        }
-
-        internal static void HIDDEN_File(string path)
-        {
-            File.SetAttributes(path, FileAttributes.Hidden);
         }
 
         internal static string GET_CreationTime(string path)
@@ -352,15 +345,8 @@ Microsoft-WindowsCodeIntegrity/Operational=1
 
         internal static List<string> READ_File_In_List(string FilePath)
         {
-            if (CHECK_File_Encrypted(FilePath) == true)
-            {
                 List<string> TEMP_Contents = File.ReadAllLines(FilePath).ToList();
                 return TEMP_Contents;
-            }
-            else
-            {
-                return File.ReadAllLines(FilePath).ToList();
-            }
         }
 
         internal static string READ_AllText(string FilePath)

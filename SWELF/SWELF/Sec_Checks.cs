@@ -106,22 +106,6 @@ namespace SWELF
             }
         }
 
-
-
-        //internal static bool CHECK_If_EventLog_Missing(EventLog_Entry EVE)
-        //{
-        //    if ((EVE.EventLog_Seq_num != ELF.ID_Number_Of_Individual_log_Entry_EVENTLOG + 1) && ELF.EventlogMissing == false && (ELF.ID_Number_Of_Individual_log_Entry_EVENTLOG != 0 && EVE.EventRecordID != 0))
-        //    {
-        //        ELF.EventlogMissing = true;
-        //        LOG_SEC_CHECK_Fail("CHECK_If_EventLog_Missing() Logs on " + Settings.ComputerName + " under Event Log name " + EVE.LogName + " near or around Event ID " + EVE.EventRecordID.ToString() + " found Eventlogs missing.");
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
-
         internal static void GET_EventLog_Count_Before_Write(string EVT_Log_Name)
         {
             Eventlog_Count_Before_Write = EventLogSession.GlobalSession.GetLogInformation(Settings.SWELF_EventLog_Name, PathType.LogName).RecordCount.Value;
@@ -136,7 +120,7 @@ namespace SWELF
             else
             {
                 LOG_SEC_CHECK_Fail("Settings.CHECK_If_Running_as_Admin() " +Settings.ComputerName + " SWELF not running as admin and was unable to read eventlogs.");
-                Error_Operation.SEND_Errors_To_Central_Location();
+                Error_Operation.Log_Error("CHECK_If_Running_as_Admin()", "Not Running SWELF as admin, this means SWELF wont run.", "", Error_Operation.LogSeverity.Critical);
                 return false;
             }
         }
@@ -295,11 +279,6 @@ namespace SWELF
                         {
                             return true;
                         }
-                        else if (EVT_Log_Name == Settings.SWELF_EventLog_Name)
-                        {
-                            LOG_SEC_CHECK_Fail("Check_Event_Log_Is_Blank() "+EVT_Log_Name + " Eventlog is empty.");
-                            return false;//FAILED
-                        }
                         else
                         {
                             LOG_SEC_CHECK_Fail("Check_Event_Log_Is_Blank() "+ EVT_Log_Name + " Eventlog is empty.");
@@ -314,8 +293,8 @@ namespace SWELF
             }
             catch (Exception e)
             {
-                LOG_SEC_CHECK_Fail("Check_Event_Log_Is_Blank() EventLogSession.GlobalSession.GetLogInformation("+ EVT_Log_Name+", PathType.LogName). EventLog Name was " + EVT_Log_Name + ". Error message was "+e.Message.ToString());
-                return false;//FAILED
+                Error_Operation.Log_Error("Check_Event_Log_Is_Blank()","EventLogSession.GlobalSession.GetLogInformation("+ EVT_Log_Name+", PathType.LogName). EventLog Name was " + EVT_Log_Name+". Error message was "+e.Message.ToString(),e.StackTrace.ToString(),Error_Operation.LogSeverity.Informataion);
+                return true;//FAILED
             }
         }
 

@@ -64,7 +64,7 @@ namespace SWELF
                 }
             }
         }
-        internal static bool SEND_Logs(string Log, string FilePath = "", bool DeleteWhenDone = false)
+        internal static bool SEND_SINGLE_LOG(string Log)
         {
             bool Data_Sent = true;
 
@@ -79,14 +79,10 @@ namespace SWELF
                             Socket_Client_TCP(GET_Encoding_to_Return(Log), x);
                         }
                         catch (Exception e)
-                        {
-                            Data_Sent = false;
-                            Settings.Logs_Sent_to_ALL_Collectors = false;
-                            Error_Operation.Log_Error("SEND_Logs() transport_protocol tcp", Settings.Log_Forwarders_HostNames.ElementAt(x) + " " + e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
+                        { 
+                             Data_Sent = false;
                         }
                     }
-                    Settings.Logs_Sent_to_ALL_Collectors = true;
-                    Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.Logs_Last_Sent, DateTime.Now.ToString());
                 }
                 else//Default send logs UDP
                 {
@@ -95,57 +91,18 @@ namespace SWELF
                         try
                         {
                             UdpClient client = new UdpClient(Get_IP_from_Socket_string(Settings.Log_Forwarders_HostNames.ElementAt(x)), Settings.Log_Forwarders_Port.ElementAt(x));
-                            Data_Sent = SEND_Data_from_File_UDP(Log, client);
+                            SEND_Data_from_File_UDP(Log, client);
                             client.Close();
                         }
                         catch (Exception e)
                         {
                             Data_Sent = false;
-                            Settings.Logs_Sent_to_ALL_Collectors = false;
-                            Error_Operation.Log_Error("SEND_Logs() Default send logs UDP", Settings.Log_Forwarders_HostNames.ElementAt(x) + " " + e.Message.ToString(), e.StackTrace.ToString(), Error_Operation.LogSeverity.Informataion);
                         }
                     }
-                    Settings.Logs_Sent_to_ALL_Collectors = true;
-                    Reg_Operation.ADD_or_CHANGE_SWELF_Reg_Key(Reg_Operation.REG_KEY.Logs_Last_Sent, DateTime.Now.ToString());
                 }
+                return Data_Sent;
             }
             return Data_Sent;
-        }
-        internal static void SEND_SINGLE_LOG(string Log)
-        {
-            bool Data_Sent = true;
-
-            if (Settings.Log_Forwarders_HostNames.Any(s => string.Equals(s, "127.0.0.1", StringComparison.OrdinalIgnoreCase)) == false && Settings.Log_Forwarders_HostNames.Any(s => string.IsNullOrEmpty(s)) == false)
-            {
-                if (Settings.AppConfig_File_Args[Settings.SWELF_AppConfig_Args[14]] == "tcp")//If user wants send logs tcp
-                {
-                    for (int x = 0; x < Settings.Log_Forwarders_HostNames.Count; ++x)
-                    {
-                        try
-                        {
-                            Socket_Client_TCP(GET_Encoding_to_Return(Log), x);
-                        }
-                        catch (Exception e)
-                        {
-                        }
-                    }
-                }
-                else//Default send logs UDP
-                {
-                    for (int x = 0; x < Settings.Log_Forwarders_HostNames.Count; ++x)
-                    {
-                        try
-                        {
-                            UdpClient client = new UdpClient(Get_IP_from_Socket_string(Settings.Log_Forwarders_HostNames.ElementAt(x)), Settings.Log_Forwarders_Port.ElementAt(x));
-                            Data_Sent = SEND_Data_from_File_UDP(Log, client);
-                            client.Close();
-                        }
-                        catch (Exception e)
-                        {
-                        }
-                    }
-                }
-            }
         }
         public static void Socket_Client_UDP(byte[] Data,int x)
         {
@@ -155,7 +112,7 @@ namespace SWELF
                 s.SendTo(Data, remoteEP);
                 s.Close();
         }
-        public static void Socket_Client_TCP(byte[] Data, int x)
+        public static bool Socket_Client_TCP(byte[] Data, int x)
         { 
                 IPAddress ipAddress = IPAddress.Parse(Settings.Log_Forwarders_HostNames.ElementAt(x));
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, Settings.Log_Forwarders_Port.ElementAt(x)); 
@@ -164,6 +121,7 @@ namespace SWELF
                 sender.Send(Data,Data.Length,SocketFlags.None);
                 sender.Shutdown(SocketShutdown.Both);
                 sender.Close();
+                return true;
         }
         private static bool SEND_Data_from_File_UDP(string Log_File_Data, UdpClient client)
         {
@@ -232,7 +190,7 @@ namespace SWELF
                     {
                         string EventData="";
                         EventData= data.EventData.Replace("\n", "").Replace("\r", "\n").Replace(":", ": ").Replace(": ",": ").Replace(" \r ","");
-                        Data = " CreatedTime=\"" + data.CreatedTime +"\"" + "\t" + "SourceComputer=\"" + Settings.ComputerName + "\"" + "\t" + "EventID=\"" + data.EventID.ToString() + "\"" + "\t" + "EventLogName=\"" + data.LogName + "\"" + "\t" + "EventRecordID=\"" + data.EventLog_Seq_num + "\"" + "\t" + "DisplayName=\"" + data.TaskDisplayName + "\"" + "\t" + "Severity=\"" + data.Severity + "\"" + "\t" + "UserID=\"" + data.UserID + "\"" + "\t" + "Search_Rule=\"" + data.SearchRule + "\"" + "\t" + "ParentCommandLine=\"" + data.ParentCMDLine + "\"" + "\t" + "ChildCommandLine=\"" + data.ChildCMDLine + "\"" + "\t" + "EventData=\""+EventData+"\"" + "\t" + data.GET_Parsed_Sysmon_EventData().Replace("\n", "").Replace("\r", "\n").Replace(":", ": ").Replace(": ", ": ").Replace(" \r ", "")+"\t";
+                        Data = " CreatedTime=\"" + data.CreatedTime +"\"" + "\t" + "SourceComputer=\"" + Settings.ComputerName + "\"" + "\t" + "EventID=\"" + data.EventID.ToString() + "\"" + "\t" + "EventLogName=\"" + data.LogName + "\"" + "\t" + "EventRecordID=\"" + data.EventLog_Seq_num + "\"" + "\t" + "DisplayName=\"" + data.TaskDisplayName + "\"" + "\t" + "Severity=\"" + data.Severity + "\"" + "\t" + "UserID=\"" + data.UserID + "\"" + "\t" + "Search_Rule=\"" + data.SearchRule + "\"" + "\t" + "EventData=\""+EventData+"\"" + "\t" + data.GET_Parsed_Sysmon_EventData().Replace("\n", "").Replace("\r", "\n").Replace(":", ": ").Replace(": ", ": ").Replace(" \r ", "")+"\t";
                         break;
                     }
                 default:
