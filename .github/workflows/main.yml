@@ -1,0 +1,25 @@
+name: Build
+
+on: [push]
+ 
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+   
+      - name: Setup Nuget.exe
+        uses: warrenbuckley/Setup-Nuget@v1
+        
+      - name: sln
+        run: nuget restore $Env:GITHUB_WORKSPACE\SWELF\SWELF.sln
+              
+      - name: Build SWELF
+        run: |
+          cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
+          .\MSBuild.exe $Env:GITHUB_WORKSPACE\SWELF\SWELF\SWELF.csproj /property:Configuration=Release
+      
+      - uses: actions/upload-artifact@master
+        with:
+          name: SWELF
+          path: SWELF\SWELF\SWELF\bin\Release\SWELF.exe
