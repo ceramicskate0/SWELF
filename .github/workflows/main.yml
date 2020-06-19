@@ -22,4 +22,4 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: SWELF
-          path: SWELF\SWELF\SWELF\bin\Release\SWELF.exe
+          path: SWELF\SWELF\bin\Release\SWELF.exe
