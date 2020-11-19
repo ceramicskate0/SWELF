@@ -442,6 +442,7 @@ commandline_contains:/shtml
 commandline_contains:.php.exe
 commandline_contains:cl Microsoft-Windows-WMI-Activity/Trace
 commandline_contains:process call create 
+commandline_contains:/target:library
 
 #Command COUNT to be run on all
 #count:+:12
@@ -569,6 +570,7 @@ WFC.exe
 mofcomp.exe
 scrcons.exe
 EventSystem 
+set WINDIR
 
 #Search everything your looking at for mimikatz
 mimikatz
