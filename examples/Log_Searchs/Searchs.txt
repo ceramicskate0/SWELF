@@ -571,12 +571,17 @@ mofcomp.exe
 scrcons.exe
 EventSystem 
 set WINDIR
+clr.dll
+GfxDownloadWrapper.exe
+ieinstal.exe
+wuauclt.exe
 
 #Search everything your looking at for mimikatz
 mimikatz
 sekurlsa::logonpasswords
 privilege::debug
 mimilib
+mimi
 
 #COM OBJS to watch, mostly watch reg changes
 {F5078F35-C551-11D3-89B9-0000F81FE221}
