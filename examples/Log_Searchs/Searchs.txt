@@ -517,6 +517,7 @@ mshta
 .bgi
 .scr
 .cst
+.cpl
 .url 
 rundll32.exe javascript:
 rundll32.exe http:
