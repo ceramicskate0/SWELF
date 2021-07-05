@@ -124,6 +124,7 @@ root\cimv2~Microsoft-Windows-WMI-Activity/Operational~
 ~Microsoft-Windows-Sysmon/Operational~10
 ~Microsoft-Windows-Sysmon/Operational~11
 ~Microsoft-Windows-Sysmon/Operational~12
+~Microsoft-Windows-Sysmon/Operational~15
 ~Microsoft-Windows-Sysmon/Operational~16
 ~Microsoft-Windows-Sysmon/Operational~17
 ~Microsoft-Windows-Sysmon/Operational~18
@@ -131,6 +132,9 @@ root\cimv2~Microsoft-Windows-WMI-Activity/Operational~
 ~Microsoft-Windows-Sysmon/Operational~20
 ~Microsoft-Windows-Sysmon/Operational~21
 ~Microsoft-Windows-Sysmon/Operational~22
+~Microsoft-Windows-Sysmon/Operational~23
+~Microsoft-Windows-Sysmon/Operational~24
+~Microsoft-Windows-Sysmon/Operational~25
 ~Microsoft-Windows-Sysmon/Operational~255
 \appdata\~Microsoft-Windows-Sysmon/Operational~2
 \windows\~Microsoft-Windows-Sysmon/Operational~2
