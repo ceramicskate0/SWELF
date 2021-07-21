@@ -1,5 +1,7 @@
 ![Build](https://github.com/ceramicskate0/SWELF/workflows/Build/badge.svg)
 
+# Like the work dont forget to hit that Star Button and Sponsor
+
 # [Simple-Windows-Event-Log-Forwarder (SWELF)](https://github.com/ceramicskate0/SWELF/wiki)
 
 ### Shameless plug to allow Support:
