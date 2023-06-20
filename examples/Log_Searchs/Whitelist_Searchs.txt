@@ -8,7 +8,7 @@ windows defender antivirus has encountered an error trying to update signatures.
 image: c:\program files (x86)\microsoft visual studio\2017\community\common7\servicehub\hosts\servicehub.host.clr.x86\servicehub.host.clr.x86.exe~microsoft-windows-sysmon/operational~
 commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=renderer~microsoft-windows-sysmon/operational~
 commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=ppapi-broker~microsoft-windows-sysmon/operational~
-commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=gpu-process~microsoft-windows-sysmon/operational~
+#commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=gpu-process~microsoft-windows-sysmon/operational~
 commandline: "c:\program files (x86)\google\chrome\application\chrome.exe" --type=crashpad-handler~microsoft-windows-sysmon/operational~
 image: c:\program files (x86)\google\chrome\application\chrome.exe~Microsoft-Windows-Sysmon/Operational~
 parentcommandline: "c:\program files (x86)\google\chrome\application\chrome.exe"~Microsoft-Windows-Sysmon/Operational~
