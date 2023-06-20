@@ -580,6 +580,11 @@ clr.dll
 GfxDownloadWrapper.exe
 ieinstal.exe
 wuauclt.exe
+--gpu-launcher
+--utility-cmd-prefix
+--browser-subprocess-path
+--renderer-cmd-prefix
+
 
 #Search everything your looking at for mimikatz
 mimikatz
