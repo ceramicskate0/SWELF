@@ -410,6 +410,8 @@ System~Microsoft-Windows-DNS-Client/Operational~1014
 ~~1042
 ~~5145
 ~~4649
+~LSASRV~6182
+~~6182
 
 #Commands COMMANDLINES to be run on all
 commandline_contains:rename
